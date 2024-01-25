@@ -7,8 +7,8 @@
     "icon": "",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./App/src/assets/splashScreen.png",
-      "resizeMode": "contain",
+      // "image": "./App/src/assets/splashScreen.png",
+      // "resizeMode": "center",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
@@ -19,12 +19,12 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./App/src/assets/adaptive-icon.png",
+        "foregroundImage": "",
         "backgroundColor": "#ffffff"
       }
     },
     "web": {
-      "favicon": "./App/src/assets/favicon.png"
+      "favicon": ""
     }
   }
 }
