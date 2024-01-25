@@ -4,10 +4,10 @@
     "slug": "TripBros-Client",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./App/src/assets/icon.png",
+    "icon": "",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./App/src/assets/splash.png",
+      "image": "./App/src/assets/splashScreen.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
