@@ -1,14 +1,4 @@
 import styled from 'styled-components/native';
-const LoginHeader = styled.View`
-    width: 100%;
-    height: 50px;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #749BC2;
-    shadow-color: #000;
-    
-`;
 
 const LoginBlock = styled.View`
   height: 100%;
@@ -20,7 +10,7 @@ const LoginBlock = styled.View`
 const LoginLogo = styled.Image`
     width: 230;
     height: 120;
-    margin: 40px 0 60px 0;
+    margin: 60px 0 60px 0;
     `;
 
 const LoginTitle = styled.Text`
@@ -41,10 +31,9 @@ const FormLogin = styled.View`
     
 `;
 
-
 const InputUserId = styled.TextInput`
   width: 100%;
-  height: 40;
+  height: 40px;
   font-size: 24px;
   font-weight: bold;
   padding: 0 10px;
@@ -56,11 +45,12 @@ const InputUserId = styled.TextInput`
 
 const InputUserPassword = styled.TextInput`
     width: 100%;
-    height: 40;
+    height: 40px;
     font-size: 24px;
     padding: 0 10px;
     font-weight: bold;
     border-bottom-width: 1px;
+    margin-bottom: 20px;
     background-color: #FFFFFF;
     `;
 
@@ -75,39 +65,48 @@ const FormButton = styled.TouchableOpacity`
 `;
 
 const FormLoginText = styled.Text`
-  font-size: 20x; 
+  font-size: 20px; 
   font-weight: bold;
   color: #fff;
 
+
+`;
+const FormFailedText = styled.Text`
+    font-size: 14px;
+    text-align: center;
+    color: #FF0000;
+    font-weight:bold;
 `;
 
-const FormSignup = styled.TouchableOpacity`
+const FormSignup = styled.View`
     width: 100%;
-    height: 40px;
-    border-radius: 5px;
-    justify-content: center;
     align-items: center;
-    margin-top: 20px;
 `;
 
 const FormSignupText = styled.Text`
     font-size: 14px;
     text-align: center;
+    margin:20px;
+`;
+const FormSignupButtonText = styled.Text`
+    font-size: 14px;
+    text-align: center;
+    color: #749BC2;
+    font-weight: bold;
+    margin-left: 5px;
 `;
 
-const FormFailedText = styled.Text`
-  font-size: 10px;
-  text-align: center;
-`;
+
 
 export {
     LoginLogo,
-    LoginHeader,
     LoginTitle,
     LoginBlock,
     InputUserId,
     InputUserPassword,
+    FormSignup,
     FormSignupText,
+    FormSignupButtonText,
     FormLoginText,
     FormFailedText,
     FormLogin,

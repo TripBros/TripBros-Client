@@ -12,6 +12,13 @@ import Chat from '../screens/Main/Chat';
 import MyPage from '../screens/Main/MyPage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+//image
+import { SimpleLineIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Feather } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
+
 
 const Tab = createBottomTabNavigator();
 
@@ -35,28 +42,39 @@ const BottomNavigator = () => {
                         component={Recommand}
                         options={{
                             tabBarIcon: ({ focused }) => (
-                                <Image source={focused ? require('../assets/BottomNav/onClick/recommand.png'):require('../assets/BottomNav/nonClick/recommand.png')} 
-                                style={{width: 24, height: 24}} />
+                                <MaterialCommunityIcons 
+                                    name="bookmark-outline" 
+                                    size={24} 
+                                    color={focused ? "#91C8E4" : "black"} />
                             ),}}/>
                     <Tab.Screen name="일정" component={Plan} options={{
                             tabBarIcon: ({ focused }) => (
-                                <Image source={focused ? require('../assets/BottomNav/onClick/plan.png'): require('../assets/BottomNav/nonClick/plan.png')} 
-                                style={{width: 24, height: 24}} />
+                                <SimpleLineIcons 
+                                    name="plane" 
+                                    size={24} 
+                                    color={focused ? "#91C8E4" : "black"} 
+                                />
                             ),}}/>
                     <Tab.Screen name="검색" component={Search} options={{
                             tabBarIcon: ({ focused }) => (
-                                <Image source={focused ? require('../assets/BottomNav/onClick/search.png'): require('../assets/BottomNav/nonClick/search.png')} 
-                                style={{width: 24, height: 24}} />
+                                <Feather 
+                                    name="search" 
+                                    size={24} 
+                                    color={focused ? "#91C8E4" : "black"}  />
                             ),}}/>
                     <Tab.Screen name="채팅" component={Chat} options={{
                             tabBarIcon: ({ focused }) => (
-                                <Image source={focused ? require('../assets/BottomNav/onClick/chat.png'): require('../assets/BottomNav/nonClick/chat.png')} 
-                                style={{width: 24, height: 24}} />
+                                <Ionicons 
+                                    name="chatbox-outline" 
+                                    size={24} 
+                                    color={focused ? "#91C8E4" : "black"}  />
                             ),}}/>
                     <Tab.Screen name="마이" component={MyPage} options={{
                             tabBarIcon: ({ focused }) => (
-                                <Image source={focused ? require('../assets/BottomNav/onClick/mypage.png'): require('../assets/BottomNav/nonClick/mypage.png')} 
-                                style={{width: 24, height: 24}} />
+                                <MaterialIcons 
+                                    name="person-outline" 
+                                    size={24} 
+                                    color={focused ? "#91C8E4" : "black"}  />
                             ),}}/>
                 </Tab.Navigator>
             </SafeAreaView>

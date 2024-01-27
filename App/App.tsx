@@ -10,11 +10,10 @@ function App() {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // 여기서 앱 초기화 로직을 수행합니다.
-    // 예: 서버에서 데이터 가져오기, 사용자 세션 확인 등
+    //스플래시 로직 추가
     setTimeout(() => {
       setIsReady(true);
-    }, 5000); // 예시로 2초 후 로딩 상태 변경
+    }, 3000); //일단은 2초 후 로딩 상태 변경
   }, []);
 
   if (isReady === false) {
