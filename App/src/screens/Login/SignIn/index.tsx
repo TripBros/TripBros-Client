@@ -24,27 +24,35 @@ import StackHeader from '../../../components/Header/stackHeader';
 import { idRegex,passwordRegex } from '../../../utils/validate/signin';
 import { useSetRecoilState } from 'recoil';
 import { userLoginState } from '../../../libs/Recoil/authState';
+import { SignInFormProps } from './types';
+import {
+    setUserId,
+    setPassword,
+  } from './Utils/SignInFormUtils';
+
 
 const SignIn: React.FC = () => {
-    const [userId, setUserId] = useState('');
-    const [password, setPassword] = useState('');
+    //네비게이터
+    const navigator = useNavigation();
+    // 로그인 폼 
+    const [SignInForm, setSignInForm] = useState<SignInFormProps>({
+        userId: '',
+        password: '',
+    }); 
     const setLogin = useSetRecoilState(userLoginState);
 
     // 에러 처리
     const [idError, setIdError] = useState<String>('');
     const [passwordError, setPasswordError] = useState<String>('');
 
-    //네비게이터
-    const navigator = useNavigation();
-
     const handleLogin = () => {
         let isValid = true;
 
         // 아이디 유효성 검사
-        if (!userId) {
+        if (!SignInForm.userId) {
             setIdError('아이디를 입력해주세요.');
             isValid = false;
-        } else if (!idRegex.test(userId)) {
+        } else if (!idRegex.test(SignInForm.userId)) {
             setIdError('유효하지 않은 계정입니다.');
             isValid = false;
         } else {
@@ -52,10 +60,10 @@ const SignIn: React.FC = () => {
         }
 
         // 비밀번호 유효성 검사
-        if (!password) {
+        if (!SignInForm.password) {
             setPasswordError('비밀번호를 입력해주세요.');
             isValid = false;
-        } else if (!passwordRegex.test(password)) {
+        } else if (!passwordRegex.test(SignInForm.password)) {
             setPasswordError('유효하지 않은 비밀번호입니다.');
             isValid = false;
         } else {
@@ -66,7 +74,7 @@ const SignIn: React.FC = () => {
         if (isValid) {
             // 로그인 처리,여기에 API 요청 로직을 구현
             // 로그인 성공시 토큰 저장하고, setLogin(true)로 변경하고 navigator.navigate('Main')으로 이동
-            Alert.alert('로그인 시도', `Username: ${userId}, Password: ${password}`);
+            Alert.alert('로그인 시도', `Username: ${SignInForm.userId}, Password: ${SignInForm.password}`);
           }   
 
     };
@@ -80,14 +88,14 @@ const SignIn: React.FC = () => {
                     <FormLogin>
                         <InputUserId
                             placeholder="Email"
-                            value={userId}
-                            onChangeText={setUserId} 
+                            value={SignInForm.userId}
+                            onChangeText={(inputUserId:string) => setUserId(setSignInForm,inputUserId)} 
                         />
                         <FormFailedText>{idError}</FormFailedText>
                         <InputUserPassword
                             placeholder="Password"
-                            value={password}
-                            onChangeText={setPassword}
+                            value={SignInForm.password}
+                            onChangeText={(inputUserPassword:string) => setPassword(setSignInForm,inputUserPassword)}
                             secureTextEntry={true}
                         />
                         <FormFailedText>{passwordError}</FormFailedText>

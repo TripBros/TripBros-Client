@@ -93,6 +93,7 @@ const CheckButton = styled.TouchableOpacity`
 
 const YearChooseBox = styled.View`
     width: 100%;
+    z-index: 10;
 `;
 
 const ChooserSexBox = styled.View`
