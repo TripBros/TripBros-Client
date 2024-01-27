@@ -7,7 +7,6 @@ import BottomNavigator from './src/navigators/BottomNav'
 import  { SafeAreaProvider, SafeAreaView }  from 'react-native-safe-area-context';
 import Header from './src/components/Header'
 
-
 function App() {
 
   return (

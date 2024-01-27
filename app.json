@@ -19,7 +19,6 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./App/src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       }
     },
