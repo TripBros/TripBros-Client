@@ -1,4 +1,4 @@
-import {useQuery} from '@tanstack/react-query';
+import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import React, {useState} from 'react';
 import {
   TouchableOpacity,
@@ -6,6 +6,8 @@ import {
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
+import { AxiosResponse } from 'axios';
+
 import {
     LoginLogo,
     FormButton,
@@ -29,30 +31,46 @@ import {
     setUserId,
     setPassword,
   } from './Utils/SignInFormUtils';
+import axios from 'axios';
 
+interface LoginResponse {
+    success: boolean;
+    // 추가해야함
+  }
 
 const SignIn: React.FC = () => {
     //네비게이터
     const navigator = useNavigation();
     // 로그인 폼 
     const [SignInForm, setSignInForm] = useState<SignInFormProps>({
-        userId: '',
+        email: '',
         password: '',
     }); 
     const setLogin = useSetRecoilState(userLoginState);
 
     // 에러 처리
-    const [idError, setIdError] = useState<String>('');
-    const [passwordError, setPasswordError] = useState<String>('');
+    const [idError, setIdError] = useState<string>('');
+    const [passwordError, setPasswordError] = useState<string>('');
 
+    // 로그인 통신
+    const loginfn = async (data: SignInFormProps) => {
+        const response = await axios.post<SignInFormProps, AxiosResponse<LoginResponse>>('로그인 API 주소', data);
+        
+        if (response.data.success) {
+            setLogin(true);
+            Alert.alert('로그인 성공');
+        } else {
+            Alert.alert('로그인 실패');
+        }
+    }
     const handleLogin = () => {
         let isValid = true;
 
         // 아이디 유효성 검사
-        if (!SignInForm.userId) {
+        if (!SignInForm.email) {
             setIdError('아이디를 입력해주세요.');
             isValid = false;
-        } else if (!idRegex.test(SignInForm.userId)) {
+        } else if (!idRegex.test(SignInForm.email)) {
             setIdError('유효하지 않은 계정입니다.');
             isValid = false;
         } else {
@@ -72,12 +90,12 @@ const SignIn: React.FC = () => {
 
         // 모든 유효성 검사 통과
         if (isValid) {
-            // 로그인 처리,여기에 API 요청 로직을 구현
-            // 로그인 성공시 토큰 저장하고, setLogin(true)로 변경하고 navigator.navigate('Main')으로 이동
-            Alert.alert('로그인 시도', `Username: ${SignInForm.userId}, Password: ${SignInForm.password}`);
-          }   
-
-    };
+            // 서버 통신
+            loginfn(SignInForm);
+            console.log(SignInForm, '로그인 시도');
+            navigator.navigate('Main');
+        }
+    }   
 
     return (
             <SafeAreaView style={{flex: 1,backgroundColor: '#749BC2'}}>
@@ -88,7 +106,7 @@ const SignIn: React.FC = () => {
                     <FormLogin>
                         <InputUserId
                             placeholder="Email"
-                            value={SignInForm.userId}
+                            value={SignInForm.email}
                             onChangeText={(inputUserId:string) => setUserId(setSignInForm,inputUserId)} 
                         />
                         <FormFailedText>{idError}</FormFailedText>

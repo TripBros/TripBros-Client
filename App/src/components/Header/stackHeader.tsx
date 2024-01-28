@@ -34,4 +34,5 @@ const StackHeaderBox = styled.View`
     justify-content: space-between;
     background-color: #749BC2;
     shadow-color: #000;
+    
 `;

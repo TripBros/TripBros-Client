@@ -8,8 +8,8 @@ const LoginBlock = styled.View`
 `;
 
 const LoginLogo = styled.Image`
-    width: 230;
-    height: 120;
+    width: 230px;
+    height: 120px;
     margin: 60px 0 60px 0;
     `;
 
@@ -62,6 +62,14 @@ const FormButton = styled.TouchableOpacity`
     justify-content: center;
     align-items: center;
     margin-top: 20px;
+    /* iOS 그림자 스타일 */
+    shadow-color: #000;
+    shadow-offset: 2px 2px;
+    shadow-opacity: 0.3;
+    shadow-radius: 4.65px;
+
+    /* Android 그림자 스타일 */
+    elevation: 8;
 `;
 
 const FormLoginText = styled.Text`

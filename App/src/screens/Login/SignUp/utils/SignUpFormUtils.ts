@@ -27,7 +27,7 @@ const setNickname = (setStateFunction: React.Dispatch<React.SetStateAction<any>>
 const setBirth = (setStateFunction: React.Dispatch<React.SetStateAction<any>>,prop: number) => {
     handleInputChange(setStateFunction,'birth', prop);
   };
-const setSex = (setStateFunction: React.Dispatch<React.SetStateAction<any>>,prop: boolean) => {
+const setSex = (setStateFunction: React.Dispatch<React.SetStateAction<any>>,prop: string) => {
     handleInputChange(setStateFunction,'sex', prop);
   };
 const setlesrurely = (setStateFunction: React.Dispatch<React.SetStateAction<any>>,prop: boolean) => {

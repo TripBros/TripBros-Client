@@ -37,13 +37,13 @@ export const InputUserSex: React.FC<InputUserSexProps> = ({sex,setFormData}) => 
             <SignupText>성별</SignupText>
             <ChooserSexBox>
             <SexCheckButton 
-                onPress={() => setSex(setFormData,true)}
+                onPress={() => setSex(setFormData,'man')}
                 active={sex === 'man'}
                 >
                 <Text style={{color: sex === 'man' ? 'white' : '#749BC2'}}>남자</Text>
             </SexCheckButton>
             <SexCheckButton 
-                onPress={() => setSex(setFormData,false)}
+                onPress={() => setSex(setFormData,'woman')}
                 active={sex === 'woman'}>
                 <Text style={{color: sex === 'woman' ? 'white' : '#749BC2'}}>여자</Text>
             </SexCheckButton>

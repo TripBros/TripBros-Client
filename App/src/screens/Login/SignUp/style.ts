@@ -5,6 +5,10 @@ interface SexCheckButtonProps {
     active: boolean;
 }
 
+interface TravelStyleCheckBoxProps {
+    active: boolean;
+}
+
 const contentStyles = {
     display: 'flex',
     justifyContent: 'center',
@@ -124,11 +128,20 @@ const FormButton = styled.TouchableOpacity`
     justify-content: center;
     align-items: center;
     margin-top: 20px;
+    /* iOS 그림자 스타일 */
+    shadow-color: #000;
+    shadow-offset: 2px 2px;
+    shadow-opacity: 0.3;
+    shadow-radius: 4.65px;
+
+    /* Android 그림자 스타일 */
+    elevation: 8;
 `;
 const FormSignupText = styled.Text`
   font-size: 20px; 
   font-weight: bold;
   color: #fff;
+  
 `;
 
 const TravelStyleBlock = styled.View`
