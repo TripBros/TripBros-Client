@@ -15,7 +15,7 @@ const contentStyles = {
     alignItems: 'center',
   };
   
-  const SignupBlock = styled(ScrollView).attrs({
+const SignupBlock = styled(ScrollView).attrs({
     contentContainerStyle: contentStyles,
   })`
     flex: 1;

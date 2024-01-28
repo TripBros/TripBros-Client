@@ -2,8 +2,6 @@ import React,{useState,useEffect} from 'react';
 import { View, Text,TouchableOpacity,ScrollView,Alert } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StackHeader from '../../../components/Header/stackHeader';
-import DropDownPicker from 'react-native-dropdown-picker';
-import { CheckBox, Input } from 'react-native-elements';
 import { idRegex,passwordRegex,nameRegex } from '../../../utils/validate/signup';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
@@ -37,19 +35,6 @@ import {
     IsValidationState,
     Year
     } from './types';
-
-import {
-    setProfileImage,
-    setUserId,
-    setPassword,
-    setNickname,
-    setSex,
-    setlesrurely,
-    setplanner,
-    setadventurous,
-    setvehicle,
-    setphoto,
-    } from './utils/SignUpFormUtils';
 import {
     setIsId,
     setIsPassword,
