@@ -6,25 +6,37 @@
     "orientation": "portrait",
     "icon": "",
     "userInterfaceStyle": "light",
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let you share them with your friends."
+        }
+      ]]
+      ,
     "splash": {
-      "image": "./App/src/assets/splashScreen.png",
-      "resizeMode": "contain",
+      // "image": "./App/src/assets/splashScreen.png",
+      // "resizeMode": "center",
       "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "infoPlist": {
+      "NSPhotoLibraryUsageDescription": "이 앱은 프로필 사진을 선택하기 위해 사진 라이브러리에 접근합니다."
+  }
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./App/src/assets/adaptive-icon.png",
+        "foregroundImage": "",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "permissions": ["READ_EXTERNAL_STORAGE"]
     },
     "web": {
-      "favicon": "./App/src/assets/favicon.png"
+      "favicon": ""
     }
   }
 }
