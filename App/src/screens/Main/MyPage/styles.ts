@@ -62,7 +62,7 @@ const ProfileTravelStyleTextContainer = styled.View`
 `;
 
 const ProfileTravelStyleText = styled.Text`
-    font-size: 15px;
+    font-size: 14px;
 `;
 
 const ProfileModifyContainer = styled.View`

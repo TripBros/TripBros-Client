@@ -56,17 +56,16 @@ const SignUp: React.FC = () => {
     // 회원가입 폼 상태
     const [formData, setFormData] = useState<SignUpFormState>({
         profileImage: null,
-      userId: '',
-      password: '',
-      nickname: '',
-      birth: 0,
-      sex: 'man',
-      leisurely_flag: true,
-      planner_flag: true,
-      adventurous_flag: true,
-      vehicle_travel_flag: true,
-      photo_preference_flag: true,
-
+        userId: '',
+        password: '',
+        nickname: '',
+        birth: 0,
+        sex: 'man',
+        leisurely_flag: true,
+        planner_flag: true,
+        adventurous_flag: true,
+        vehicle_travel_flag: true,
+        photo_preference_flag: true,
     });
     const [passwordCheck, setPasswordCheck] = useState<string>('');
 
