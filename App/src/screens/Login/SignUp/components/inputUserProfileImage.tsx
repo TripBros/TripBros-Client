@@ -23,10 +23,10 @@ import {
     } from '../style';
 import {Text} from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
-import { setUserId } from '../utils/SignUpFormUtils';
 import { Dispatch, SetStateAction } from 'react';
 import { SignUpFormState } from '../types';
 import { setProfileImage } from '../utils/SignUpFormUtils';
+import defaultProfileImage from '../../../../assets/basicProfile.jpg';
 
 interface InputUserProfileImageProps {
     profileImage: string | null;
@@ -34,6 +34,8 @@ interface InputUserProfileImageProps {
     }
 
 export const InputUserProfileImage: React.FC<InputUserProfileImageProps> = ({profileImage,setFormData}) => {
+    const imageSource = profileImage ? { uri: profileImage } : defaultProfileImage;
+
     const uploadImage = async () => {
         // 사용자 권한 요청
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -59,7 +61,7 @@ export const InputUserProfileImage: React.FC<InputUserProfileImageProps> = ({pro
         <>
             <SignupText>프로필 사진</SignupText>
             <ProfileImageBox  >
-                <ProfileImage source={{uri: profileImage || 'basicProfileImage'}}/>
+                <ProfileImage source ={imageSource}/>
                     <ProfileImageInputButtun onPress={uploadImage}>
                         <Text style={{color:'#A6A6A6'}}>프로필 사진 등록</Text>
                     </ProfileImageInputButtun>

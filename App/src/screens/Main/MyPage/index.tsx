@@ -30,7 +30,6 @@ import MyPageMenuContainerContainer from './Components/myPageMenuContainerContai
 import ProfileModifyContainerContainer from './Components/profileModofyContainerContainer';
 
 const MyPage: React.FC = () => {
-    const navigation = useNavigation();
 
     //유저정보, 로그인상태, 토큰
     const user = useRecoilValue(userState);

@@ -12,8 +12,8 @@ const handleInputChange = (
     }));
   };
 
-const setUserId = (setStateFunction: React.Dispatch<React.SetStateAction<any>>,prop: string) => {
-    handleInputChange(setStateFunction,'userId', prop);
+const setEmail = (setStateFunction: React.Dispatch<React.SetStateAction<any>>,prop: string) => {
+    handleInputChange(setStateFunction,'email', prop);
   };
 const setProfileImage = (setStateFunction: React.Dispatch<React.SetStateAction<any>>,prop: string) => {
     handleInputChange(setStateFunction,'profileImage', prop);
@@ -48,7 +48,7 @@ const setphoto = (setStateFunction: React.Dispatch<React.SetStateAction<any>>,pr
 
 export {
     setProfileImage,
-    setUserId,
+    setEmail,
     setPassword,
     setNickname,
     setBirth,

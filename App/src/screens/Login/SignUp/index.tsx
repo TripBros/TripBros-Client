@@ -32,14 +32,15 @@ import {
 
 import {  
     SignUpFormState,
-    IsValidationState,
+    IsValidationProps,
     Year
     } from './types';
+
 import {
-    setIsId,
-    setIsPassword,
-    setIsPasswordConfirm,
-    setIsNickname,
+    checkPassword,
+    checkPasswordConfirm,
+    checkIdDuplicate,
+    checkNicknameDuplicate,
     } from './utils/isVaildateUtils';
 import { formDataState } from '../../../libs/Recoil/userInfo';
 import {InputUserId} from './components/inputUserId';
@@ -50,13 +51,15 @@ import {InputUserSex} from './components/inputUserSex';
 import {InputUserTravelStyle} from './components/inputUserTravelStyle';
 import { CheckAgree } from './components/checkAgree';
 import { InputUserProfileImage } from './components/inputUserProfileImage';
+import { IsValidationState } from '../../../libs/Recoil/signupValid';
 
 const SignUp: React.FC = () => {
     const navigator = useNavigation();
+
     // 회원가입 폼 상태
     const [formData, setFormData] = useState<SignUpFormState>({
         profileImage: null,
-        userId: '',
+        email: '',
         password: '',
         nickname: '',
         birth: 0,
@@ -70,18 +73,7 @@ const SignUp: React.FC = () => {
     const [passwordCheck, setPasswordCheck] = useState<string>('');
 
     //유효성검사
-    const [isValidate, setIsValidate] = useState<IsValidationState>({
-        isId: false,
-        isPassword: false,
-        isPasswordConfirm: false,
-        isNickname: false,
-        isBirth: false,
-    });
-
-    //출생년도 선택을 위한 상태
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(new Date().getFullYear());
-    const [items, setItems] = useState<Year[]>([]);
+    const [isValidate, setIsValidate] = useRecoilState<IsValidationProps>(IsValidationState);
 
     //회원가입 동의
     const [agreeTerms, setAgreeTerms] = useState(false);
@@ -89,29 +81,16 @@ const SignUp: React.FC = () => {
 
     //회원가입 버튼
     const handleSignUp = () => {
-        const isSuccessful:boolean = false;
+        let isSuccessful:boolean = false;
         //회원가입 요청
         const submitSignUp = async () => {
             try {
-              const postData = {
-                EMAIL : formData.userId,
-                password : formData.password,
-                nickname : formData.nickname,
-                age : formData.birth,
-                sex : formData.sex,
-                leisurely_flag : formData.leisurely_flag,
-                planner_flag : formData.planner_flag,
-                adventurous_flag : formData.adventurous_flag,
-                vehicle_travel_flag : formData.vehicle_travel_flag,
-                photo_preference_flag : formData.photo_preference_flag,
-                profile_image : formData.profileImage,
-              };
-          
-              const response = await axios.post('회원가입 요청주소', postData);
+              const response = await axios.post('회원가입 요청주소', formData);
           
               if (response.data.success) {
                 // 회원가입 성공 처리
                 console.log('회원가입 성공:', response.data);
+                isSuccessful = true;
               } else {
                 // 회원가입 실패 처리
                 console.error('회원가입 실패:', response.data.message);
@@ -132,14 +111,14 @@ const SignUp: React.FC = () => {
         }
 
         //2 유효성 검사
-        if (!isValidate.isId) {
+        if (!isValidate.isEmail) {
             isPerfect = false;
             Alert.alert('아이디를 확인해주세요.');
             return;
         }
 
-        checkPassword(formData.password);
-        checkPasswordConfirm(formData.password,passwordCheck);
+        checkPassword(formData.password,setIsValidate);
+        checkPasswordConfirm(formData.password,passwordCheck,setIsValidate);
 
         if (!isValidate.isPassword) {
             isPerfect = false;
@@ -147,12 +126,6 @@ const SignUp: React.FC = () => {
         }
         if (!isValidate.isPasswordConfirm) {
             isPerfect = false;
-            return;
-        }
-
-        if (!isValidate.isBirth) {
-            isPerfect = false;
-            Alert.alert('출생년도를 확인해주세요.');
             return;
         }
 
@@ -172,102 +145,23 @@ const SignUp: React.FC = () => {
             Alert.alert('회원가입이 완료되었습니다.');
             navigator.navigate('SignIn');
         }
-    }
- 
-    const checkPassword = (password:string) => {
-            //비밀번호 유효성 검사 (8~16자, 영문, 숫자, 특수문자)
-            if (password === '') {
-                setIsPassword(setIsValidate,false);
-                Alert.alert('비밀번호를 입력해주세요.')
-                return;
-            } else if (!passwordRegex.test(password)) {
-                setIsPassword(setIsValidate,false);
-                Alert.alert('유효하지 않은 비밀번호입니다.')
-                return;
-            } else if (password.length < 8 || password.length > 16) {
-                setIsPassword(setIsValidate,false);
-                Alert.alert('비밀번호는 8~16자리로 입력해주세요.')
-                return;
-            }
-            setIsPassword(setIsValidate,true);
-        }
-
-    const checkPasswordConfirm = (password:string,passwordCheck:string) => {
-            //비밀번호 확인
-            if (passwordCheck === '') {
-                setIsPasswordConfirm(setIsValidate,false);
-                Alert.alert('비밀번호를 입력해주세요.')
-                return;
-            } else if (password !== passwordCheck) {
-                setIsPasswordConfirm(setIsValidate,false);
-                Alert.alert('비밀번호가 일치하지 않습니다.')
-                return;
-            }
-            setIsPasswordConfirm(setIsValidate,true);
-        }
-    const checkIdDuplicate = async(userId:string) => {
-            //아이디 유효성 검사 (이메일 형식)
-            if (userId === '') {
-                setIsId(setIsValidate,false);
-                Alert.alert('아이디를 입력해주세요.')
-                return;
-            } else if (!idRegex.test(userId)) {
-                setIsId(setIsValidate,false);
-                Alert.alert('유효하지 않은 계정입니다.')
-                return;
-            }
-            //아이디 중복검사
-            try {
-                const response = await axios.post('서버주소', userId);
-                // response.data를 사용하여 중복 여부를 확인하고 처리
-                if (response.data.success) {
-                  // 아이디 사용 가능
-                  setIsId(setIsValidate,true);
-                } else {
-                  // 아이디 중복
-                    setIsId(setIsValidate,false);
-                    Alert.alert('이미 사용중인 아이디입니다.');
-                }
-              } catch (error) {
-                console.error('중복 체크 중 오류 발생:', error);
-              }
-        }
+    };
+  
+    const handleCheckIdDuplicate = (email:string) => {
+        checkIdDuplicate(email, setIsValidate);
+      };
     
-    const checkNicknameDuplicate = async(nickname:string) => {
-            //닉네임 유효성 검사 (2~10자)
-            if (nickname === '') {
-                setIsNickname(setIsValidate,false);
-                Alert.alert('닉네임을 입력해주세요.')
-                return;
-            } else if (!nameRegex.test(nickname)) {
-                setIsNickname(setIsValidate,false);
-                Alert.alert('유효하지 않은 닉네임입니다.')
-                return;
-            } else if (nickname.length < 2 || nickname.length > 10) {
-                setIsNickname(setIsValidate,false);
-                Alert.alert('닉네임은 2~10자리로 입력해주세요.')
-                return;
-            }
+    const handleCheckNicknameDuplicate = (nickname:string) => {
+        checkNicknameDuplicate(nickname, setIsValidate);
+      };
 
-            try {
-                const response = await axios.post('서버주소', nickname);
-                // response.data를 사용하여 중복 여부를 확인하고 처리
-                if (response.data.success) {
-                  // 닉네임 사용 가능
-                  setIsNickname(setIsValidate,true);
-                } else {
-                  // 닉네임 중복
-                    setIsNickname(setIsValidate,false);
-                    Alert.alert('이미 사용중인 닉네임입니다.');
-                }
-              }catch (error) {
-                console.error('중복 체크 중 오류 발생:', error);
-        }
-    }
-    // 잘되나 확인용       
+    // 잘되나 확인용  
     useEffect(() => {
         console.log(formData);
-    }, [formData]);
+        console.log(isValidate);
+        console.log(agreeTerms);
+        console.log(agreePrivacy);
+    }, [formData,agreePrivacy,agreeTerms]);
 
     return (
         <SafeAreaView style={{flex: 1,backgroundColor: '#749BC2'}}>
@@ -275,14 +169,15 @@ const SignUp: React.FC = () => {
             <SignupBlock>
                 <SignupForm>
                     <InputUserProfileImage profileImage={formData.profileImage} setFormData={setFormData}/>
-                    <InputUserId userId={formData.userId} setFormData={setFormData} checkIdDuplicate={checkIdDuplicate}/>
+                    <InputUserId email={formData.email} setFormData={setFormData} checkIdDuplicate={handleCheckIdDuplicate}/>
                     <InputUserPassword password={formData.password} setFormData={setFormData}/>
                     <SignupText>비밀번호 확인</SignupText>
                     <InputUser
+                        secureTextEntry={true}
                         placeholder="비밀번호 확인"
                         value={passwordCheck}
                         onChangeText={setPasswordCheck} />
-                    <InputUserNickName nickname={formData.nickname} setFormData={setFormData} checkNicknameDuplicate={checkNicknameDuplicate}/>
+                    <InputUserNickName nickname={formData.nickname} setFormData={setFormData} checkNicknameDuplicate={handleCheckNicknameDuplicate}/>
                     <SignupText>출생년도</SignupText>
                     <InputUserBirth setFormData={setFormData}/>
                     <InputUserSex sex={formData.sex}  setFormData={setFormData}/>

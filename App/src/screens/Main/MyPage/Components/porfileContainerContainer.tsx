@@ -21,7 +21,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { useRecoilValue } from 'recoil';
 import { userState } from '../../../../libs/Recoil/authState';
-
+import defaultProfileImage from '../../../../assets/basicProfile.jpg';
 //icon
 import { AntDesign } from '@expo/vector-icons';
 
@@ -32,7 +32,7 @@ interface ProfileProps {
 const ProfileContainerContainer: React.FC<ProfileProps> = ({userLoginState}) => {
     const navigation = useNavigation();
     const user = useRecoilValue(userState);
-    
+    const imageSource = user.profileImage ? { uri: user.profileImage } : defaultProfileImage;
     // 로직 추가햐아함
     const [needProfile,useNeedProfile] = useState({
         nickname: '김민수',
@@ -43,7 +43,7 @@ const ProfileContainerContainer: React.FC<ProfileProps> = ({userLoginState}) => 
     if(!userLoginState){
         return (
             <ProfileContainer>
-                <ProfileImage source={''} />
+                <ProfileImage source={imageSource} />
                 <ProfileTextContainer>
                     <TouchableOpacity
                         style={{ flexDirection: 'row', alignItems: 'center' }}  
@@ -57,7 +57,7 @@ const ProfileContainerContainer: React.FC<ProfileProps> = ({userLoginState}) => 
     }
     return (
         <ProfileContainer>
-                <ProfileImage source={''} />
+                <ProfileImage source={imageSource} />
                 <ProfileTextContainer>
                     <ProfileName>{needProfile.nickname}</ProfileName>
                     <ProfileAgeandSex>{needProfile.age} {needProfile.sex}</ProfileAgeandSex>

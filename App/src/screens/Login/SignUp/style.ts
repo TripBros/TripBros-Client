@@ -45,7 +45,6 @@ const ProfileImage = styled.Image`
     height: 100px;
     border-radius: 50px;
     margin-bottom: 20px;
-    border: 1px solid #A6A6A6;
 `;
 
 const ProfileImageInputButtun = styled.TouchableOpacity`

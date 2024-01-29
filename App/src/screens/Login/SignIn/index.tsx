@@ -1,5 +1,5 @@
 import { useMutation, UseMutationResult } from '@tanstack/react-query';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   TouchableOpacity,
   Alert,
@@ -96,6 +96,10 @@ const SignIn: React.FC = () => {
             navigator.navigate('Main');
         }
     }   
+    
+    useEffect(() => {
+        console.log(SignInForm);
+    }, [SignInForm]);
 
     return (
             <SafeAreaView style={{flex: 1,backgroundColor: '#749BC2'}}>

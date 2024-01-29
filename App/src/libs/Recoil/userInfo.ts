@@ -5,7 +5,7 @@ export const formDataState = atom<SignUpFormState>({
     key: 'formDataState', // 고유한 키
     default: {
       profileImage: null,
-      userId: '',
+      email: '',
       password: '',
       nickname: '',
       birth: 0,

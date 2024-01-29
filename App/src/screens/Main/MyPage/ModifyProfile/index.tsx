@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 import StackHeader from '../../../../components/Header/stackHeader';
 import MyPageStackHeader from '../../../../components/Header/myPageStackHeader';
-import { InputUserProfileImage } from '../../../../screens/Login/SignUp/components/inputUserProfileImage';
+import { InputUserProfileImage } from '../../../Login/SignUp/components/inputUserProfileImage';
 import { InputUserNickName } from '../../../Login/SignUp/components/inputUserNickname';
 import { InputUserTravelStyle } from '../../../Login/SignUp/components/inputUserTravelStyle';
 import { Dispatch, SetStateAction } from 'react';

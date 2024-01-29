@@ -17,7 +17,6 @@ const ProfileImage = styled.Image`
     width: 100px;
     height: 100px;
     border-radius: 50px;
-    border: 1px solid black;
     margin-left: 20px;
 `;
 

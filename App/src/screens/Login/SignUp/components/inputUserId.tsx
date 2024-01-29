@@ -22,26 +22,26 @@ import {
     AgreementButton,
     } from '../style';
 import {Text} from 'react-native';
-import { setUserId } from '../utils/SignUpFormUtils';
+import { setEmail } from '../utils/SignUpFormUtils';
 import { Dispatch, SetStateAction } from 'react';
 import { SignUpFormState } from '../types';
 
 interface InputUserIdProps {
-    userId: string;
+    email: string;
     setFormData: Dispatch<SetStateAction<SignUpFormState>>;
-    checkIdDuplicate: (id: string) => void;
+    checkIdDuplicate: (email: string) => void;
   }
 
-export const InputUserId: React.FC<InputUserIdProps> = ({userId,setFormData, checkIdDuplicate}) => {
+export const InputUserId: React.FC<InputUserIdProps> = ({email,setFormData, checkIdDuplicate}) => {
     return (
          <>
             <SignupText>아이디(이메일)</SignupText>
                 <InputUserIdandNickNameBox>
                     <InputUserIdAndNickName
                         placeholder="Email"
-                        value={userId}
-                        onChangeText={(newUserId:string) => setUserId(setFormData, newUserId)} />
-                    <CheckButton onPress={() => checkIdDuplicate(userId)}>
+                        value={email}
+                        onChangeText={(newEmail:string) => setEmail(setFormData, newEmail)} />
+                    <CheckButton onPress={() => checkIdDuplicate(email)}>
                         <Text style={{color: "#749BC2"}}>중복확인</Text>
                     </CheckButton>
                 </InputUserIdandNickNameBox>

@@ -35,6 +35,7 @@ export const InputUserPassword: React.FC<InputUserPasswordProps> = ({password,se
         <>
              <SignupText>비밀번호</SignupText>
                     <InputUser
+                        secureTextEntry={true}
                         placeholder="영문,숫자,특수문자 포함 8자리 이상"
                         value={password}
                         onChangeText={(newPassword:string) => setPassword(setFormData,newPassword)} />  
