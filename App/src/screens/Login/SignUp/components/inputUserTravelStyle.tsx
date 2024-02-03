@@ -1,27 +1,9 @@
 import {   
-    SignupBlock,
-    SignupForm,
     SignupText,
-    ProfileImageBox,
-    ProfileImage,
-    ProfileImageInputButtun,
-    InputUserIdandNickNameBox,
-    InputUserIdAndNickName,
-    CheckButton,
-    InputUser,
-    YearChooseBox,
-    ChooserSexBox,
-    SexCheckButton,
-    FormButton,
-    FormSignupText,
     TravelStyleBlock,
     TravelStyleCheckBox,
-    AgreementBlock,
-    AgreementBox,
-    AgreementText,
-    AgreementButton,
     } from '../style';
-
+import React from 'react';
 import {Text} from 'react-native';
 import { setlesrurely, setplanner, setadventurous, setvehicle, setphoto } from '../utils/SignUpFormUtils';
 import { Dispatch, SetStateAction } from 'react';
@@ -38,9 +20,10 @@ interface InputUserTravelStyleProps {
 export const InputUserTravelStyle: React.FC<InputUserTravelStyleProps> = (
     {leisurely_flag,planner_flag,adventurous_flag,vehicle_travel_flag,photo_preference_flag,setFormData}:InputUserTravelStyleProps
 ) => {
+
     return(
         <>
-        <SignupText>여행 스타일</SignupText>
+            <SignupText>여행 스타일</SignupText>
                     <TravelStyleBlock>
                         <TravelStyleCheckBox
                             onPress={() => setlesrurely(setFormData,true)}

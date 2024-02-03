@@ -11,9 +11,11 @@ import MyPosts from '../screens/Main/MyPage/Myposts';
 import BookmarkPlaces from '../screens/Main/MyPage/BookmarkPlaces';
 import LikePosts from '../screens/Main/MyPage/LikePosts';
 import Setting from '../screens/Main/MyPage/Setting';
+import ModifyPasswordConfirm from '../screens/Main/MyPage/ModifyProfile/ModifyPasswordConfirm';
+import ModifyPassword from '../screens/Main/MyPage/ModifyProfile/ModifyPassword';
 
 
-type RootStackParamList = {
+export type RootStackParamList = {
   Main: undefined;
   SignIn: undefined;
   SignUp: undefined;
@@ -22,6 +24,10 @@ type RootStackParamList = {
   BookmarkPlaces: undefined;
   LikePosts: undefined;
   Setting: undefined;
+  ModifyPasswordConfirm: {
+    userPassword: string;
+  };
+  ModifyPassword: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -37,6 +43,8 @@ const RootNavigator: React.FC = () => {
         <Stack.Screen name="BookmarkPlaces" component={BookmarkPlaces} />
         <Stack.Screen name="LikePosts" component={LikePosts} />
         <Stack.Screen name="Setting" component={Setting} />
+        <Stack.Screen name="ModifyPasswordConfirm" component={ModifyPasswordConfirm}/>
+        <Stack.Screen name="ModifyPassword" component={ModifyPassword}/>
       </Stack.Navigator>
 
   );

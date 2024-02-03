@@ -1,23 +1,11 @@
 import React from 'react';
 import {
-    MyPageContainer,
-    ProfileContainer,
-    ProfileImage,
-    ProfileTextContainer,
-    ProfileName,
-    ProfileAgeandSex,
-    ProfileTravelStyleContainerContainer,
-    ProfileTravelStyleContainer,
-    ProfileTravelStyleTextContainer,
-    ProfileTravelStyleText,
-    ProfileModifyContainer,
-    ProfileModifyButton,
-    ProfileModifyText,
     MyPageMenuContainer,
     ProfileSettingButton,
     ProfileSettingText
 } from '../styles';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../../../navigators/RootNavigator';
 import { Alert } from 'react-native';
 
 //icon
@@ -31,7 +19,7 @@ interface ProfileProps {
 }
 
 const MyPageMenuContainerContainer: React.FC<ProfileProps> = ({userLoginState}) => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     
     if (!userLoginState) {
         return (
@@ -55,7 +43,7 @@ const MyPageMenuContainerContainer: React.FC<ProfileProps> = ({userLoginState}) 
                     <ProfileSettingText>내가 좋아요한 게시글</ProfileSettingText>
                 </ProfileSettingButton>
                 <ProfileSettingButton
-                    onPress={() => navigation.navigate('Setting')}
+                    onPress={() => Alert.alert('로그인이 필요한 서비스입니다.')}
                     >
                     <Feather name="settings" size={24} color="black" />
                     <ProfileSettingText>설정</ProfileSettingText>

@@ -1,10 +1,11 @@
 import React, { SetStateAction, isValidElement } from 'react';
-import { IsValidationProps } from '../types';
+import { isValidationProps } from '../types';
 import { idRegex,passwordRegex,nameRegex } from '../../../../utils/validate/signup';
 import { Alert } from 'react-native';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
-import { IsValidationState } from '../../../../libs/Recoil/signupValid';
+import { isValidationState } from '../../../../libs/Recoil/signupValid';
+import { SERVER_BASE_URL } from '../../../../utils/constants';
 
 // // 유효성 검사 상태 업데이트 함수
 // const handleValidChange = (
@@ -34,7 +35,7 @@ import { IsValidationState } from '../../../../libs/Recoil/signupValid';
 // 아이디 유효성 검사 함수
 const checkPassword = (
   password: string,
-  setIsValidate: React.Dispatch<React.SetStateAction<IsValidationProps>>
+  setIsValidate: React.Dispatch<React.SetStateAction<isValidationProps>>
 ) => {
   if (password === '') {
     setIsValidate(prevState => ({ ...prevState, isPassword: false }));
@@ -55,7 +56,7 @@ const checkPassword = (
 const checkPasswordConfirm = (
   password:string,
   passwordCheck:string,
-  setIsValidate: React.Dispatch<React.SetStateAction<IsValidationProps>>
+  setIsValidate: React.Dispatch<React.SetStateAction<isValidationProps>>
   ) => {
   //비밀번호 확인
   if (passwordCheck === '') {
@@ -72,7 +73,7 @@ const checkPasswordConfirm = (
 
 const checkIdDuplicate = async(
   email:string,
-  setIsValidate: React.Dispatch<React.SetStateAction<IsValidationProps>>
+  setIsValidate: React.Dispatch<React.SetStateAction<isValidationProps>>
   ) => {
   //아이디 유효성 검사 (이메일 형식)
   if (email === '') {
@@ -86,7 +87,7 @@ const checkIdDuplicate = async(
   }
   //아이디 중복검사
   try {
-      const response = await axios.post('서버주소', email);
+      const response = await axios.post(`${SERVER_BASE_URL}/api/user/email-check`, email);
       // response.data를 사용하여 중복 여부를 확인하고 처리
       if (response.data.success) {
         // 아이디 사용 가능
@@ -103,7 +104,7 @@ const checkIdDuplicate = async(
 
 const checkNicknameDuplicate = async(
     nickname:string,
-    setIsValidate: React.Dispatch<React.SetStateAction<IsValidationProps>>
+    setIsValidate: React.Dispatch<React.SetStateAction<isValidationProps>>
     ) => {
   //닉네임 유효성 검사 (2~10자)
   if (nickname === '') {
@@ -121,7 +122,7 @@ const checkNicknameDuplicate = async(
   }
 
   try {
-      const response = await axios.post('서버주소', nickname);
+      const response = await axios.post(`${SERVER_BASE_URL}/api/user/email-check`, nickname);
       // response.data를 사용하여 중복 여부를 확인하고 처리
       if (response.data.success) {
         // 닉네임 사용 가능

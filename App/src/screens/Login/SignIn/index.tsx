@@ -5,7 +5,7 @@ import {
   Alert,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,NavigationProp } from '@react-navigation/native';
 import { AxiosResponse } from 'axios';
 
 import {
@@ -32,6 +32,7 @@ import {
     setPassword,
   } from './Utils/SignInFormUtils';
 import axios from 'axios';
+import { RootStackParamList } from '../../../navigators/RootNavigator';
 
 interface LoginResponse {
     success: boolean;
@@ -40,7 +41,7 @@ interface LoginResponse {
 
 const SignIn: React.FC = () => {
     //네비게이터
-    const navigator = useNavigation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     // 로그인 폼 
     const [SignInForm, setSignInForm] = useState<SignInFormProps>({
         email: '',
@@ -93,7 +94,7 @@ const SignIn: React.FC = () => {
             // 서버 통신
             loginfn(SignInForm);
             console.log(SignInForm, '로그인 시도');
-            navigator.navigate('Main');
+            navigation.navigate('Main');
         }
     }   
     
@@ -131,7 +132,7 @@ const SignIn: React.FC = () => {
                         <FormSignup>
                             <FormSignupText>
                                 아직 회원이 아니신가요?
-                                <TouchableOpacity onPress={() => navigator.navigate('SignUp')}>
+                                <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
                                     <FormSignupButtonText>회원가입</FormSignupButtonText>
                                 </TouchableOpacity>
                             </FormSignupText>

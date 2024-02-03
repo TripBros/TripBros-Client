@@ -67,6 +67,14 @@ const InputUser = styled.TextInput`
     border-bottom-width: 1px;
     background-color: #FFFFFF; 
 `;
+
+const InputUserIdandNickNameBox = styled.View`
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+`;
+
 const InputUserIdAndNickName = styled.TextInput`
     width: 70%;
     height: 40;
@@ -76,13 +84,6 @@ const InputUserIdAndNickName = styled.TextInput`
     border-bottom-width: 1px;
     background-color: #FFFFFF; 
 `;
-const InputUserIdandNickNameBox = styled.View`
-    width: 100%;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-`;
-
 const CheckButton = styled.TouchableOpacity`
     width: 100px;
     height: 40px;

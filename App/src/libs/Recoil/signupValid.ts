@@ -1,8 +1,8 @@
 import {atom} from 'recoil';
-import { IsValidationProps } from '../../screens/Login/SignUp/types';
+import { isValidationProps } from '../../screens/Login/SignUp/types';
 
-export const IsValidationState= atom<IsValidationProps>({
-    key: 'IsValidationState',
+export const isValidationState= atom<isValidationProps>({
+    key: 'isValidationState',
     default: {
         isEmail: false,
         isPassword: false,

@@ -5,7 +5,8 @@ import StackHeader from '../../../components/Header/stackHeader';
 import { idRegex,passwordRegex,nameRegex } from '../../../utils/validate/signup';
 import axios from 'axios';
 import { useRecoilState } from 'recoil';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../../navigators/RootNavigator';
 import {   
     SignupBlock,
     SignupForm,
@@ -32,7 +33,7 @@ import {
 
 import {  
     SignUpFormState,
-    IsValidationProps,
+    isValidationProps,
     Year
     } from './types';
 
@@ -51,10 +52,11 @@ import {InputUserSex} from './components/inputUserSex';
 import {InputUserTravelStyle} from './components/inputUserTravelStyle';
 import { CheckAgree } from './components/checkAgree';
 import { InputUserProfileImage } from './components/inputUserProfileImage';
-import { IsValidationState } from '../../../libs/Recoil/signupValid';
+import { isValidationState } from '../../../libs/Recoil/signupValid';
+import {SERVER_BASE_URL} from '../../../utils/constants';
 
 const SignUp: React.FC = () => {
-    const navigator = useNavigation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     // 회원가입 폼 상태
     const [formData, setFormData] = useState<SignUpFormState>({
@@ -73,7 +75,7 @@ const SignUp: React.FC = () => {
     const [passwordCheck, setPasswordCheck] = useState<string>('');
 
     //유효성검사
-    const [isValidate, setIsValidate] = useRecoilState<IsValidationProps>(IsValidationState);
+    const [isValidate, setIsValidate] = useRecoilState<isValidationProps>(isValidationState);
 
     //회원가입 동의
     const [agreeTerms, setAgreeTerms] = useState(false);
@@ -85,7 +87,7 @@ const SignUp: React.FC = () => {
         //회원가입 요청
         const submitSignUp = async () => {
             try {
-              const response = await axios.post('회원가입 요청주소', formData);
+              const response = await axios.post(`${SERVER_BASE_URL}/api/user/register`, formData);
           
               if (response.data.success) {
                 // 회원가입 성공 처리
@@ -143,7 +145,7 @@ const SignUp: React.FC = () => {
         //4 성공시 로그인 페이지로 이동
         if(isSuccessful){
             Alert.alert('회원가입이 완료되었습니다.');
-            navigator.navigate('SignIn');
+            navigation.navigate('SignIn');
         }
     };
   

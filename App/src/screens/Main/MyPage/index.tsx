@@ -4,7 +4,7 @@ import styled from 'styled-components/native';
 import {useNavigation} from '@react-navigation/native';
 
 //전역상태관리 (로그인한 유저정보, 로그인상태, 토큰)
-import { userLoginState, userState,userTokenState } from '../../../libs/Recoil/authState';
+import { userLoginState,userTokenState } from '../../../libs/Recoil/authState';
 import { useRecoilValue } from 'recoil';
 import {
     MyPageContainer,
@@ -31,8 +31,7 @@ import ProfileModifyContainerContainer from './Components/profileModofyContainer
 
 const MyPage: React.FC = () => {
 
-    //유저정보, 로그인상태, 토큰
-    const user = useRecoilValue(userState);
+    // 로그인상태, 토큰
     const userLogin = useRecoilValue(userLoginState);
     const userToken = useRecoilValue(userTokenState);
 

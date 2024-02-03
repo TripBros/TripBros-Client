@@ -17,3 +17,20 @@ export const formDataState = atom<SignUpFormState>({
       photo_preference_flag: true,
     },
   });
+
+  export interface IsSettingStateProps {
+    isAllAlramState: boolean;
+    isDisturbTimeState: boolean;
+    isChatAlramState: boolean;
+    isPostingAlramState: boolean;
+  }
+
+  export const isSettingState = atom<IsSettingStateProps>({
+    key: 'isSettingState', // 고유한 키
+    default:{
+      isAllAlramState: false,
+      isDisturbTimeState: false,
+      isChatAlramState: false,
+      isPostingAlramState: false,
+    }
+  })

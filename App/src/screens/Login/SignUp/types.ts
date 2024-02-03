@@ -13,7 +13,7 @@ interface SignUpFormState {
     photo_preference_flag  : boolean
   }
 // 유효성 검사 상태
-interface IsValidationProps {
+interface isValidationProps {
     isEmail: boolean;
     isPassword: boolean;
     isPasswordConfirm: boolean;
@@ -26,6 +26,6 @@ interface Year {
 
 export {
     SignUpFormState,
-    IsValidationProps,
+    isValidationProps,
     Year,
 }

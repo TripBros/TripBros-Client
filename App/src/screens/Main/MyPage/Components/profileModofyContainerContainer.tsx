@@ -1,31 +1,21 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import {
-    MyPageContainer,
-    ProfileContainer,
-    ProfileImage,
-    ProfileTextContainer,
-    ProfileName,
-    ProfileAgeandSex,
-    ProfileTravelStyleContainerContainer,
-    ProfileTravelStyleContainer,
-    ProfileTravelStyleTextContainer,
-    ProfileTravelStyleText,
     ProfileModifyContainer,
     ProfileModifyButton,
     ProfileModifyText,
-    MyPageMenuContainer,
-    ProfileSettingButton,
-    ProfileSettingText
+
 } from '../styles';
 import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../../../navigators/RootNavigator';
 
 interface ProfileProps {
     userLoginState: boolean;
 }
 
 const ProfileModifyContainerContainer: React.FC<ProfileProps> = ({userLoginState}) => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     if(!userLoginState){
         return (
@@ -42,9 +32,8 @@ const ProfileModifyContainerContainer: React.FC<ProfileProps> = ({userLoginState
                     </BeforeProfileModifyTextBox>
                 </BeforeProfileModifyContainer>
             </ProfileModifyContainer>
-        );
-    }
-    
+        );}
+
     return (
         <ProfileModifyContainer>
             <ProfileModifyButton

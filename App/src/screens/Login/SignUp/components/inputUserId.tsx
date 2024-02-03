@@ -1,26 +1,10 @@
 import {   
-    SignupBlock,
-    SignupForm,
     SignupText,
-    ProfileImageBox,
-    ProfileImage,
-    ProfileImageInputButtun,
     InputUserIdandNickNameBox,
     InputUserIdAndNickName,
     CheckButton,
-    InputUser,
-    YearChooseBox,
-    ChooserSexBox,
-    SexCheckButton,
-    FormButton,
-    FormSignupText,
-    TravelStyleBlock,
-    TravelStyleCheckBox,
-    AgreementBlock,
-    AgreementBox,
-    AgreementText,
-    AgreementButton,
     } from '../style';
+import React from 'react';
 import {Text} from 'react-native';
 import { setEmail } from '../utils/SignUpFormUtils';
 import { Dispatch, SetStateAction } from 'react';

@@ -2,5 +2,9 @@
   "extends": "expo/tsconfig.base",
   "compilerOptions": {
     "strict": true
-  }
+  },
+  "include": [
+    "src/**/*",
+    "custom.d.ts" // 이 경로는 실제 파일 위치에 따라 달라질 수 있습니다.
+  ]
 }
