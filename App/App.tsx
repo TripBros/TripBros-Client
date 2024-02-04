@@ -6,6 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import BottomNavigator from './src/navigators/BottomNav'
 import  { SafeAreaProvider, SafeAreaView }  from 'react-native-safe-area-context';
 import Header from './src/components/Header'
+import PlusButton from './src/components/ActionButton/PlusButton';
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
       <SafeAreaView style={{ flex: 1, paddingBottom: -50 }}> 
         <NavigationContainer>
           <Header/>
+          <PlusButton />
           <BottomNavigator />
         </NavigationContainer>
       </SafeAreaView>

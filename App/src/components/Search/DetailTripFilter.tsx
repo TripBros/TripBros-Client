@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { View, TouchableOpacity } from 'react-native';
+import { View, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { MaterialIcons } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 
 const DetailTripFilter: React.FC = () => {
@@ -40,18 +41,18 @@ const DetailTripFilter: React.FC = () => {
   };
 
   return(
-    <View>
+    <View style={{ marginTop: 10 }}>
       <DetailFilterContainer>
-        <Feather name="settings" size={24} color="black" />
+        <MaterialIcons name="tune" size={26} color="black" />
         <FilterText>더 많은 검색 필터 설정</FilterText>
-        <TouchableOpacity onPress={toggleDropdown}>
+        <CircleButton onPress={toggleDropdown}>
           <Feather name={isFilterOpen ? "chevron-up" : "chevron-down"} size={24} color="black"/>
-        </TouchableOpacity>
+        </CircleButton>
       </DetailFilterContainer>
 
-      { isFilterOpen && (
+      { isFilterOpen ? (
         <>
-        <FilterTitle>목적 선택</FilterTitle>
+        <FilterTitle>동행 목적</FilterTitle>
         <DetailFilterContainer>
           {['여행', '식사', '숙박'].map((purpose) => (
             <PurposeContainer
@@ -92,6 +93,10 @@ const DetailTripFilter: React.FC = () => {
           ))}
         </DetailFilterContainer>
         </>
+      ) : (
+        <DetailFilterContainer style={{ justifyContent: 'center', alignItems: 'center' }}>
+          <AdditionalText>동행 목적, 선호하는 나이대와 성별 선택이 가능해요!</AdditionalText>
+        </DetailFilterContainer>
       )}
     </View>
   );
@@ -104,14 +109,13 @@ const DetailFilterContainer = styled.View`
     align-items: center;
 `;
 
-const RowContainer = styled.View`
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-`;
-
-const FilterText = styled.Text`
-    margin-horizontal: 8px;
+const CircleButton = styled.TouchableOpacity`
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: #F6F4EB;
+  justify-content: center;
+  align-items: center;
 `;
 
 const FilterTitle = styled.Text`
@@ -119,6 +123,16 @@ const FilterTitle = styled.Text`
     font-weight: bold;
     padding: 5%;
 `
+const FilterText = styled.Text`
+    margin-horizontal: 8px;
+    font-size: 15px;
+`;
+
+const AdditionalText = styled.Text`
+    font-size: 13px;
+    margin-vertical: 5px;
+    color: #ACACAC;
+`;
 
 const PurposeContainer = styled.TouchableOpacity<{isSelected: boolean}>`
   background-color: ${props => props.isSelected ? '#91C8E4' : 'white'};

@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
+import { Modal, View, TouchableOpacity, Text } from 'react-native';
 import styled from 'styled-components/native';
 import { Feather } from '@expo/vector-icons';
-import { Calendar } from 'react-native-calendars';
+import { CalendarList } from 'react-native-calendars';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
+interface DisplayDatesTextProps {
+  displayed: boolean;
+}
 
 const TripFilter: React.FC = () => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
-  const [displayedDates, setDisplayedDates] = useState<string>(''); //선택된 날짜를 표시하기 위함
+  const [displayedDates, setDisplayedDates] = useState<string>(''); //사용자가 확인을 눌렀을 때 선택된 날짜를 표시하기 위함
 
   const toggleCalendar = () => {
     setIsCalendarVisible(!isCalendarVisible);
@@ -27,30 +33,54 @@ const TripFilter: React.FC = () => {
 
   const handleConfirm = () => {
     setIsCalendarVisible(false);
-    setDisplayedDates(`시작: ${selectedStartDate?.toISOString().split('T')[0]}, 종료: ${selectedEndDate?.toISOString().split('T')[0]}`);
+    if (selectedStartDate && selectedEndDate) {
+      const startDateString = formatDate(selectedStartDate);
+      const endDateString = formatDate(selectedEndDate);
+      setDisplayedDates(`${startDateString} - ${endDateString}`);
+    }
+  };
+
+  const formatDate = (date: Date) => {
+    const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
+    return date.toLocaleDateString('ko-KR', options);
   };
 
   //YYYY-MM-DD 형식으로 변환
   const today = new Date().toISOString().split('T')[0];
 
   return (
-    <>
+    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <SearchBarContainer>
         <Feather name="search" size={24} color="black" />
-        <SearchInput placeholder="검색어를 입력하세요"/>
+        <SearchInput placeholder="도시를 입력하세요"/>
       </SearchBarContainer>
 
       <SearchBarContainer>
-        <CalendarButton onPress={toggleCalendar}>
-          <Feather name="calendar" size={24} color="black" />
-          {displayedDates && <DisplayDatesText>{displayedDates}</DisplayDatesText>}
-        </CalendarButton>
+        <Feather name="calendar" size={24} color="black" />
+        <TouchableOpacity onPress={toggleCalendar}>
+          {displayedDates 
+            ? <DisplayDatesText displayed={true}>{displayedDates}</DisplayDatesText>
+            : <DisplayDatesText displayed={false}>날짜를 선택해주세요</DisplayDatesText>}
+        </TouchableOpacity>
       </SearchBarContainer>
 
-      {isCalendarVisible && (
-        <>
-          <Calendar
-            current={selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : undefined}
+      <Modal
+        animationType="slide"
+        transparent={false}
+        visible={isCalendarVisible}
+        onRequestClose={() => setIsCalendarVisible(false)}
+      >
+        <SafeAreaView style={{ flex: 1 }}>
+          <ModalHeader>
+            <CloseButton onPress={() => setIsCalendarVisible(false)}>
+              <Feather name="x" size={24} color="black" />
+            </CloseButton>
+            <HeaderTitle>날짜 선택</HeaderTitle>
+          </ModalHeader>
+          <CalendarList
+            pastScrollRange={0}
+            futureScrollRange={12}
+            current={selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : today}
             minDate={today}
             markingType={'period'}
             markedDates={{
@@ -68,9 +98,9 @@ const TripFilter: React.FC = () => {
           <ConfirmButton onPress={handleConfirm}>
             <ConfirmButtonText>확인</ConfirmButtonText>
           </ConfirmButton>
-        </>
-      )}
-    </>
+        </SafeAreaView>
+      </Modal>
+    </View>
   );
 };
 export default TripFilter;
@@ -79,17 +109,55 @@ const SearchBarContainer = styled.View`
   flex-direction: row;
   align-items: center;
   border: 1px solid gray;
-  border-radius: 5px;
-  padding-horizontal: 10px;
+  border-radius: 30px;
+  padding-horizontal: 20px;
+  padding-vertical: 5px;
+  margin: 10px;
+  width: 80%;
 `;
 
 const SearchInput = styled.TextInput`
   flex: 1;
+  margin-left: 20px;
   height: 40px;
 `;
 
-const CalendarButton = styled.TouchableOpacity``;
+const DisplayDatesText = styled.Text<DisplayDatesTextProps>`
+  flex: 1;
+  height: 40px;
+  padding-horizontal: 20px;
+  padding-vertical: 10px;
+  color: ${props => props.displayed ? 'black' : '#C4C4C4'};
+`;
 
-const ConfirmButton = styled.TouchableOpacity``;
-const ConfirmButtonText = styled.Text``;
-const DisplayDatesText = styled.Text``;
+const ModalHeader = styled(SafeAreaView)`
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 16px;
+  background-color: white;
+`;
+
+const CloseButton = styled.TouchableOpacity`
+  margin-right: 20px; 
+`;
+
+const HeaderTitle = styled.Text`
+  flex: 1;
+  text-align: center;
+  font-weight: bold;
+`;
+
+const ConfirmButton = styled.TouchableOpacity`
+  align-items: center;
+  justify-content: center;
+  margin: 20px;
+  padding: 10px;
+  background-color: blue;
+  border-radius: 5px;
+`;
+
+const ConfirmButtonText = styled.Text`
+  color: #ffffff;
+  font-weight: bold;
+`;
