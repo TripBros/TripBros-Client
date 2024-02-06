@@ -1,5 +1,5 @@
-import React , { useState, useEffect } from 'react';
-import { ScrollView, Text } from 'react-native';
+import React , { useState, useEffect, useMemo } from 'react';
+import { ScrollView, RefreshControl, Text } from 'react-native';
 import styled from 'styled-components/native';
 import ImageSource from '../../../assets/Bangkok.jpg';
 import CalendarComponent from '../../../components/Plan/CalanderComponent';
@@ -15,6 +15,7 @@ interface ScheduleData {
 const Plan: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState(''); //#2024년 2월 3일
     const [scheduleInfo, setScheduleInfo] = useState<React.ReactNode>(''); //일정이 없습니다 or 일정 내용들
+    const [refreshing, setRefreshing] = useState(false);
 
     //백엔드에서 받아온 데이터로 변경
     const scheduleData: ScheduleData[] = [
@@ -37,6 +38,15 @@ const Plan: React.FC = () => {
     const formatDate = (date: Date) => {
         const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
         return date.toLocaleDateString('ko-KR', options);
+    };
+
+    const onRefresh = () => {
+        setRefreshing(true);
+        setSelectedDate(''); // 새로고침 시 selectedDate 초기화
+        //timeout: 임시
+        setTimeout(() => {
+            setRefreshing(false);
+        }, 1000);
     };
     
     //컴포넌트 마운트 시 scheduleData 배열에 있는 모든 일정을 표시
@@ -68,9 +78,8 @@ const Plan: React.FC = () => {
         } else {
             setScheduleInfo(<Text>일정이 없습니다.</Text>);
         }
-    }, []);
+    }, [refreshing]);
     
-
     //캘린더에 들어가는 markedDates를 동적으로 생성하기 위함
     const generateMarkedDates = (scheduleData: ScheduleData[]) => {
             const markedDates: { [date: string]: any } = {};
@@ -140,7 +149,8 @@ const Plan: React.FC = () => {
     };
 
     return (
-        <ScrollView style={{ backgroundColor: 'white' }}>
+        <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                    style={{ backgroundColor: 'white' }}>
             <PlanContainer>
                 <Title>나의 캘린더</Title>
                 <CalendarComponent markedDates={markedDates} onDayPress={handleDayPress} />
