@@ -56,22 +56,24 @@ const ProfileTravelStyleContainerContainerContainer: React.FC<ProfileProps> = ({
         return response.data;
     }   
 
+    useEffect(() => {
+        if (userLoginState) {
+        getTravelStyles(token.accessToken).then((response) => {
+            useTravelStyleArray({
+                leisurely: response.leisurely_flag ? '여유로운 일정' : '빡빡한 일정',
+                planner: response.planner_flag ? '계획적인' : '즉흥적인',
+                adventurous: response.adventurous_flag ? '모험적인' : '안전한',
+                vehicle_travel: response.vehicle_travel_flag ? '차량 선호' : '대중교통 선호',
+                photo_preference: response.photo_preference_flag ? '사진 선호' : '사진 비선호',
+            })})};
+        }, [userLoginState]);
+
     if (!userLoginState) {
         return (
             <ProfileTravelStyleContainerContainer/>
         );
     }
-    else {
-        useEffect(() => {
-            getTravelStyles(token.accessToken).then((response) => {
-                useTravelStyleArray({
-                    leisurely: response.leisurely_flag ? '여유로운 일정' : '빡빡한 일정',
-                    planner: response.planner_flag ? '계획적인' : '즉흥적인',
-                    adventurous: response.adventurous_flag ? '모험적인' : '안전한',
-                    vehicle_travel: response.vehicle_travel_flag ? '차량 선호' : '대중교통 선호',
-                    photo_preference: response.photo_preference_flag ? '사진 선호' : '사진 비선호',
-                })})},[]);
-
+    
     return (
         <ProfileTravelStyleContainerContainer>
                 <ProfileTravelStyleContainer>
@@ -96,6 +98,5 @@ const ProfileTravelStyleContainerContainerContainer: React.FC<ProfileProps> = ({
             </ProfileTravelStyleContainerContainer>
     );
 };
-}
 
 export default ProfileTravelStyleContainerContainerContainer;

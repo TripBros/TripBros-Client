@@ -66,6 +66,17 @@ const ProfileContainerContainer: React.FC<ProfileProps> = ({userLoginState}) => 
         profileImage: null,
     });
 
+    useEffect(() => {
+        if (userLoginState) {
+        getProfile(token.accessToken).then((data) => {
+            useNeedProfile({
+                nickname: data.nickname,
+                sex:data.sex,
+                birth:data.birth,
+                profileImage: data.profileImage,
+            })})}}
+    , [userLoginState]);
+
     if(!userLoginState){
         return (
             <ProfileContainer>
@@ -81,16 +92,8 @@ const ProfileContainerContainer: React.FC<ProfileProps> = ({userLoginState}) => 
             </ProfileContainer>
         );
     }
-    else {
 
-        useEffect(() => {
-            getProfile(token.accessToken).then((data) => {
-                useNeedProfile({
-                    nickname: data.nickname,
-                    sex:data.sex,
-                    birth:data.birth,
-                    profileImage: data.profileImage,
-                })})});
+        
     return (
         <ProfileContainer>
                 <ProfileImage source={ needProfile.profileImage ? {uri :needProfile.profileImage}  : defaultProfileImage} />
@@ -101,7 +104,6 @@ const ProfileContainerContainer: React.FC<ProfileProps> = ({userLoginState}) => 
             </ProfileContainer>
 
     );
-};
 };
 
 export default ProfileContainerContainer;
