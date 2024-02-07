@@ -1,0 +1,1 @@
+export const SERVER_BASE_URL = 'http://20.214.153.179';

@@ -1,10 +1,10 @@
 // 회원가입 폼 상태
 interface SignUpFormState {
     profileImage: string | null;
-    userId: string;
+    email: string;
     password: string;
     nickname: string;
-    birth: number;
+    age: number;
     sex: string;
     leisurely_flag : boolean
     planner_flag  : boolean
@@ -13,12 +13,11 @@ interface SignUpFormState {
     photo_preference_flag  : boolean
   }
 // 유효성 검사 상태
-interface IsValidationState {
-    isId: boolean;
+interface isValidationProps {
+    isEmail: boolean;
     isPassword: boolean;
     isPasswordConfirm: boolean;
     isNickname: boolean;
-    isBirth: boolean;
 }
 interface Year {
     label: string;
@@ -27,6 +26,6 @@ interface Year {
 
 export {
     SignUpFormState,
-    IsValidationState,
+    isValidationProps,
     Year,
 }

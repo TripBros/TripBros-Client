@@ -12,7 +12,7 @@ const handleInputChange = (
 }
 const setUserId = (
     setStateFunction: React.Dispatch<React.SetStateAction<SignInFormProps>>,
-    value: string) => handleInputChange(setStateFunction,'userId', value);
+    value: string) => handleInputChange(setStateFunction,'email', value);
 const setPassword = (
     setStateFunction: React.Dispatch<React.SetStateAction<SignInFormProps>>,
     value: string) => handleInputChange(setStateFunction,'password', value);

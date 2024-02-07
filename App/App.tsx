@@ -16,6 +16,7 @@ import Navigator from './src/navigators/navigator';
 const queryClinet = new QueryClient();
 
 function App() {
+  
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {

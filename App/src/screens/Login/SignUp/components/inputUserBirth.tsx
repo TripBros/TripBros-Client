@@ -1,32 +1,12 @@
 import {   
-    SignupBlock,
-    SignupForm,
-    SignupText,
-    ProfileImageBox,
-    ProfileImage,
-    ProfileImageInputButtun,
-    InputUserIdandNickNameBox,
-    InputUserIdAndNickName,
-    CheckButton,
-    InputUser,
     YearChooseBox,
-    ChooserSexBox,
-    SexCheckButton,
-    FormButton,
-    FormSignupText,
-    TravelStyleBlock,
-    TravelStyleCheckBox,
-    AgreementBlock,
-    AgreementBox,
-    AgreementText,
-    AgreementButton,
     } from '../style';
-import {Text} from 'react-native';
-import { setBirth, setNickname } from '../utils/SignUpFormUtils';
+import React from 'react';
+import { setBirth } from '../utils/SignUpFormUtils';
 import DropDownPicker from 'react-native-dropdown-picker';
 import { useState,useEffect } from 'react';
 import { Year } from '../types';
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from 'react'; 
 import { SignUpFormState } from '../types';
 
 interface InputUserBirthProps {

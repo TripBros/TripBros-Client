@@ -15,7 +15,7 @@ const contentStyles = {
     alignItems: 'center',
   };
   
-  const SignupBlock = styled(ScrollView).attrs({
+const SignupBlock = styled(ScrollView).attrs({
     contentContainerStyle: contentStyles,
   })`
     flex: 1;
@@ -45,7 +45,6 @@ const ProfileImage = styled.Image`
     height: 100px;
     border-radius: 50px;
     margin-bottom: 20px;
-    border: 1px solid #A6A6A6;
 `;
 
 const ProfileImageInputButtun = styled.TouchableOpacity`
@@ -61,22 +60,14 @@ const ProfileImageInputButtun = styled.TouchableOpacity`
 
 const InputUser = styled.TextInput`
     width: 100%;
-    height: 40;
+    height: 40px;
     font-size: 14px;
     padding: 0 10px;
     margin-bottom: 20px;
     border-bottom-width: 1px;
     background-color: #FFFFFF; 
 `;
-const InputUserIdAndNickName = styled.TextInput`
-    width: 70%;
-    height: 40;
-    font-size: 14px;
-    padding: 0 10px;
-    margin-bottom: 20px;
-    border-bottom-width: 1px;
-    background-color: #FFFFFF; 
-`;
+
 const InputUserIdandNickNameBox = styled.View`
     width: 100%;
     flex-direction: row;
@@ -84,6 +75,15 @@ const InputUserIdandNickNameBox = styled.View`
     justify-content: space-between;
 `;
 
+const InputUserIdAndNickName = styled.TextInput`
+    width: 70%;
+    height: 40px;
+    font-size: 14px;
+    padding: 0 10px;
+    margin-bottom: 20px;
+    border-bottom-width: 1px;
+    background-color: #FFFFFF; 
+`;
 const CheckButton = styled.TouchableOpacity`
     width: 100px;
     height: 40px;
