@@ -25,7 +25,7 @@ const setNickname = (setStateFunction: React.Dispatch<React.SetStateAction<any>>
     handleInputChange(setStateFunction,'nickname', prop);
   };
 const setBirth = (setStateFunction: React.Dispatch<React.SetStateAction<any>>,prop: number) => {
-    handleInputChange(setStateFunction,'birth', prop);
+    handleInputChange(setStateFunction,'age', prop);
   };
 const setSex = (setStateFunction: React.Dispatch<React.SetStateAction<any>>,prop: string) => {
     handleInputChange(setStateFunction,'sex', prop);

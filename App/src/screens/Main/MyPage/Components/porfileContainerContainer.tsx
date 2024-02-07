@@ -50,10 +50,10 @@ const ProfileContainerContainer: React.FC<ProfileProps> = ({userLoginState}) => 
     const token = useRecoilValue(userTokenState);
 
     // getProfile 함수 정의
-    async function getProfile(token: string): Promise<UserProfile> {
+    async function getProfile(accessToken: string): Promise<UserProfile> {
         const response = await axios.post<UserProfile>(`${SERVER_BASE_URL}/api/user/profile`, {}, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${accessToken}`,
         },
         });
         return response.data;
@@ -84,7 +84,7 @@ const ProfileContainerContainer: React.FC<ProfileProps> = ({userLoginState}) => 
     else {
 
         useEffect(() => {
-            getProfile(token).then((data) => {
+            getProfile(token.accessToken).then((data) => {
                 useNeedProfile({
                     nickname: data.nickname,
                     sex:data.sex,

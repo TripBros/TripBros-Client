@@ -4,7 +4,7 @@ interface SignUpFormState {
     email: string;
     password: string;
     nickname: string;
-    birth: number;
+    age: number;
     sex: string;
     leisurely_flag : boolean
     planner_flag  : boolean

@@ -13,6 +13,8 @@ import {
 } from '../styles';
 import { useNavigation} from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../../../../navigators/RootNavigator';
 
 interface PostProps {
     title: string;
@@ -22,7 +24,7 @@ interface PostProps {
     date: string;
 }
 const PostCards:React.FC<PostProps> = ({title,content,chatNum,likeNum,date}) => {
-    const navigation = useNavigation();
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     return (
                 <PostCard onPress={()=> navigation.navigate('Post')}>
                     <PostContentBox>

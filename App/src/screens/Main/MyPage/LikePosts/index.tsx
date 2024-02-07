@@ -27,11 +27,11 @@ import { Ionicons } from '@expo/vector-icons';
 const LikePosts: React.FC = () => {
     const token = useRecoilValue(userTokenState);
 
-    // const getLikePosts = async () => {
+    // const getLikePosts = async (accessToken : string) => {
     //     try {
     //         const response = await axios.get(`${SERVER_BASE_URL}/like`, {
     //             headers: {
-    //                 Authorization: `Bearer ${token}`,
+    //                 Authorization: `Bearer ${accessToken}`,
     //             },
     //         });
     //         console.log(response.data);

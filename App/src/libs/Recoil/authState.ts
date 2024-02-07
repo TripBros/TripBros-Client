@@ -2,10 +2,14 @@ import { atom } from 'recoil';
 
 export const userLoginState = atom({
   key: 'userAuth',
-  default: true,
+  default: false,
 });
 
 export const userTokenState = atom({
   key: 'userToken',
-  default: '',
+  default: {
+    "grantType": '',
+    "accessToken": '',
+    // "refreshToken": '',
+  }
 });

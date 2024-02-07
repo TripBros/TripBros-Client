@@ -1,4 +1,3 @@
-import { useMutation, UseMutationResult } from '@tanstack/react-query';
 import React, {useEffect, useState} from 'react';
 import {
   TouchableOpacity,
@@ -24,19 +23,24 @@ import {
   } from './style';
 import StackHeader from '../../../components/Header/stackHeader';
 import { idRegex,passwordRegex } from '../../../utils/validate/signin';
-import { useSetRecoilState } from 'recoil';
-import { userLoginState } from '../../../libs/Recoil/authState';
+import { useRecoilState,useSetRecoilState } from 'recoil';
+import { userLoginState,userTokenState } from '../../../libs/Recoil/authState';
 import { SignInFormProps } from './types';
 import {
     setUserId,
-    setPassword,
+    setPassword
   } from './Utils/SignInFormUtils';
 import axios from 'axios';
 import { RootStackParamList } from '../../../navigators/RootNavigator';
+import { SERVER_BASE_URL } from '../../../utils/constants';
 
 interface LoginResponse {
     success: boolean;
-    // 추가해야함
+    data : {
+        "grantType": string,
+        "accessToken" : string,
+        // "refreshToken" : string,
+    },
   }
 
 const SignIn: React.FC = () => {
@@ -47,7 +51,8 @@ const SignIn: React.FC = () => {
         email: '',
         password: '',
     }); 
-    const setLogin = useSetRecoilState(userLoginState);
+    const [userLogin,setUserLogin] = useRecoilState(userLoginState);
+    const setUserToken = useSetRecoilState(userTokenState);
 
     // 에러 처리
     const [idError, setIdError] = useState<string>('');
@@ -55,15 +60,24 @@ const SignIn: React.FC = () => {
 
     // 로그인 통신
     const loginfn = async (data: SignInFormProps) => {
-        const response = await axios.post<SignInFormProps, AxiosResponse<LoginResponse>>('로그인 API 주소', data);
-        
-        if (response.data.success) {
-            setLogin(true);
-            Alert.alert('로그인 성공');
-        } else {
-            Alert.alert('로그인 실패');
+        try {
+          const response = await axios.post<SignInFormProps, AxiosResponse<LoginResponse>>(`${SERVER_BASE_URL}/api/user/sign-in`, data);
+          
+          if (response.data.success) {
+              console.log('Response:', response);
+              setUserLogin(true);
+              setUserToken(response.data.data);
+              Alert.alert('로그인 성공');
+              navigation.navigate('Main');
+          } else {
+              Alert.alert('로그인 실패');
+          }
+        } catch (error) {
+          console.error(error);
+          Alert.alert('로그인 과정에서 오류가 발생했습니다.');
         }
-    }
+      };
+
     const handleLogin = () => {
         let isValid = true;
 
@@ -92,9 +106,14 @@ const SignIn: React.FC = () => {
         // 모든 유효성 검사 통과
         if (isValid) {
             // 서버 통신
+            console.log(userLogin, '로그인 전 상태');
             loginfn(SignInForm);
             console.log(SignInForm, '로그인 시도');
-            navigation.navigate('Main');
+            console.log(userLogin, '로그인 후 상태');
+            // 로그인 성공 시 메인 페이지로 이동
+            if(userLogin === true){
+                navigation.navigate('Main');
+            }
         }
     }   
     

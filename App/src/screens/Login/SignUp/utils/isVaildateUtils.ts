@@ -87,10 +87,13 @@ const checkIdDuplicate = async(
   }
   //아이디 중복검사
   try {
-      const response = await axios.post(`${SERVER_BASE_URL}/api/user/email-check`, email);
+      const response = await axios.get(`${SERVER_BASE_URL}/api/user/email-check`,{
+        params: { email: email }
+      });
       // response.data를 사용하여 중복 여부를 확인하고 처리
       if (response.data.success) {
         // 아이디 사용 가능
+        console.log('아이디 사용 가능');
         setIsValidate(prevState => ({ ...prevState, isEmail: true }));
       } else {
         // 아이디 중복
@@ -122,10 +125,13 @@ const checkNicknameDuplicate = async(
   }
 
   try {
-      const response = await axios.post(`${SERVER_BASE_URL}/api/user/email-check`, nickname);
+      const response = await axios.get(`${SERVER_BASE_URL}/api/user/nickname-check`, {
+        params: { nickname: nickname }
+      });
       // response.data를 사용하여 중복 여부를 확인하고 처리
       if (response.data.success) {
         // 닉네임 사용 가능
+        console.log('닉네임 사용 가능');
         setIsValidate(prevState => ({ ...prevState, isNickname: true }));
       } else {
         // 닉네임 중복

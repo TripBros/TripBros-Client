@@ -51,7 +51,7 @@ const ModifyProfile: React.FC = () => {
         try {
             const response = await axios.post('유저 정보 업데이트 주소', UserInfo, {
                 headers: {
-                    Authorization: `Bearer ${token}`,
+                    Authorization: `Bearer ${token.accessToken}`,
                 },
             });
     
@@ -89,10 +89,10 @@ const ModifyProfile: React.FC = () => {
     
     
     // getProfile 함수 정의
-    async function getProfile(token: string): Promise<UserProfile> {
+    async function getProfile(accesstoken: string): Promise<UserProfile> {
         const response = await axios.post<UserProfile>('/api/user/profile', {}, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${accesstoken}`,
         },
         });
         return response.data;
@@ -130,7 +130,7 @@ const ModifyProfile: React.FC = () => {
     
 
     useEffect(() => {
-        getProfile(token).then((response) => {
+        getProfile(token.accessToken).then((response) => {
             setUserInfo(response);
         });
     }
@@ -153,7 +153,7 @@ const ModifyProfile: React.FC = () => {
                     <ProfileEmailContainer>
                         <ProfileEmailTextContainer>
                             <ModifyFormText>아이디(이메일)</ModifyFormText>
-                            <ProfileEmailText style={{color: 'red', fontSize:'14px',marginLeft:'30px' }}>수정이 불가합니다</ProfileEmailText>
+                            <ProfileEmailText style={{color: 'red', fontSize:'14',marginLeft:'30' }}>수정이 불가합니다</ProfileEmailText>
                         </ProfileEmailTextContainer>
                             <ProfileEmailBox>
                                 <ProfileEmail>{UserInfo.email}</ProfileEmail>

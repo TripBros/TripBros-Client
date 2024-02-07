@@ -47,10 +47,10 @@ const ProfileTravelStyleContainerContainerContainer: React.FC<ProfileProps> = ({
     });
 
     // 유저 데이터 호출 
-    async function getTravelStyles(token: string): Promise<UserProfile> {
+    async function getTravelStyles(accessToken: string): Promise<UserProfile> {
         const response = await axios.post<UserProfile>('/api/user/profile', {}, {
         headers: {
-            Authorization: `Bearer ${token}`,
+            Authorization: `Bearer ${accessToken}`,
         },
         });
         return response.data;
@@ -63,7 +63,7 @@ const ProfileTravelStyleContainerContainerContainer: React.FC<ProfileProps> = ({
     }
     else {
         useEffect(() => {
-            getTravelStyles(token).then((response) => {
+            getTravelStyles(token.accessToken).then((response) => {
                 useTravelStyleArray({
                     leisurely: response.leisurely_flag ? '여유로운 일정' : '빡빡한 일정',
                     planner: response.planner_flag ? '계획적인' : '즉흥적인',

@@ -11,25 +11,11 @@ import {
     SignupBlock,
     SignupForm,
     SignupText,
-    ProfileImageBox,
-    ProfileImage,
-    ProfileImageInputButtun,
-    InputUserIdandNickNameBox,
-    InputUserIdAndNickName,
-    CheckButton,
     InputUser,
-    YearChooseBox,
-    ChooserSexBox,
-    SexCheckButton,
     FormButton,
     FormSignupText,
-    TravelStyleBlock,
-    TravelStyleCheckBox,
-    AgreementBlock,
-    AgreementBox,
-    AgreementText,
-    AgreementButton,
     } from './style';
+
 
 import {  
     SignUpFormState,
@@ -43,7 +29,6 @@ import {
     checkIdDuplicate,
     checkNicknameDuplicate,
     } from './utils/isVaildateUtils';
-import { formDataState } from '../../../libs/Recoil/userInfo';
 import {InputUserId} from './components/inputUserId';
 import {InputUserPassword} from './components/inputPassword';
 import {InputUserNickName} from './components/inputUserNickname';
@@ -64,7 +49,7 @@ const SignUp: React.FC = () => {
         email: '',
         password: '',
         nickname: '',
-        birth: 0,
+        age: 0,
         sex: 'man',
         leisurely_flag: true,
         planner_flag: true,
@@ -84,10 +69,32 @@ const SignUp: React.FC = () => {
     //회원가입 버튼
     const handleSignUp = () => {
         let isSuccessful:boolean = false;
+        console.log('회원가입 버튼 클릭');
+
+        
         //회원가입 요청
         const submitSignUp = async () => {
+            const requestData = new FormData();
+
+            Object.keys(formData).forEach(key => {
+                if (key !== 'profileImage') {
+                requestData.append(key, formData[key]);
+                }
+            });
+
+            if (formData.profileImage) {
+                const imageResponse = await fetch(formData.profileImage);
+                const blob = await imageResponse.blob();
+                
+                requestData.append('profileImage', blob, 'profile.jpg');
+            }
+            console.log(requestData);
             try {
-              const response = await axios.post(`${SERVER_BASE_URL}/api/user/register`, formData);
+              const response = await axios.post(`${SERVER_BASE_URL}/api/user/register`, requestData,{
+                headers: {
+                  'Content-Type': 'multipart/form-data',
+                },
+              });
           
               if (response.data.success) {
                 // 회원가입 성공 처리
@@ -171,7 +178,7 @@ const SignUp: React.FC = () => {
             <SignupBlock>
                 <SignupForm>
                     <InputUserProfileImage profileImage={formData.profileImage} setFormData={setFormData}/>
-                    <InputUserId email={formData.email} setFormData={setFormData} checkIdDuplicate={handleCheckIdDuplicate}/>
+                    <InputUserId email={formData.email} setFormData={setFormData} checkIdDuplicateFn={handleCheckIdDuplicate}/>
                     <InputUserPassword password={formData.password} setFormData={setFormData}/>
                     <SignupText>비밀번호 확인</SignupText>
                     <InputUser

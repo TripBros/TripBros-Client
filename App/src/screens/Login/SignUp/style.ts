@@ -60,7 +60,7 @@ const ProfileImageInputButtun = styled.TouchableOpacity`
 
 const InputUser = styled.TextInput`
     width: 100%;
-    height: 40;
+    height: 40px;
     font-size: 14px;
     padding: 0 10px;
     margin-bottom: 20px;
@@ -77,7 +77,7 @@ const InputUserIdandNickNameBox = styled.View`
 
 const InputUserIdAndNickName = styled.TextInput`
     width: 70%;
-    height: 40;
+    height: 40px;
     font-size: 14px;
     padding: 0 10px;
     margin-bottom: 20px;

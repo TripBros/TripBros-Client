@@ -17,7 +17,7 @@ const MyPosts: React.FC = () => {
     //     try {
     //         const response = await axios.get(`${SERVER_BASE_URL}/MyPosts`, {
     //             headers: {
-    //                 Authorization: `Bearer ${token}`,
+    //                 Authorization: `Bearer ${token.accessToken}`,
     //             },
     //         });
     //         console.log(response.data);
