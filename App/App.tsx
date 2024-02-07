@@ -1,6 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import {RecoilRoot} from 'recoil';import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import  { SafeAreaProvider}  from 'react-native-safe-area-context';
+import React, { useCallback, useEffect, useState } from 'react';
+
+import * as SplashScreen from 'expo-splash-screen';
+
+import { NavigationContainer } from '@react-navigation/native';
+import BottomNavigator from './src/navigators/BottomNav'
+import  { SafeAreaProvider, SafeAreaView }  from 'react-native-safe-area-context';
+import Header from './src/components/Header'
+import PlusButton from './src/components/ActionButton/PlusButton';
+
+import {RecoilRoot} from 'recoil';
+import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
 import Splash from './src/screens/Splash';
 import Navigator from './src/navigators/navigator';
 
@@ -33,3 +42,13 @@ function App() {
   );
 }
 export default App;
+
+// <SafeAreaProvider>
+// <SafeAreaView style={{ flex: 1, paddingBottom: -50 }}> 
+//   <NavigationContainer>
+//     <Header/>
+//     <PlusButton />
+//     <BottomNavigator />
+//   </NavigationContainer>
+// </SafeAreaView>
+// </SafeAreaProvider>

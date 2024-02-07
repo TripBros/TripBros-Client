@@ -30,7 +30,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "",
+        "foregroundImage": "./App/src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
       "permissions": ["READ_EXTERNAL_STORAGE"]
