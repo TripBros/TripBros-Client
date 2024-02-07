@@ -42,8 +42,8 @@ const Plan: React.FC = () => {
 
     const onRefresh = () => {
         setRefreshing(true);
-        setSelectedDate(''); // 새로고침 시 selectedDate 초기화
-        //timeout: 임시
+        setSelectedDate(''); //새로고침 시 selectedDate 초기화
+        //timeout 임시
         setTimeout(() => {
             setRefreshing(false);
         }, 1000);

@@ -3,7 +3,7 @@ import { Modal, View, TouchableOpacity, Text } from 'react-native';
 import styled from 'styled-components/native';
 import { Feather } from '@expo/vector-icons';
 import { CalendarList } from 'react-native-calendars';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 interface DisplayDatesTextProps {
   displayed: boolean;
@@ -70,35 +70,37 @@ const TripFilter: React.FC = () => {
         visible={isCalendarVisible}
         onRequestClose={() => setIsCalendarVisible(false)}
       >
-        <SafeAreaView style={{ flex: 1 }}>
-          <ModalHeader>
-            <CloseButton onPress={() => setIsCalendarVisible(false)}>
-              <Feather name="x" size={24} color="black" />
-            </CloseButton>
-            <HeaderTitle>날짜 선택</HeaderTitle>
-          </ModalHeader>
-          <CalendarList
-            pastScrollRange={0}
-            futureScrollRange={12}
-            current={selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : today}
-            minDate={today}
-            markingType={'period'}
-            markedDates={{
-              [selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : '']: {
-                selected: true,
-                color: 'blue',
-              },
-              [selectedEndDate ? selectedEndDate.toISOString().split('T')[0] : '']: {
-                selected: true,
-                color: 'blue',
-              },
-            }}
-            onDayPress={handleDayPress}
-          />
-          <ConfirmButton onPress={handleConfirm}>
-            <ConfirmButtonText>확인</ConfirmButtonText>
-          </ConfirmButton>
-        </SafeAreaView>
+        <SafeAreaProvider>
+          <SafeAreaView style={{ flex: 1 }}>
+            <ModalHeader>
+              <CloseButton onPress={() => setIsCalendarVisible(false)}>
+                <Feather name="x" size={24} color="black" />
+              </CloseButton>
+              <HeaderTitle>날짜 선택</HeaderTitle>
+            </ModalHeader>
+            <CalendarList
+              pastScrollRange={0}
+              futureScrollRange={12}
+              current={selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : today}
+              minDate={today}
+              markingType={'period'}
+              markedDates={{
+                [selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : '']: {
+                  selected: true,
+                  color: 'blue',
+                },
+                [selectedEndDate ? selectedEndDate.toISOString().split('T')[0] : '']: {
+                  selected: true,
+                  color: 'blue',
+                },
+              }}
+              onDayPress={handleDayPress}
+            />
+            <ConfirmButton onPress={handleConfirm}>
+              <ConfirmButtonText>확인</ConfirmButtonText>
+            </ConfirmButton>
+          </SafeAreaView>
+        </SafeAreaProvider>
       </Modal>
     </View>
   );
@@ -130,12 +132,11 @@ const DisplayDatesText = styled.Text<DisplayDatesTextProps>`
   color: ${props => props.displayed ? 'black' : '#C4C4C4'};
 `;
 
-const ModalHeader = styled(SafeAreaView)`
+const ModalHeader = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
   padding: 16px;
-  background-color: white;
 `;
 
 const CloseButton = styled.TouchableOpacity`

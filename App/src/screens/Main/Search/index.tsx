@@ -17,9 +17,12 @@ const Search: React.FC = () => {
                 <Feather name="arrow-right" size={20} color="white" />
             </SubmitButton>
         </SearchContainer>
+        <DivisionLine/>
+        <Title>최근 게시글</Title>
         </ScrollView>
     );
 };
+export default Search;
 
 const SearchContainer = styled.View`
     flex: 1;
@@ -44,6 +47,7 @@ const SubmitButton = styled.TouchableOpacity`
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    margin: 20px;
 `;
 
 const ButtonText = styled.Text`
@@ -51,4 +55,8 @@ const ButtonText = styled.Text`
     font-size: 16px;
 `;
 
-export default Search;
+const DivisionLine = styled.View`
+    height: 1px;
+    background-color: #DEDEDE;
+    margin-top: 15px;
+`;

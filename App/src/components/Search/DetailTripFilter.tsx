@@ -107,6 +107,7 @@ const DetailFilterContainer = styled.View`
     flex-direction: row;
     justify-content: center;
     align-items: center;
+    margin: 0px 20px;
 `;
 
 const CircleButton = styled.TouchableOpacity`
@@ -135,8 +136,8 @@ const AdditionalText = styled.Text`
 `;
 
 const PurposeContainer = styled.TouchableOpacity<{isSelected: boolean}>`
-  background-color: ${props => props.isSelected ? '#91C8E4' : 'white'};
-  border: 1px solid ${props => props.isSelected ? '#91C8E4' : 'black'};
+  background-color: ${props => props.isSelected ? '#F6F4EB' : 'white'};
+  border: 1px solid ${props => props.isSelected ? '#F6F4EB' : 'black'};
   border-radius: 20px;
   padding: 10px;
   margin: 5px;
