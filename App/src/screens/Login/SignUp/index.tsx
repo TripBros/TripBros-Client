@@ -76,12 +76,6 @@ const SignUp: React.FC = () => {
         const submitSignUp = async () => {
             const requestData = new FormData();
 
-            Object.keys(formData).forEach(key => {
-                if (key !== 'profileImage') {
-                requestData.append(key, formData[key]);
-                }
-            });
-
             if (formData.profileImage) {
                 const imageResponse = await fetch(formData.profileImage);
                 const blob = await imageResponse.blob();
