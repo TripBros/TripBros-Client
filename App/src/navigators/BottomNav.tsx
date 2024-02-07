@@ -11,6 +11,7 @@ import Search from '../screens/Main/Search';
 import Chat from '../screens/Main/Chat';
 import MyPage from '../screens/Main/MyPage';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import PlusButton from '../components/ActionButton/PlusButton'
 
 //image
 import { SimpleLineIcons } from '@expo/vector-icons';
@@ -28,7 +29,7 @@ const BottomNavigator = () => {
         <Background style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1 , paddingBottom : -50}}>
                 <Header/>
-                {/* <PlusButton/> */}
+                <PlusButton/>
                 <Tab.Navigator
                 screenOptions={{
                     headerShown: false,
