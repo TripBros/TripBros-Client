@@ -72,33 +72,47 @@ const TripFilter: React.FC = () => {
       >
         <SafeAreaProvider>
           <SafeAreaView style={{ flex: 1 }}>
-            <ModalHeader>
-              <CloseButton onPress={() => setIsCalendarVisible(false)}>
-                <Feather name="x" size={24} color="black" />
-              </CloseButton>
-              <HeaderTitle>날짜 선택</HeaderTitle>
-            </ModalHeader>
-            <CalendarList
-              pastScrollRange={0}
-              futureScrollRange={12}
-              current={selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : today}
-              minDate={today}
-              markingType={'period'}
-              markedDates={{
-                [selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : '']: {
-                  selected: true,
-                  color: 'blue',
-                },
-                [selectedEndDate ? selectedEndDate.toISOString().split('T')[0] : '']: {
-                  selected: true,
-                  color: 'blue',
-                },
-              }}
-              onDayPress={handleDayPress}
-            />
-            <ConfirmButton onPress={handleConfirm}>
-              <ConfirmButtonText>확인</ConfirmButtonText>
-            </ConfirmButton>
+            <View style={{ flex: 1 }}>
+              <ModalHeader>
+                <CloseButton onPress={() => setIsCalendarVisible(false)}>
+                  <Feather name="x" size={24} color="black" />
+                </CloseButton>
+                <HeaderTitle>날짜 선택</HeaderTitle>
+                <View style={{ width: 24 }}></View>
+              </ModalHeader>
+              <View style={{ flex: 1 }}>
+                <CalendarList
+                  theme={{
+                    textDayFontSize: 16,
+                    textMonthFontSize: 18,
+                    textMonthFontWeight: 'bold',
+                    todayTextColor: '#00adf5',
+                  }}
+                  pastScrollRange={0}
+                  futureScrollRange={12}
+                  current={selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : today}
+                  minDate={today}
+                  monthFormat={'yyyy년 M월'}
+                  markingType={'period'}
+                  markedDates={{
+                    [selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : '']: {
+                      selected: true,
+                      color: '#91C8E4',
+                    },
+                    [selectedEndDate ? selectedEndDate.toISOString().split('T')[0] : '']: {
+                      selected: true,
+                      color: '#91C8E4',
+                    },
+                  }}
+                  onDayPress={handleDayPress}
+                />
+              </View>
+              <View>
+                <ConfirmButton onPress={handleConfirm}>
+                  <ConfirmButtonText>확인</ConfirmButtonText>
+                </ConfirmButton>
+              </View>
+            </View>
           </SafeAreaView>
         </SafeAreaProvider>
       </Modal>
@@ -135,7 +149,7 @@ const DisplayDatesText = styled.Text<DisplayDatesTextProps>`
 const ModalHeader = styled.View`
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding: 16px;
 `;
 
@@ -144,7 +158,6 @@ const CloseButton = styled.TouchableOpacity`
 `;
 
 const HeaderTitle = styled.Text`
-  flex: 1;
   text-align: center;
   font-weight: bold;
 `;

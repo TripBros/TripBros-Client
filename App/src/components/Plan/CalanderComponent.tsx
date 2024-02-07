@@ -7,10 +7,6 @@ interface CalendarComponentProps {
   onDayPress: (day: any) => void;
 }
 
-const CalendarContainer = styled.View`
-  padding-horizontal: 20px;
-`;
-
 const CalendarComponent: React.FC<CalendarComponentProps> = ({ markedDates, onDayPress }) => {
   return (
     <CalendarContainer>
@@ -32,3 +28,7 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ markedDates, onDa
 };
 
 export default CalendarComponent;
+
+const CalendarContainer = styled.View`
+  padding-horizontal: 20px;
+`;
