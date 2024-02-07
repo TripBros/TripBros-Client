@@ -23,11 +23,19 @@ const TripFilter: React.FC = () => {
   //    => 클릭한 날짜를 시작 날짜로 설정하고, 종료 날짜를 null로 재설정
   // 2. 시작 날짜가 이미 선택되어 있고, 종료 날짜가 선택되지 않은 경우, 클릭한 날짜를 종료 날짜로
   const handleDayPress = (day: { dateString: string }) => {
+    const selectedDate = new Date(day.dateString);
+
     if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-      setSelectedStartDate(new Date(day.dateString));
+      setSelectedStartDate(selectedDate);
       setSelectedEndDate(null);
+      // 시작 날짜를 선택하고, 확인 버튼의 텍스트를 업데이트합니다.
+      setDisplayedDates(formatDate(selectedDate));
     } else {
-      setSelectedEndDate(new Date(day.dateString));
+      // 종료 날짜를 설정하고, 시작 및 종료 날짜를 포함한 범위로 텍스트를 업데이트합니다.
+      setSelectedEndDate(selectedDate);
+      const startDateString = formatDate(selectedStartDate);
+      const endDateString = formatDate(selectedDate);
+      setDisplayedDates(`${startDateString} ~ ${endDateString}`);
     }
   };
 
@@ -109,7 +117,7 @@ const TripFilter: React.FC = () => {
               </View>
               <View>
                 <ConfirmButton onPress={handleConfirm}>
-                  <ConfirmButtonText>확인</ConfirmButtonText>
+                  <ConfirmButtonText>{displayedDates !== '' ? displayedDates : '날짜를 선택해주세요'}</ConfirmButtonText>
                 </ConfirmButton>
               </View>
             </View>
@@ -166,8 +174,8 @@ const ConfirmButton = styled.TouchableOpacity`
   align-items: center;
   justify-content: center;
   margin: 20px;
-  padding: 10px;
-  background-color: blue;
+  padding: 15px;
+  background-color: #91C8E4;
   border-radius: 5px;
 `;
 
