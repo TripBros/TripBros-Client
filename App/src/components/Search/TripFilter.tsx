@@ -28,10 +28,10 @@ const TripFilter: React.FC = () => {
     if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
       setSelectedStartDate(selectedDate);
       setSelectedEndDate(null);
-      // 시작 날짜를 선택하고, 확인 버튼의 텍스트를 업데이트합니다.
+      // 시작 날짜를 선택하고, 확인 버튼의 텍스트를 업데이트
       setDisplayedDates(formatDate(selectedDate));
     } else {
-      // 종료 날짜를 설정하고, 시작 및 종료 날짜를 포함한 범위로 텍스트를 업데이트합니다.
+      // 종료 날짜를 설정하고, 시작 및 종료 날짜를 포함한 범위로 텍스트를 업데이트
       setSelectedEndDate(selectedDate);
       const startDateString = formatDate(selectedStartDate);
       const endDateString = formatDate(selectedDate);
