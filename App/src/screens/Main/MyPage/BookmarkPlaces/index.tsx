@@ -23,16 +23,17 @@ interface Item {
   title: string;
   content: string;
   image: NodeRequire; // require() 함수로 불러온 이미지의 타입
+  bookmark: boolean;
 }
 
 const itemsFromServer: Item[] = [
-  { id: 1, title: '장소1', content: '내용 1', image: require('./tmpImg.jpg') },
-  { id: 2, title: '장소2', content: '내용 2', image: require('./tmpImg.jpg') },
-  { id: 3, title: '장소1', content: '내용 1', image: require('./tmpImg.jpg') },
-  { id: 4, title: '장소2', content: '내용 2', image: require('./tmpImg.jpg') },
-  { id: 5, title: '장소1', content: '내용 1', image: require('./tmpImg.jpg') },
-  { id: 6, title: '장소2', content: '내용 2', image: require('./tmpImg.jpg') },
-  { id: 7, title: '장소1', content: '내용 1', image: require('./tmpImg.jpg') },
+  { id: 1, title: '장소1', content: '내용 1', image: require('./tmpImg.jpg') , bookmark: false},
+  { id: 2, title: '장소2', content: '내용 2', image: require('./tmpImg.jpg') , bookmark: true},
+  { id: 3, title: '장소1', content: '내용 1', image: require('./tmpImg.jpg') , bookmark: true},
+  { id: 4, title: '장소2', content: '내용 2', image: require('./tmpImg.jpg') , bookmark: true},
+  { id: 5, title: '장소1', content: '내용 1', image: require('./tmpImg.jpg') , bookmark: true},
+  { id: 6, title: '장소2', content: '내용 2', image: require('./tmpImg.jpg') , bookmark: true},
+  { id: 7, title: '장소1', content: '내용 1', image: require('./tmpImg.jpg') , bookmark: true},
 ];
 
 const BookmarkPlaces: React.FC = () => {

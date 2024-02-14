@@ -78,29 +78,44 @@ const SignUp: React.FC = () => {
 
             if (formData.profileImage) {
                 const imageResponse = await fetch(formData.profileImage);
-                const blob = await imageResponse.blob();
-                
+                const blob = await imageResponse.blob();        
                 requestData.append('profileImage', blob, 'profile.jpg');
             }
-            console.log(requestData);
+        
+            // JSON 데이터를 문자열로 변환하여 FormData에 추가
+            // JSON 데이터를 포함하는 객체 예시
+            const jsonPayload = {
+                email : formData.email,
+                password : formData.password,
+                nickname : formData.nickname,
+                age : formData.age,
+                sex : formData.sex,
+                leisurely_flag : formData.leisurely_flag,
+                planner_flag : formData.planner_flag,
+                adventurous_flag : formData.adventurous_flag,
+                vehicle_travel_flag : formData.vehicle_travel_flag,
+                photo_preference_flag : formData.photo_preference_flag,
+            };
+
+            // "application/json" 타입으로 명시적으로 표시해주는 것이 좋습니다.
+            requestData.append('jsonPayload', JSON.stringify(jsonPayload));
             try {
-              const response = await axios.post(`${SERVER_BASE_URL}/api/user/register`, requestData,{
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                },
-              });
-          
-              if (response.data.success) {
-                // 회원가입 성공 처리
-                console.log('회원가입 성공:', response.data);
-                isSuccessful = true;
-              } else {
-                // 회원가입 실패 처리
-                console.error('회원가입 실패:', response.data.message);
-              }
+                const response = await axios.post(`${SERVER_BASE_URL}/api/user/register`, requestData, {
+                    headers: {
+                        // 'Content-Type': 'multipart/form-data' 명시적으로 설정할 필요 없음, axios/FormData가 자동으로 처리
+                    },
+                });
+        
+                if (response.data.success) {
+                    console.log('회원가입 성공:', response.data);
+                    // 회원가입 성공 처리
+                } else {
+                    console.error('회원가입 실패:', response.data.message);
+                    // 회원가입 실패 처리
+                }
             } catch (error) {
-              // HTTP 요청 실패 또는 서버 에러 처리
-              console.error('서버 요청 실패:', error);
+                console.error('서버 요청 실패:', error);
+                // HTTP 요청 실패 또는 서버 에러 처리
             }
           };
 
