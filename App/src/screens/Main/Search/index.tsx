@@ -3,11 +3,14 @@ import { Feather } from '@expo/vector-icons';
 import styled from 'styled-components/native';
 import TripFilter from '../../../components/Search/TripFilter';
 import DetailTripFilter from '../../../components/Search/DetailTripFilter';
-import { ScrollView } from 'react-native';
+import { TouchableOpacity, ScrollView } from 'react-native';
 import MainPost from '../../../components/Search/MainPost';
 import ImageSource from '../../../assets/basicProfile.jpg';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../../navigators/RootNavigator';
 
-interface PostData {
+export interface PostData {
     title: string;
     content: string;
     dateOfWriting: string;
@@ -22,9 +25,15 @@ interface PostData {
     numberOfMember: number;
     numberOfChat: number;
     numberOfLike: number;
+    purpose: string;
+    views: number;
+    sexPrefer: string;
+    agePrefer: string;
 };
 
 const Search: React.FC = () => {
+    const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
     //백엔드에서 받아온 데이터로 변경
     //dateOfWritind: 백엔드에 저장할 때 ISO 8601 형식을 사용하면 JS Date 객체와 호환됨. YYYY-MM-DD T HH:MM:SS
     const postDataList: PostData[] = [
@@ -43,6 +52,10 @@ const Search: React.FC = () => {
             numberOfMember: 3,
             numberOfChat: 2,
             numberOfLike: 1,
+            purpose: '여행',
+            views: 10,
+            sexPrefer: '여성',
+            agePrefer: '20대',
         },
         {
             title: '미국 뉴욕 같이 가실분',
@@ -59,6 +72,10 @@ const Search: React.FC = () => {
             numberOfMember: 3,
             numberOfChat: 2,
             numberOfLike: 1,
+            purpose: '식사',
+            views: 20,
+            sexPrefer: '남성',
+            agePrefer: '20대',
         },
         {
             title: '일본 오사카 같이 가실분',
@@ -75,6 +92,10 @@ const Search: React.FC = () => {
             numberOfMember: 3,
             numberOfChat: 2,
             numberOfLike: 1,
+            purpose: '숙박',
+            views: 30,
+            sexPrefer: '여성',
+            agePrefer: '30대',
         },
     ];
 
@@ -91,7 +112,9 @@ const Search: React.FC = () => {
         </SearchContainer>
         <Title>최근 게시글</Title>
         {postDataList.map((postData, index) => (
-                <MainPost key={index} postData={postData} />
+            <TouchableOpacity key={index} onPress={() => navigation.navigate('DetailPost', { postData })}>
+                <MainPost postData={postData} />
+            </TouchableOpacity>
         ))}
         </ScrollView>
     );
@@ -122,10 +145,4 @@ const SubmitButton = styled.TouchableOpacity`
 const ButtonText = styled.Text`
     color: white;
     font-size: 16px;
-`;
-
-const DivisionLine = styled.View`
-    height: 1px;
-    background-color: #DEDEDE;
-    margin-top: 20px;
 `;
