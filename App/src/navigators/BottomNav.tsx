@@ -12,6 +12,7 @@ import Chat from '../screens/Main/Chat';
 import MyPage from '../screens/Main/MyPage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import PlusButton from '../components/ActionButton/PlusButton'
+import ChatNavigator from './ChatNavigator';
 
 //image
 import { SimpleLineIcons } from '@expo/vector-icons';
@@ -65,7 +66,7 @@ const BottomNavigator = () => {
                                     size={24} 
                                     color={focused ? "#91C8E4" : "black"}  />
                             ),}}/>
-                    <Tab.Screen name="채팅" component={Chat} options={{
+                    <Tab.Screen name="채팅" component={ChatNavigator} options={{
                             tabBarIcon: ({ focused }) => (
                                 <Ionicons 
                                     name="chatbox-outline" 
