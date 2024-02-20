@@ -1,34 +1,37 @@
 import React from 'react';
 import { Feather } from '@expo/vector-icons';
 import styled from 'styled-components/native';
-import TripFilter from '../../../components/Search/TripFilter';
-import DetailTripFilter from '../../../components/Search/DetailTripFilter';
+import TripFilter from './Components/tripFilter';
+import DetailTripFilter from './Components/detailTripFilter';
 import { TouchableOpacity, ScrollView } from 'react-native';
-import MainPost from '../../../components/Search/MainPost';
+import MainPost from './Components/mainPost';
 import ImageSource from '../../../assets/basicProfile.jpg';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../navigators/RootNavigator';
 
+//id 추가
 export interface PostData {
-    title: string;
-    content: string;
-    dateOfWriting: string;
-    country: string;
-    city: string;
-    profileImage: any;
-    nickname: string;
-    ageRange: string;
-    sex: string;
-    startDate: string;
-    endDate: string;
-    numberOfMember: number;
-    numberOfChat: number;
-    numberOfLike: number;
-    purpose: string;
-    views: number;
-    sexPrefer: string;
-    agePrefer: string;
+    nickname: string,
+    profileImage: any,
+    hit : number,
+    isBookmarked: boolean,
+    age : string,
+    sex: string,
+    title: string,
+    content: string,
+    purpose: string,
+    country: string,
+    city: string,
+    bookmarkCount: number,
+    preferSex: string,
+    preferAgeRange: string,
+    startDate: string, 
+    endDate: string,
+    requiredHeadCount: number,
+    nowHeadCount: number,
+    chatCount: number,
+    createdAt: string,
 };
 
 const Search: React.FC = () => {
@@ -38,64 +41,70 @@ const Search: React.FC = () => {
     //dateOfWritind: 백엔드에 저장할 때 ISO 8601 형식을 사용하면 JS Date 객체와 호환됨. YYYY-MM-DD T HH:MM:SS
     const postDataList: PostData[] = [
         {
+            nickname: '이현경',
+            profileImage: ImageSource, 
+            hit: 10,
+            isBookmarked: false,
+            age: '20대',
+            sex: '여성',
             title: '태국 방콕 같이 가실분',
             content: '안녕하세용 방콕 같이 가실 분 계실까요 저는 활발한 성격이에요 어쩌구저쩌구 ',
-            dateOfWriting: '2024-02-10T11:00:00Z',
+            purpose: '여행',
             country: '태국',
             city: '방콕',
-            profileImage: ImageSource, 
-            nickname: '이현경',
-            ageRange: '20대',
-            sex: '여성',
+            bookmarkCount: 1,
+            preferSex: '여성',
+            preferAgeRange: '20대',
             startDate: '2024-02-05',
             endDate: '2024-02-18',
-            numberOfMember: 3,
-            numberOfChat: 2,
-            numberOfLike: 1,
-            purpose: '여행',
-            views: 10,
-            sexPrefer: '여성',
-            agePrefer: '20대',
+            requiredHeadCount: 3,
+            nowHeadCount: 2,
+            chatCount: 2,
+            createdAt: '2024-02-10T11:00:00Z',
         },
         {
+            nickname: '이현경',
+            profileImage: ImageSource, 
+            hit: 20,
+            isBookmarked: true,
+            age: '20대',
+            sex: '여성',
             title: '미국 뉴욕 같이 가실분',
-            content: '안녕하세용 미국 같이 가실 분 계실까요 저는 활발한 성격이에요 어쩌구저쩌구 ',
-            dateOfWriting: '2024-02-10T01:00:00Z',
+            content: '안녕하세용 뉴욕 같이 가실 분 계실까요 저는 활발한 성격이에요 어쩌구저쩌구 ',
+            purpose: '숙박',
             country: '미국',
             city: '뉴욕',
-            profileImage: ImageSource, 
-            nickname: '이현경',
-            ageRange: '20대',
-            sex: '여성',
+            bookmarkCount: 2,
+            preferSex: '여성',
+            preferAgeRange: '20대',
             startDate: '2024-02-05',
             endDate: '2024-02-18',
-            numberOfMember: 3,
-            numberOfChat: 2,
-            numberOfLike: 1,
-            purpose: '식사',
-            views: 20,
-            sexPrefer: '남성',
-            agePrefer: '20대',
+            requiredHeadCount: 3,
+            nowHeadCount: 2,
+            chatCount: 2,
+            createdAt: '2024-02-9T11:00:00Z',
         },
         {
-            title: '일본 오사카 같이 가실분',
-            content: '안녕하세용 오사카 같이 가실 분 계실까요 저는 활발한 성격이에요 어쩌구저쩌구 ',
-            dateOfWriting: '2024-02-9T11:00:00Z',
-            country: '일본',
-            city: '오사카',
-            profileImage: ImageSource, 
             nickname: '이현경',
-            ageRange: '20대',
+            profileImage: ImageSource, 
+            hit: 10,
+            isBookmarked: false,
+            age: '20대',
             sex: '여성',
+            title: '캐나다 벤쿠버 같이 가실분',
+            content: '안녕하세용 벤쿠버 같이 가실 분 계실까요 저는 활발한 성격이에요 어쩌구저쩌구 ',
+            purpose: '여행',
+            country: '캐나다',
+            city: '벤쿠버',
+            bookmarkCount: 1,
+            preferSex: '여성',
+            preferAgeRange: '20대',
             startDate: '2024-02-05',
             endDate: '2024-02-18',
-            numberOfMember: 3,
-            numberOfChat: 2,
-            numberOfLike: 1,
-            purpose: '숙박',
-            views: 30,
-            sexPrefer: '여성',
-            agePrefer: '30대',
+            requiredHeadCount: 3,
+            nowHeadCount: 2,
+            chatCount: 2,
+            createdAt: '2024-02-10T11:00:00Z',
         },
     ];
 

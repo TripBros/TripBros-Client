@@ -2,8 +2,13 @@ import React from "react";
 import styled from 'styled-components/native';
 import ActionButton from 'react-native-action-button';
 import { View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../navigators/RootNavigator';
 
 const PlusButton: React.FC = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   return(
     <View style={{
       flex:1,
@@ -21,7 +26,7 @@ const PlusButton: React.FC = () => {
           <ButtonText>일정</ButtonText>
           <ButtonText>등록</ButtonText>
         </ActionButton.Item>
-        <ActionButton.Item buttonColor='#749BC2' size={70} onPress={() => {}}>
+        <ActionButton.Item buttonColor='#749BC2' size={70} onPress={() => {navigation.navigate('PostRegister')}}>
           <ButtonText>게시글</ButtonText>
           <ButtonText>작성</ButtonText>
         </ActionButton.Item>

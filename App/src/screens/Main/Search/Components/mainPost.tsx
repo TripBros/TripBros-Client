@@ -4,8 +4,8 @@ import { Feather } from '@expo/vector-icons';
 import { Octicons } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import { calculateTimeWrittenAgo } from '../../utils/timeUtils';
-import { PostData } from '../../screens/Main/Search/index';
+import { calculateTimeWrittenAgo } from '../../../../utils/timeUtils';
+import { PostData } from '../index';
 
 const MainPost: React.FC<{postData: PostData}> = ({ postData }) => {
 
@@ -18,7 +18,7 @@ const MainPost: React.FC<{postData: PostData}> = ({ postData }) => {
     return `${month.toString().padStart(2, '0')}.${day.toString().padStart(2, '0')}`;
   };
 
-  const TimeWrittenAgo = calculateTimeWrittenAgo(postData.dateOfWriting);
+  const TimeWrittenAgo = calculateTimeWrittenAgo(postData.createdAt);
   const FormattedStartDate = formatDate(postData.startDate);
   const FormattedEndDate = formatDate(postData.endDate);
 
@@ -37,7 +37,7 @@ const MainPost: React.FC<{postData: PostData}> = ({ postData }) => {
         </Content>
         <Profile>
           <ProfileImage source={postData.profileImage} />
-          <ProfileContent>{`${postData.nickname} / ${postData.ageRange} ${postData.sex}`}</ProfileContent>
+          <ProfileContent>{`${postData.nickname} / ${postData.age} ${postData.sex}`}</ProfileContent>
         </Profile>
         <PostFooter>
           <Profile>
@@ -46,13 +46,13 @@ const MainPost: React.FC<{postData: PostData}> = ({ postData }) => {
           </Profile>
           <Profile>
             <Octicons name="person" size={19} color="black" />
-            <DetailContent>{`${postData.numberOfMember}명`}</DetailContent>
+            <DetailContent>{`${postData.requiredHeadCount}명`}</DetailContent>
           </Profile>
           <Profile>
             <Ionicons name="chatbox-outline" size={20} color="#749BC2" />
-            <ChatText>{`${postData.numberOfChat}`}</ChatText>
+            <ChatText>{`${postData.chatCount}`}</ChatText>
             <AntDesign name="hearto" size={18} color="#FF6060" style={{ marginLeft: 8 }}/>
-            <LikeText>{`${postData.numberOfLike}`}</LikeText>
+            <LikeText>{`${postData.bookmarkCount}`}</LikeText>
           </Profile>
         </PostFooter>
       </PostContainer>

@@ -26,7 +26,6 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ markedDates, onDa
     </CalendarContainer>
   );
 };
-
 export default CalendarComponent;
 
 const CalendarContainer = styled.View`

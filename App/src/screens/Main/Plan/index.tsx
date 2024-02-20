@@ -1,44 +1,18 @@
-import React , { useState, useEffect, useMemo } from 'react';
+import React , { useState, useEffect } from 'react';
 import { ScrollView, RefreshControl, Text } from 'react-native';
 import styled from 'styled-components/native';
 import ImageSource from '../../../assets/Bangkok.jpg';
-import CalendarComponent from '../../../components/Plan/CalanderComponent';
-
-interface ScheduleData {
-    startDate: string;
-    endDate: string;
-    city: string;
-    image: any;
-    memo: string;
-};
+import CalendarComponent from './Components/calanderComponent';
+import { useRecoilState } from 'recoil';
+import { ScheduleData } from '../../../libs/Recoil/scheduleList'; 
+import { scheduleListState } from '../../../libs/Recoil/scheduleList';
+import ScheduleList from '../../../components/Schedule/scheduleList';
 
 const Plan: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState(''); //#2024년 2월 3일
     const [scheduleInfo, setScheduleInfo] = useState<React.ReactNode>(''); //일정이 없습니다 or 일정 내용들
     const [refreshing, setRefreshing] = useState(false);
-
-    //백엔드에서 받아온 데이터로 변경
-    const scheduleData: ScheduleData[] = [
-        {
-            startDate: '2024-02-06',
-            endDate: '2024-02-09',
-            city: '방콕',
-            image: ImageSource,
-            memo: '푸팟퐁커리'
-        },
-        {
-            startDate: '2024-02-14',
-            endDate: '2024-02-15',
-            city: '부산',
-            image: ImageSource,
-            memo:'광안대교 가기',
-        },
-    ];
-
-    const formatDate = (date: Date) => {
-        const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
-        return date.toLocaleDateString('ko-KR', options);
-    };
+    const [scheduleData, setScheduleData] = useRecoilState(scheduleListState);
 
     const onRefresh = () => {
         setRefreshing(true);
@@ -50,34 +24,24 @@ const Plan: React.FC = () => {
     };
     
     //컴포넌트 마운트 시 scheduleData 배열에 있는 모든 일정을 표시
+    //백엔드에서 받아온 데이터로 변경
     useEffect(() => {
-        // UTC를 사용하면 디데이 계산할 때 시간대 영향을 배제할 수 있음
-        const utcToday = new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
-    
-        if (scheduleData.length > 0) {
-            const scheduleElements = scheduleData.map((schedule, index) => {
-
-                const scheduleStartDate = new Date(schedule.startDate);
-                const scheduleEndDate = new Date(schedule.endDate);
-                const utcStartDate = new Date(Date.UTC(scheduleStartDate.getFullYear(), scheduleStartDate.getMonth(), scheduleStartDate.getDate()));
-
-                const dDay = Math.ceil((utcStartDate.getTime() - utcToday.getTime()) / (1000 * 60 * 60 * 24));
-
-                return (
-                    <ScheduleListContainer key={index}>
-                        <CityImage source={schedule.image} />
-                        <ScheduleTextContainer>
-                            <CityTitle>{`${schedule.city}  🗓D-${dDay}`}</CityTitle>
-                            <Text>{`${formatDate(scheduleStartDate)} - ${formatDate(scheduleEndDate)}`}</Text>
-                        </ScheduleTextContainer>
-                    </ScheduleListContainer>
-                );
-            });
-    
-            setScheduleInfo(scheduleElements);
-        } else {
-            setScheduleInfo(<Text>일정이 없습니다.</Text>);
-        }
+        setScheduleData([
+            {
+                startDate: '2024-02-06',
+                endDate: '2024-02-09',
+                city: '방콕',
+                image: ImageSource,
+                memo: '푸팟퐁커리',
+            },
+            {
+                startDate: '2024-02-14',
+                endDate: '2024-02-15',
+                city: '부산',
+                image: ImageSource,
+                memo: '광안대교 가기',
+            },
+        ]);
     }, [refreshing]);
     
     //캘린더에 들어가는 markedDates를 동적으로 생성하기 위함
@@ -144,7 +108,7 @@ const Plan: React.FC = () => {
             );
             setScheduleInfo(infoElement);
         } else {
-            setScheduleInfo(<NoScheduleInfo />);
+        setScheduleInfo(<NoScheduleInfo />);
         }
     };
 
@@ -159,7 +123,17 @@ const Plan: React.FC = () => {
                     <TravelPlanTitle>나의 여행일정</TravelPlanTitle>
                     {selectedDate && <CalendarText>{selectedDate}</CalendarText>}
                 </TravlePlanContainer>
-                {scheduleInfo}
+                {selectedDate ? (
+                    // selectedDate가 있을 때 scheduleInfo만 표시
+                    scheduleInfo
+                ) : (
+                    // selectedDate가 없을 때 ScheduleList 또는 "일정이 없습니다." 텍스트 표시
+                    scheduleData.length > 0 ? (
+                        <ScheduleList scheduleData={scheduleData} isDetailed={true}/>
+                    ) : (
+                        <Text>일정이 없습니다.</Text>
+                    )
+                )}
             </PlanContainer>
         </ScrollView>
     );
@@ -200,11 +174,6 @@ const CalendarText = styled.Text`
     margin-left: 10px;
 `;
 
-const ScheduleListContainer = styled.View`
-    flex-direction: row;
-    padding: 10px 15px;
-`;
-
 const ScheduleInfoContainer = styled.View`
     flex-direction: column;
     padding: 0px 25px;
@@ -215,24 +184,12 @@ const CityContainer = styled.View`
     align-items: center;
 `;
 
-const CityImage = styled.Image`
-    width: 70px;
-    height: 70px;
-    border-radius: 50px;
-    border: 2px solid #CCCCCC;
-`;
-
 const SmallCityImage = styled.Image`
     width: 40px;
     height: 40px;
     border-radius: 50px;
     border: 2px solid #CCCCCC;
     margin-right: 10px;
-`;
-
-const ScheduleTextContainer = styled.View`
-    margin-left: 15px;
-    justify-content: center;
 `;
 
 const CityTitle = styled.Text`

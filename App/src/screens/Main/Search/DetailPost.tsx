@@ -23,10 +23,10 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
   const { postData } = route.params;
   const navigation = useNavigation();
 
-  const TimeWrittenAgo = calculateTimeWrittenAgo(postData.dateOfWriting);
+  const TimeWrittenAgo = calculateTimeWrittenAgo(postData.createdAt);
 
-  const [likes, setLikes] = useState(postData.numberOfLike);
-  const [isLiked, setIsLiked] = useState(false); //사용자의 좋아요 여부
+  const [likes, setLikes] = useState(postData.bookmarkCount);
+  const [isLiked, setIsLiked] = useState(postData.isBookmarked); //사용자의 좋아요 여부
 
   const handleLikePress = () => {
     setIsLiked(!isLiked);
@@ -43,7 +43,7 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
         <ProfileImage source={postData.profileImage} />
         <View>
           <NameText>{`${postData.nickname}`}</NameText>
-          <AgeSexText style={{ marginBottom: 0 }}>{`${postData.ageRange} ${postData.sex}`}</AgeSexText>
+          <AgeSexText style={{ marginBottom: 0 }}>{`${postData.age} ${postData.sex}`}</AgeSexText>
         </View>
       </ProfileContainer>
       <DetailPostContainer>
@@ -57,8 +57,8 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
           <Content>{postData.content}</Content>
         </ContentContainer>
         <RowContainer>
-          <ChatViewText>{`채팅 ${postData.numberOfChat}`}</ChatViewText>
-          <ChatViewText style={{ marginLeft: 10 }}>{`조회 ${postData.views}`}</ChatViewText>
+          <ChatViewText>{`채팅 ${postData.chatCount}`}</ChatViewText>
+          <ChatViewText style={{ marginLeft: 10 }}>{`조회 ${postData.hit}`}</ChatViewText>
         </RowContainer>
         <DivisionLine/>
         <RowContainer>
@@ -71,15 +71,15 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
         </RowContainer>
         <RowContainer>
           <Octicons name="person" size={22} color="black" />
-          <DatailText>{`1/${postData.numberOfMember}명`}</DatailText>
+          <DatailText>{`${postData.nowHeadCount}/${postData.requiredHeadCount}명`}</DatailText>
         </RowContainer>
         <RowContainer>
           <Fontisto name="person" size={22} color="black" />
-          <DatailText>{`${postData.agePrefer} 선호`}</DatailText>
+          <DatailText>{`${postData.preferAgeRange} 선호`}</DatailText>
         </RowContainer>
         <RowContainer>
           <Fontisto name="person" size={22} color="black" />
-          <DatailText>{`${postData.sexPrefer} 선호`}</DatailText>
+          <DatailText>{`${postData.preferSex} 선호`}</DatailText>
         </RowContainer>
       </DetailPostContainer>
       <DivisionLine/>
