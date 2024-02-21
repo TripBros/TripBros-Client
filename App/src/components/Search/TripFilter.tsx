@@ -77,6 +77,7 @@ const TripFilter: React.FC = () => {
                 <Feather name="x" size={24} color="black" />
               </CloseButton>
               <HeaderTitle>날짜 선택</HeaderTitle>
+              <View style={{width: 24, height: 24}}></View>{/* 빈 요소로 균형을 맞추기 위함 */}
             </ModalHeader>
             <CalendarList
               pastScrollRange={0}
@@ -135,17 +136,15 @@ const DisplayDatesText = styled.Text<DisplayDatesTextProps>`
 const ModalHeader = styled.View`
   flex-direction: row;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   padding: 16px;
 `;
 
 const CloseButton = styled.TouchableOpacity`
-  margin-right: 20px; 
 `;
 
 const HeaderTitle = styled.Text`
-  flex: 1;
-  text-align: center;
+  font-size: 20px;
   font-weight: bold;
 `;
 
