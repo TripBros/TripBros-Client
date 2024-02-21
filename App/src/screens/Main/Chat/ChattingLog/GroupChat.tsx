@@ -1,13 +1,59 @@
-import React , {useEffect} from 'react';
+import React , {useEffect,useState} from 'react';
 import { View, Text } from 'react-native';
 import styled from 'styled-components/native';
 import { useRecoilValue } from 'recoil';
 import { userTokenState } from '../../../../libs/Recoil/authState';
 import axios from 'axios';
+import {
+    ChatContainer,
+    ChattingLogBox,
+    ChattingLogImage,
+    ChattingContentBox,
+    ChattingNameandAgeBox,
+    ChattingLogName,
+    ChattingLogAge,
+    ChattingLogTimeandTextBox,
+    ChattingLogText,
+    ChattingLogTime
+} from './styles';
+
+interface Chat {
+    profileImage: string;
+    name: string;
+    time: string;
+    text: string;
+}
 
 const GroupChat = () => {
     const tokenState = useRecoilValue(userTokenState);
 
+
+    const [chats, setChats] = useState<Chat[]>([
+        {
+            profileImage: 'https://placeimg.com/100/100/any',
+            name: '대화방 1',
+            time: '3분 전',
+            text: '안녕하세요'
+        },
+        {
+            profileImage: 'https://placeimg.com/100/100/any',
+            name: '대화방 2',
+            time: '3분 전',
+            text: '안녕하세요'
+        },
+        {
+            profileImage: 'https://placeimg.com/100/100/any',
+            name: '대화방 3',
+            time: '3분 전',
+            text: '안녕하세요'
+        },
+        {
+            profileImage: 'https://placeimg.com/100/100/any',
+            name: '대화방 4',
+            time: '3분 전',
+            text: '안녕하세요'
+        },
+    ]); // 채팅 데이터를 저장할 상태 변수
     const bringChat = async () => {
         try {
             // axios.get 메소드를 사용하여 데이터를 요청합니다.
@@ -34,14 +80,27 @@ const GroupChat = () => {
 
     return (
         <ChatContainer>
-            <Text>Group Chat Component</Text>
+            {/* 채팅 로그 */}   
+            {chats.map((chat, index) => {
+                // 여기에 추가 로직을 작성할 수 있습니다.
+                return (
+                    <ChattingLogBox key={index}>
+                        <ChattingLogImage source={{ uri: chat.profileImage }} />
+                        <ChattingContentBox>
+                            <ChattingNameandAgeBox>
+                                <ChattingLogName>{chat.name}</ChattingLogName>
+                            </ChattingNameandAgeBox>
+                            <ChattingLogTimeandTextBox>                         
+                                <ChattingLogText>{chat.text}</ChattingLogText>
+                                <ChattingLogTime>{chat.time}</ChattingLogTime>
+                            </ChattingLogTimeandTextBox>
+                        </ChattingContentBox>
+                        
+                    </ChattingLogBox>
+                );
+            })}
         </ChatContainer>
     );
 };
 
 export default GroupChat;
-
-const ChatContainer = styled.ScrollView`
-    flex: 1;
-    background-color: #ffffff;
-`;

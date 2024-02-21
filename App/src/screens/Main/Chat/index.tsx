@@ -4,52 +4,55 @@ import styled from 'styled-components/native';
 import { useRecoilValue } from 'recoil';
 import { userLoginState, userTokenState } from '../../../libs/Recoil/authState';
 import axios from 'axios';
-import MyTab from '../../../navigators/ChatNavigator';
+import SockJS from 'sockjs-client';
 
+import * as Stomp from 'stompjs';
+
+class ChatService {
+  private stompClient: Stomp.Client;
+
+  constructor(private serverUrl: string) {
+    const socket = new WebSocket(serverUrl);
+    this.stompClient = Stomp.over(socket);
+  }
+
+  connect(): void {
+    this.stompClient.connect({}, frame => {
+      console.log('Connected: ' + frame);
+
+      // 여기에 메시지 구독 등의 로직을 추가
+    });
+  }
+
+  subscribeToChat(): void {
+    this.stompClient.subscribe('/topic/chat', message => {
+      const receivedMessage = JSON.parse(message.body);
+      console.log(receivedMessage);
+    });
+  }
+
+  sendMessage(message: string): void {
+    this.stompClient.send("/app/chat", {}, JSON.stringify({message: message}));
+  }
+
+  disconnect(): void {
+    if (this.stompClient !== null) {
+      // 빈 콜백 함수를 인수로 전달
+      this.stompClient.disconnect(() => {
+        console.log("Disconnected");
+      });
+    }
+  }
+}
+
+
+  
 const Chat: React.FC = () => {
     const loginState = useRecoilValue(userLoginState);
     const tokenState = useRecoilValue(userTokenState);
 
-    const bringChat = async () => {
-        try {
-            // axios.get 메소드를 사용하여 데이터를 요청합니다.
-            const response = await axios.get('채팅 불러오기 API', {
-                headers: {
-                    // 요청 헤더에 accessToken을 포함합니다.
-                    'Authorization': `Bearer ${tokenState.accessToken}`
-                }
-            });
-    
-            // 요청이 성공적으로 완료되면 응답 데이터를 반환합니다.
-            return response.data;
-        } catch (error) {
-            // 에러 처리
-            console.error('Error fetching data:', error);
-            return null; // 또는 적절한 에러 처리를 수행합니다.
-        }
-    };
-
-    useEffect(() => {
-        if (loginState) {
-            const responseData = bringChat();
-        }
-    }, [])
-
-    // 미로그인시 
-    if (!loginState) {
-        return (
-            <ChatContainer>
-                <Text>로그인이 필요합니다.</Text>
-            </ChatContainer>
-        )
-    }
-
-    
-    // 로그인시 
     return (
         <ChatContainer>
-            <MyTab/>
-
         </ChatContainer>
     )
 };

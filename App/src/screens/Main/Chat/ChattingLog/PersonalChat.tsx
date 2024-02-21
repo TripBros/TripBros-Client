@@ -5,6 +5,27 @@ import { useRecoilValue } from 'recoil';
 import { userTokenState } from '../../../../libs/Recoil/authState';
 import axios from 'axios';
 import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import {
+    ChatContainer,
+    BottomSheetControllerBox,
+    BottomSheetContrller,
+    BottomSheetControllerText,
+    SelectConfirmedChatBox,
+    SelectConfirmedChat,
+    SelectConfirmedChatText,
+    ChattingLogBox,
+    ChattingLogImage,
+    ChattingContentBox,
+    ChattingNameandAgeBox,
+    ChattingLogName,
+    ChattingLogAge,
+    ChattingLogTimeandTextBox,
+    ChattingLogText,
+    ChattingLogTime
+} from './styles';
+import { useNavigation} from '@react-navigation/native';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../../../navigators/RootNavigator';
 
 
 //icon
@@ -16,8 +37,10 @@ interface Chat {
     age: string;
     time: string;
     text: string;
+    roomId : string;
 }
 const PersonalChat = () => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const tokenState = useRecoilValue(userTokenState);
     const [confirmedButtonState,setConfrimButtonState] = useState<boolean>(false);
 
@@ -43,49 +66,56 @@ const PersonalChat = () => {
             name: '김철수',
             age: '20대 여성',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '1'
         },
         {
             profileImage: 'https://placeimg.com/100/100/any',
             name: '김영희',
             age: '20대 여성',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '2'
         },
         {
             profileImage: 'https://placeimg.com/100/100/any',
             name: '김철수',
             age: '20대 여성',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '3'
         },
         {
             profileImage: 'https://placeimg.com/100/100/any',
             name: '김영희',
             age: '20대 여성',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '4'
         },
         {
             profileImage: 'https://placeimg.com/100/100/any',
             name: '김철수',
             age: '20대 여성',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '5'
         },
         {
             profileImage: 'https://placeimg.com/100/100/any',
             name: '김영희',
             age: '20대 여성',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '6'
         },
         {
             profileImage: 'https://placeimg.com/100/100/any',
             name: '김철수',
             age: '20대 여성',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '7'
         }
     ]); // 채팅 데이터를 저장할 상태 변수
 
@@ -138,7 +168,10 @@ const PersonalChat = () => {
             {chats.map((chat, index) => {
                 // 여기에 추가 로직을 작성할 수 있습니다.
                 return (
-                    <ChattingLogBox key={index}>
+                    <ChattingLogBox key={index} onPress={()=>{
+                        console.log('채팅방 클릭');
+                        navigation.navigate('PersonalChatroom',{roomId: chat.roomId});
+                    }}>
                         <ChattingLogImage source={{ uri: chat.profileImage }} />
                         <ChattingContentBox>
                             <ChattingNameandAgeBox>
@@ -177,103 +210,4 @@ const PersonalChat = () => {
 
 export default PersonalChat;
 
-const ChatContainer = styled.ScrollView`
-    flex: 1;
-    background-color: #ffffff;
-`;
 
-const BottomSheetControllerBox = styled.View`
-    width: 100%;
-    background-color: #ffffff;
-    justify-content: flex-end;
-    
-`;
-const BottomSheetContrller = styled.TouchableOpacity`
-    width: 40%;
-    height: 50px;
-    background-color: #ffffff;
-    justify-content: center;
-    align-items: center;
-    flex-direction: row;
-    margin-left: 10px;
-`;
-
-const BottomSheetControllerText = styled.Text`
-    font-size: 24px;
-    font-weight: bold;
-    color: #000000;
-    margin-right: 10px;
-`;
-
-const SelectConfirmedChatBox = styled.View`
-    width: 100%;
-    height: 50px;
-    background-color: #ffffff;
-
-`;
-
-const SelectConfirmedChat = styled.TouchableOpacity`
-    align-items: center;
-    flex-direction: row;
-    margin-left: 10px;
-`;
-
-const SelectConfirmedChatText = styled.Text`
-    font-size: 16px;
-    color: #000000;
-    margin-left: 10px;
-`;
-
-const ChattingLogBox = styled.TouchableOpacity`
-    width: 100%;
-    background-color: #ffffff;
-    flex-direction: row;
-    align-items: center;
-    padding: 10px;
-`;
-
-const ChattingLogImage = styled.Image` 
-    width: 50px;
-    height: 50px;
-    background-color: #D9D9D9;
-    border-radius: 50px;
-`;
-
-const ChattingContentBox = styled.View`
-    background-color: #ffffff;
-    flex: 1;
-    margin-left: 15px;
-`;
-
-const ChattingNameandAgeBox = styled.View`
-    flex-direction: row;
-`;
-
-const ChattingLogName = styled.Text`
-    font-size: 20px;
-    font-weight: bold;
-    color: #000000;
-`;
-
-const ChattingLogAge = styled.Text`
-    font-size: 16px;
-    color: #749BC2;
-    margin-left: 10px;
-`;
-
-const ChattingLogTimeandTextBox = styled.View`
-    flex-direction: row;
-    justify-content: space-between;
-    margin-top: 10px;
-    margin-bottom: 10px;
-`;
-
-const ChattingLogTime = styled.Text`
-    font-size: 16px;
-    color: #9E9E9E;
-`;
-
-const ChattingLogText = styled.Text`
-    font-size: 16px;
-    color: #000000;
-`;
