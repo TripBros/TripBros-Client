@@ -30,6 +30,7 @@ const Plan: React.FC = () => {
             {
                 startDate: '2024-02-06',
                 endDate: '2024-02-09',
+                country: '태국',
                 city: '방콕',
                 image: ImageSource,
                 memo: '푸팟퐁커리',
@@ -37,6 +38,7 @@ const Plan: React.FC = () => {
             {
                 startDate: '2024-02-14',
                 endDate: '2024-02-15',
+                country: '대한민국',
                 city: '부산',
                 image: ImageSource,
                 memo: '광안대교 가기',

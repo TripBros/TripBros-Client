@@ -15,6 +15,8 @@ import ModifyPasswordConfirm from '../screens/Main/MyPage/ModifyProfile/ModifyPa
 import ModifyPassword from '../screens/Main/MyPage/ModifyProfile/ModifyPassword';
 import DetailPost from '../screens/Main/Search/detailPost';
 import PostRegister from '../screens/Register/Post/postRegister';
+import Alarm from '../screens/Alarm/index';
+import ModificationAccept from '../screens/Alarm/modificationAccept';
 import { PostData } from '../screens/Main/Search/index';
 
 export type RootStackParamList = {
@@ -32,6 +34,8 @@ export type RootStackParamList = {
   ModifyPassword: undefined;
   DetailPost: { postData: PostData };
   PostRegister: undefined;
+  Alarm: undefined;
+  ModificationAccept: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -51,6 +55,8 @@ const RootNavigator: React.FC = () => {
         <Stack.Screen name="ModifyPassword" component={ModifyPassword}/>
         <Stack.Screen name="DetailPost" component={DetailPost} />
         <Stack.Screen name="PostRegister" component={PostRegister} />
+        <Stack.Screen name="Alarm" component={Alarm} />
+        <Stack.Screen name="ModificationAccept" component={ModificationAccept} />
       </Stack.Navigator>
 
   );
