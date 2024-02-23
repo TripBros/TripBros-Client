@@ -32,7 +32,8 @@ flex-direction: row;
 background-color: white;
 align-items: flex-end;
 justify-content: space-between;
-padding: 0 10px 10px;
+padding: 10px;
+margin: 5px 15px;
 `;
 
 const Title = styled.View`

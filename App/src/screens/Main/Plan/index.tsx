@@ -4,20 +4,51 @@ import styled from 'styled-components/native';
 import ImageSource from '../../../assets/Bangkok.jpg';
 import CalendarComponent from './Components/calanderComponent';
 import { useRecoilState } from 'recoil';
-import { ScheduleData } from '../../../libs/Recoil/scheduleList'; 
 import { scheduleListState } from '../../../libs/Recoil/scheduleList';
 import ScheduleList from '../../../components/Schedule/scheduleList';
+import ScheduleInfo from './Components/scheduleInfo';
+
+const classifySchedules = (schedules) => {
+    const today = new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
+
+    const sortSchedules = (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime();
+
+    //지난 여행 일정(종료 날짜가 오늘보다 이전)
+    const pastSchedules = schedules.filter(schedule => {
+    const endDate = new Date(Date.UTC(new Date(schedule.endDate).getFullYear(), new Date(schedule.endDate).getMonth(), new Date(schedule.endDate).getDate()));
+        return endDate < today;
+    }).sort(sortSchedules);
+
+    //예정된 여행 일정(시작 날짜가 오늘보다 이후)
+    const futureSchedules = schedules.filter(schedule => {
+    const startDate = new Date(Date.UTC(new Date(schedule.startDate).getFullYear(), new Date(schedule.startDate).getMonth(), new Date(schedule.startDate).getDate()));
+        return startDate > today;
+    }).sort(sortSchedules);
+
+    //현재 일정(시작 날짜가 오늘 이하이고 종료 날짜가 오늘 이상)
+    const currentSchedules = schedules.filter(schedule => {
+    const startDate = new Date(Date.UTC(new Date(schedule.startDate).getFullYear(), new Date(schedule.startDate).getMonth(), new Date(schedule.startDate).getDate()));
+    const endDate = new Date(Date.UTC(new Date(schedule.endDate).getFullYear(), new Date(schedule.endDate).getMonth(), new Date(schedule.endDate).getDate()));
+        return startDate <= today && endDate >= today;
+    }).sort(sortSchedules);
+
+    return { pastSchedules, currentSchedules, futureSchedules };
+};      
+
 
 const Plan: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState(''); //#2024년 2월 3일
-    const [scheduleInfo, setScheduleInfo] = useState<React.ReactNode>(''); //일정이 없습니다 or 일정 내용들
-    const [refreshing, setRefreshing] = useState(false);
+    const [scheduleInfo, setScheduleInfo] = useState<React.ReactNode>(''); //일정 세부 내용들 or 일정이 없습니다.
+    const [refreshing, setRefreshing] = useState(false); //for 새로고침
+    
     const [scheduleData, setScheduleData] = useRecoilState(scheduleListState);
+
+    const { pastSchedules, currentSchedules, futureSchedules } = classifySchedules(scheduleData);
 
     const onRefresh = () => {
         setRefreshing(true);
         setSelectedDate(''); //새로고침 시 selectedDate 초기화
-        //timeout 임시
+        //timeout(임시)
         setTimeout(() => {
             setRefreshing(false);
         }, 1000);
@@ -33,46 +64,26 @@ const Plan: React.FC = () => {
                 country: '태국',
                 city: '방콕',
                 image: ImageSource,
-                memo: '푸팟퐁커리',
+                memo: '',
             },
             {
-                startDate: '2024-02-14',
-                endDate: '2024-02-15',
+                startDate: '2024-02-20',
+                endDate: '2024-02-24',
                 country: '대한민국',
                 city: '부산',
                 image: ImageSource,
                 memo: '광안대교 가기',
             },
+            {
+                startDate: '2024-02-27',
+                endDate: '2024-02-28',
+                country: '미국',
+                city: '뉴욕',
+                image: ImageSource,
+                memo: '베이글',
+            },
         ]);
     }, [refreshing]);
-    
-    //캘린더에 들어가는 markedDates를 동적으로 생성하기 위함
-    const generateMarkedDates = (scheduleData: ScheduleData[]) => {
-            const markedDates: { [date: string]: any } = {};
-        
-            //배열 순회하면서 startDate랑 endDate만 가져다 씀
-            scheduleData.forEach(schedule => {
-            const startDate = new Date(schedule.startDate); //Date 객체로 변환
-            const endDate = new Date(schedule.endDate);
-        
-                for (let date = new Date(startDate); date <= endDate; date.setDate(date.getDate() + 1)) {
-                    const dateStr = date.toISOString().split('T')[0];
-            
-                    if (dateStr === schedule.startDate) {
-                    markedDates[dateStr] = { startingDay: true, color: '#91C8E4', textColor: 'white' };
-                    } else if (dateStr === schedule.endDate) {
-                    markedDates[dateStr] = { endingDay: true, color: '#91C8E4', textColor: 'white' };
-                    } else {
-                    markedDates[dateStr] = { color: '#AACDDF', textColor: 'white' };
-                    }
-                }
-            });
-        
-            return markedDates;
-        };
-    
-    //markedDates 생성
-    const markedDates = generateMarkedDates(scheduleData);
 
     const NoScheduleInfo = () => (
         <NoScheduleContainer>
@@ -96,21 +107,15 @@ const Plan: React.FC = () => {
         });
 
         if (scheduleInfoForSelectedDate) {
-            const { image, city, memo } = scheduleInfoForSelectedDate;
-    
-            const infoElement = (
-                <ScheduleInfoContainer>
-                    <CityContainer>
-                        <SmallCityImage source={image} />
-                        <CityTitle>{`${city} 여행`}</CityTitle>
-                    </CityContainer>
-                    <NoticeText>잊기 쉬운 정보들을 메모로 남겨보세요!</NoticeText>
-                    <MemoText>{memo}</MemoText>
-                </ScheduleInfoContainer>
+            setScheduleInfo(
+                <ScheduleInfo
+                    image={scheduleInfoForSelectedDate.image}
+                    city={scheduleInfoForSelectedDate.city}
+                    memo={scheduleInfoForSelectedDate.memo}
+                />
             );
-            setScheduleInfo(infoElement);
         } else {
-        setScheduleInfo(<NoScheduleInfo />);
+            setScheduleInfo(<NoScheduleInfo />);
         }
     };
 
@@ -119,23 +124,37 @@ const Plan: React.FC = () => {
                     style={{ backgroundColor: 'white' }}>
             <PlanContainer>
                 <Title>나의 캘린더</Title>
-                <CalendarComponent markedDates={markedDates} onDayPress={handleDayPress} />
+                <CalendarComponent scheduleData={scheduleData} onDayPress={handleDayPress} />
                 <DivisionLine/>
                 <TravlePlanContainer>
                     <TravelPlanTitle>나의 여행일정</TravelPlanTitle>
                     {selectedDate && <CalendarText>{selectedDate}</CalendarText>}
                 </TravlePlanContainer>
-                {selectedDate ? (
-                    // selectedDate가 있을 때 scheduleInfo만 표시
-                    scheduleInfo
-                ) : (
-                    // selectedDate가 없을 때 ScheduleList 또는 "일정이 없습니다." 텍스트 표시
-                    scheduleData.length > 0 ? (
-                        <ScheduleList scheduleData={scheduleData} isDetailed={true}/>
-                    ) : (
-                        <Text>일정이 없습니다.</Text>
-                    )
-                )}
+                {!selectedDate ? (
+                <ScheduleListContainer>
+                    {currentSchedules.length > 0 && (
+                        <ScheduleList scheduleData={currentSchedules} isDetailed={true} />
+                    )}
+                    {futureSchedules.length > 0 && (
+                        <PastFutureContainer>
+                            <ScheduleInfoText>예정된 여행 일정</ScheduleInfoText>
+                            <ScheduleList scheduleData={futureSchedules} isDetailed={true} />
+                        </PastFutureContainer>
+                    )}
+                    {pastSchedules.length > 0 && (
+                        <PastFutureContainer>
+                            <ScheduleInfoText>지난 여행 일정</ScheduleInfoText>
+                            <ScheduleList scheduleData={pastSchedules} isDetailed={true} />
+                        </PastFutureContainer>
+                    )}
+                    {scheduleData.length === 0 && <Text>일정이 없습니다.</Text>}
+                </ScheduleListContainer>
+            ) : (
+                // 캘린더에서 날짜를 선택한 경우에만 scheduleInfo를 보여줌.
+                <ScheduleInfoContainer>
+                    {scheduleInfo}
+                </ScheduleInfoContainer>
+            )}
             </PlanContainer>
         </ScrollView>
     );
@@ -162,7 +181,7 @@ const DivisionLine = styled.View`
 const TravlePlanContainer = styled.View`
     flex-direction: row; 
     align-items: center; 
-    padding: 25px;
+    margin: 25px;
 `;
 
 const TravelPlanTitle = styled.Text`
@@ -176,38 +195,22 @@ const CalendarText = styled.Text`
     margin-left: 10px;
 `;
 
+const ScheduleListContainer = styled.View`
+    flex-direction: column;
+    padding: 0px 10px;
+`;
 const ScheduleInfoContainer = styled.View`
     flex-direction: column;
-    padding: 0px 25px;
+    padding: 0px 15px;
 `;
 
-const CityContainer = styled.View`
-    flex-direction: row;
-    align-items: center;
+const PastFutureContainer = styled.View`
+    margin-top: 20px;
 `;
 
-const SmallCityImage = styled.Image`
-    width: 40px;
-    height: 40px;
-    border-radius: 50px;
-    border: 2px solid #CCCCCC;
-    margin-right: 10px;
-`;
-
-const CityTitle = styled.Text`
-    font-size: 16px;
+const ScheduleInfoText = styled.Text`
     font-weight: bold;
-    margin-bottom: 2px;
-`;
-
-const NoticeText = styled.Text`
-    font-size: 12.5px;
-    color: grey;
-    margin-top: 5px;
-`;
-
-const MemoText = styled.Text`
-    margin-top: 15px;
+    margin-left: 15px;
 `;
 
 const NoScheduleContainer = styled.View`

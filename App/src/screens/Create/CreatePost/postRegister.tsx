@@ -12,7 +12,7 @@ import PreferredSex from '../../../components/Filter/preferredSex';
 import CalendarListModal from '../../../components/Schedule/calanderListModal';
 import DateSelectionBar from '../../../components/Schedule/dateSelectionBar';
 import { PostData } from '../../Main/Search';
-import ImageSource from '../../../assets/basicProfile.jpg';
+import ImageSource from '../../../assets/Bangkok.jpg';
 
 const PostRegister:React.FC = () => {
   const [isCalanderOpen, setIsCalanderOpen] = useState(false);

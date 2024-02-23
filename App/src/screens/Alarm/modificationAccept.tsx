@@ -1,6 +1,5 @@
 import React from "react";
-import { View, SafeAreaView } from "react-native";
-import { Calendar } from 'react-native-calendars';
+import { View, SafeAreaView, Text } from 'react-native';
 import styled from 'styled-components/native';
 
 interface ModifiableScheduleData {
@@ -9,6 +8,7 @@ interface ModifiableScheduleData {
   country: string;
   city: string;
 }
+//장소도 가능
 
 const ModificationAccept: React.FC = () => {
   // 임시로 일정 데이터 정의
@@ -26,9 +26,12 @@ const ModificationAccept: React.FC = () => {
     city: 'City A',
   };
 
+//날짜, 국가&도시, 장소
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <View style={{ marginTop: 20 }}>
+        <Text>닉네임님과의 약속 변경 사항</Text>
+        <Text>날짜가 수정되었어요</Text>
       </View>
     </SafeAreaView>
   );

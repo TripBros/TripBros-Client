@@ -2,10 +2,7 @@ import React from "react";
 import styled from "styled-components/native";
 import { TouchableOpacity } from "react-native";
 import { FontAwesome5 } from '@expo/vector-icons';
-import { AlarmContainer } from "./reminderAlarm";
-import { AlarmTitleContainer } from "./reminderAlarm";
-import { AlarmTitle } from "./reminderAlarm";
-import { AlarmContent } from "./reminderAlarm";
+import { AlarmContainer, AlarmTitleContainer, AlarmTitle, AlarmContent } from "./reminderAlarm";
 
 const RecommendAlarm: React.FC = () => {
   return(
