@@ -1,5 +1,5 @@
-import React, { useEffect,useState,useRef,useMemo,useCallback } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
+import React, { useEffect,useState,useRef,useMemo,useCallback ,} from 'react';
+import { View, Text, TouchableOpacity,StyleSheet, Modal  } from 'react-native';
 import { useRecoilValue } from 'recoil';
 import { userTokenState } from '../../../../libs/Recoil/authState';
 import axios from 'axios';
@@ -23,9 +23,10 @@ import {
     ChattingLogTime
 } from './styles';
 import { useNavigation} from '@react-navigation/native';
+import styled from 'styled-components/native';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../../../navigators/RootNavigator';
-import BottomSheet from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetModal } from '@gorhom/bottom-sheet';
 import { SERVER_BASE_URL } from '../../../../utils/constants';
 //icon
 import { AntDesign } from '@expo/vector-icons';
@@ -44,12 +45,28 @@ const PersonalChat = () => {
     const [confirmedButtonState,setConfrimButtonState] = useState<boolean>(false);
 
     //bottom sheet
+    const [kindOfChat, setKindOfChat] = useState<string>('전체 채팅');
     const [isVisible, setIsVisible] = useState(false);
-    const bottomSheetRef = useRef(null);
+    const bottomSheetRef = useRef<BottomSheetModal>(null);
+    // Bottom Sheet 토글 함수
     const toggleBottomSheet = () => {
+        // 현재 상태에 따라 Bottom Sheet를 열거나 닫습니다.
+        if (isVisible) {
+            bottomSheetRef.current?.close(); // Bottom Sheet 닫기
+        } else {
+            bottomSheetRef.current?.snapToIndex(0); // Bottom Sheet 열기 (첫 번째 snap point로 이동)
+        }
         setIsVisible(!isVisible);
-        console.log(isVisible);
-      };
+    };
+
+    // Bottom Sheet가 닫힐 때 호출될 콜백
+    const handleSheetChanges = useCallback((index: number) => {
+        // index가 -1이면 Bottom Sheet가 완전히 닫힌 상태입니다.
+        if (index === -1) {
+            setIsVisible(false);
+        }
+    }, []);
+
 
 
     //더미 데이터
@@ -142,7 +159,7 @@ const PersonalChat = () => {
         <ChatContainer>
             <BottomSheetControllerBox>
                 <BottomSheetContrller onPress={toggleBottomSheet}>
-                    <BottomSheetControllerText>전체 채팅</BottomSheetControllerText>
+                    <BottomSheetControllerText>{kindOfChat}</BottomSheetControllerText>
                     <AntDesign name="down" size={20} color="black" />
                 </BottomSheetContrller>
             </BottomSheetControllerBox>
@@ -180,31 +197,37 @@ const PersonalChat = () => {
                 );
             })}
         </ChatContainer>
-        <View>
-            <BottomSheet
+        <BottomSheet
                 ref={bottomSheetRef}
-                index={isVisible ? 0 : -1}
-                snapPoints={['25%', '50%']}
+                index={-1} // 기본 상태에서 Bottom Sheet를 숨깁니다.
+                snapPoints={ ['40%']}
+                handleComponent={null} // 핸들 컴포넌트를 제거하여 드래그 비활성화
+                onChange={handleSheetChanges} // Bottom Sheet 상태 변경 시 콜백
             >
-            <View>
-                <Text>Bottom Sheet Content</Text>
-            </View>
-            </BottomSheet>
-        </View>
-        {/* <Animated.View
-        style={[
-          { 
-            position: 'absolute',
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: 500, // Bottom Sheet의 높이
-            backgroundColor: 'white',
-          },
-          animatedStyle,
-        ]}
-      >
-      </Animated.View> */}
+                <View style={{flex: 1, alignItems: 'center'}}>
+                    <ModalButtonContainer bottomSheetRef={bottomSheetRef} // prop으로 bottomSheetRef 전달
+                        setKindOfChat={setKindOfChat}>
+                        <ModalButton onPress={() => {
+                            setKindOfChat('전체 채팅');
+                            bottomSheetRef.current?.close(); // Bottom Sheet 닫기
+                        }}>
+                            <ModalButtonText style={{ color: kindOfChat === '전체 채팅' ? '#749BC2' : '#000000' }}>전체 채팅</ModalButtonText>
+                        </ModalButton>
+                        <ModalButton onPress={() => {
+                            setKindOfChat('받은 채팅');
+                            bottomSheetRef.current?.close(); // Bottom Sheet 닫기
+                        }}>
+                            <ModalButtonText style={{ color: kindOfChat === '받은 채팅' ? '#749BC2' : '#000000' }}>받은 채팅</ModalButtonText>
+                        </ModalButton>
+                        <ModalButton onPress={() => {
+                            setKindOfChat('보낸 채팅');
+                            bottomSheetRef.current?.close(); // Bottom Sheet 닫기
+                        }}>
+                            <ModalButtonText style={{ color: kindOfChat === '보낸 채팅' ? '#749BC2' : '#000000' }}>보낸 채팅</ModalButtonText>
+                        </ModalButton>
+                    </ModalButtonContainer>
+                </View>
+        </BottomSheet>
       </>
 
     );
@@ -212,3 +235,20 @@ const PersonalChat = () => {
 
 export default PersonalChat;
 
+const ModalButtonContainer = styled.View`
+    align-items: center;
+    margin-top: 20px;
+    `;
+
+const ModalButton = styled.TouchableOpacity`
+    width: 200px;
+    height: 50px;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 20px;
+    `;
+const ModalButtonText = styled.Text`
+    color: #000;
+    font-size: 24px;
+    font-weight: 800;
+    `;

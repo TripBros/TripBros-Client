@@ -23,12 +23,14 @@
       "**/*"
     ],
     "ios": {
+      "jsEngine": "hermes",
       "supportsTablet": true,
       "infoPlist": {
       "NSPhotoLibraryUsageDescription": "이 앱은 프로필 사진을 선택하기 위해 사진 라이브러리에 접근합니다."
   }
     },
     "android": {
+      "jsEngine": "hermes",
       "adaptiveIcon": {
         "foregroundImage": "./App/src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
