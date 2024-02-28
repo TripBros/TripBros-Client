@@ -47,6 +47,7 @@ interface messageProp {
   profileImage: string;
   content: string;
   sentAt: string;
+	// isSystemMessage:boolean;
 }
 
 const PersonalChatroom: React.FC = () => {
@@ -190,7 +191,7 @@ const PersonalChatroom: React.FC = () => {
         // 메시지 처리
         const receivedMessage = JSON.parse(message.body);
         setMessages((prevMessages) => [...prevMessages, receivedMessage]);
-        console.log(receivedMessage);
+        console.log('구독한 서버로부터 받은 메시지',receivedMessage);
       },headers);
     };
 

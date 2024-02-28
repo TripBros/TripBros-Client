@@ -34,11 +34,12 @@ import { Feather } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface messageProp {
-    userName: string;
-    profileImage: string;
-    content: string;
-    sentAt: string;
-  }
+  userName: string;
+  profileImage: string;
+  content: string;
+  sentAt: string;
+	// isSystemMessage:boolean;
+}
 const GroupChatroom = () => {
     const route = useRoute();
     const { chatroomId } = route.params as { chatroomId: string };
@@ -47,8 +48,9 @@ const GroupChatroom = () => {
     // 클라이언트 이름 상태 변수
     const [clientName, setClientName] = useState<string>('seungjun'); 
 
+    // 메시지 상태 변수
     const [message, setMessage] = useState<messageProp>({
-      userName: "user",
+      userName: clientName,
       profileImage: "https://placeimg.com/100/100/any",
       content: "",
       sentAt: "",
@@ -185,7 +187,7 @@ const GroupChatroom = () => {
 }, []);
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-            <ChatroomStackHeader title={'dd'} age={"20대 남성"} />
+            <ChatroomStackHeader title={chatroomData.name} age={""} />
             <ChatroomContainer>
                 <ChatroomInfoContainer>
                 <ChatroomTitle>채팅방 제목</ChatroomTitle>
