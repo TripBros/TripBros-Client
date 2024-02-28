@@ -13,7 +13,8 @@ import LikePosts from '../screens/Main/MyPage/LikePosts';
 import Setting from '../screens/Main/MyPage/Setting';
 import ModifyPasswordConfirm from '../screens/Main/MyPage/ModifyProfile/ModifyPasswordConfirm';
 import ModifyPassword from '../screens/Main/MyPage/ModifyProfile/ModifyPassword';
-import PersonalChatroom from '../screens/Main/Chat/PersonalChatroom';
+import PersonalChatroom from '../screens/Main/Chat/ChatroomScreen/PersonalChatroom';
+import GroupChatroom from '../screens/Main/Chat/ChatroomScreen/GroupChatroom';
 
 
 export type RootStackParamList = {
@@ -30,8 +31,11 @@ export type RootStackParamList = {
   };
   ModifyPassword: undefined;
   PersonalChatroom: {
-    roomId: string;
+    chatroomId: string;
   };
+  GroupChatroom: {
+    chatroomId: string;
+  }
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -50,6 +54,7 @@ const RootNavigator: React.FC = () => {
         <Stack.Screen name="ModifyPasswordConfirm" component={ModifyPasswordConfirm}/>
         <Stack.Screen name="ModifyPassword" component={ModifyPassword}/>
         <Stack.Screen name="PersonalChatroom" component={PersonalChatroom}/>
+        <Stack.Screen name="GroupChatroom" component={GroupChatroom} />
       </Stack.Navigator>
 
   );

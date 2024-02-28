@@ -16,15 +16,20 @@ import {
     ChattingLogText,
     ChattingLogTime
 } from './styles';
+import { useNavigation} from '@react-navigation/native';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../../../navigators/RootNavigator';
 
 interface Chat {
     profileImage: string;
     name: string;
     time: string;
     text: string;
+    roomId : string;
 }
 
 const GroupChat = () => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const tokenState = useRecoilValue(userTokenState);
 
 
@@ -33,25 +38,29 @@ const GroupChat = () => {
             profileImage: 'https://placeimg.com/100/100/any',
             name: '대화방 1',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '1'
         },
         {
             profileImage: 'https://placeimg.com/100/100/any',
             name: '대화방 2',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '2'
         },
         {
             profileImage: 'https://placeimg.com/100/100/any',
             name: '대화방 3',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '3'
         },
         {
             profileImage: 'https://placeimg.com/100/100/any',
             name: '대화방 4',
             time: '3분 전',
-            text: '안녕하세요'
+            text: '안녕하세요',
+            roomId: '4'
         },
     ]); // 채팅 데이터를 저장할 상태 변수
     const bringChat = async () => {
@@ -84,7 +93,10 @@ const GroupChat = () => {
             {chats.map((chat, index) => {
                 // 여기에 추가 로직을 작성할 수 있습니다.
                 return (
-                    <ChattingLogBox key={index}>
+                    <ChattingLogBox key={index} onPress={()=>{
+                        console.log('채팅방 클릭');
+                        navigation.navigate('GroupChatroom',{chatroomId: chat.roomId});
+                    }}>
                         <ChattingLogImage source={{ uri: chat.profileImage }} />
                         <ChattingContentBox>
                             <ChattingNameandAgeBox>

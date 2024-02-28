@@ -1,6 +1,5 @@
-import React, { useEffect,useState } from 'react';
-import { View, Text } from 'react-native';
-import styled from 'styled-components/native';
+import React, { useEffect,useState,useRef,useMemo,useCallback } from 'react';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { useRecoilValue } from 'recoil';
 import { userTokenState } from '../../../../libs/Recoil/authState';
 import axios from 'axios';
@@ -26,8 +25,8 @@ import {
 import { useNavigation} from '@react-navigation/native';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../../../navigators/RootNavigator';
-
-
+import BottomSheet from '@gorhom/bottom-sheet';
+import { SERVER_BASE_URL } from '../../../../utils/constants';
 //icon
 import { AntDesign } from '@expo/vector-icons';
 
@@ -45,21 +44,15 @@ const PersonalChat = () => {
     const [confirmedButtonState,setConfrimButtonState] = useState<boolean>(false);
 
     //bottom sheet
-    const [visible, setVisible] = useState(false);
-    const height = useSharedValue(0);
-
-    const animatedStyle = useAnimatedStyle(() => {
-        return {
-        transform: [{ translateY: height.value }],
-        };
-    });
+    const [isVisible, setIsVisible] = useState(false);
+    const bottomSheetRef = useRef(null);
     const toggleBottomSheet = () => {
-        setVisible(!visible);
-        height.value = withSpring(visible ? 300 : 0); // -300은 bottom sheet의 높이에 따라 조정
-        console.log(visible);
+        setIsVisible(!isVisible);
+        console.log(isVisible);
       };
 
 
+    //더미 데이터
     const [chats, setChats] = useState<Chat[]>([
         {
             profileImage: 'https://placeimg.com/100/100/any',
@@ -122,7 +115,7 @@ const PersonalChat = () => {
     const bringChat = async () => {
         try {
             // axios.get 메소드를 사용하여 데이터를 요청합니다.
-            const response = await axios.get('개인채팅 불러오기 API', {
+            const response = await axios.get(`${SERVER_BASE_URL}/api/chat`, {
                 headers: {
                     // 요청 헤더에 accessToken을 포함합니다.
                     'Authorization': `Bearer ${tokenState.accessToken}`
@@ -170,7 +163,7 @@ const PersonalChat = () => {
                 return (
                     <ChattingLogBox key={index} onPress={()=>{
                         console.log('채팅방 클릭');
-                        navigation.navigate('PersonalChatroom',{roomId: chat.roomId});
+                        navigation.navigate('PersonalChatroom',{chatroomId: chat.roomId});
                     }}>
                         <ChattingLogImage source={{ uri: chat.profileImage }} />
                         <ChattingContentBox>
@@ -183,12 +176,21 @@ const PersonalChat = () => {
                                 <ChattingLogTime>{chat.time}</ChattingLogTime>
                             </ChattingLogTimeandTextBox>
                         </ChattingContentBox>
-                        
-                    </ChattingLogBox>
+                    </ChattingLogBox>                 
                 );
             })}
         </ChatContainer>
-        
+        <View>
+            <BottomSheet
+                ref={bottomSheetRef}
+                index={isVisible ? 0 : -1}
+                snapPoints={['25%', '50%']}
+            >
+            <View>
+                <Text>Bottom Sheet Content</Text>
+            </View>
+            </BottomSheet>
+        </View>
         {/* <Animated.View
         style={[
           { 
@@ -209,5 +211,4 @@ const PersonalChat = () => {
 };
 
 export default PersonalChat;
-
 

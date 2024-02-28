@@ -44,6 +44,7 @@ interface LoginResponse {
   }
 
 const SignIn: React.FC = () => {
+
     //네비게이터
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     // 로그인 폼 
@@ -52,7 +53,7 @@ const SignIn: React.FC = () => {
         password: '',
     }); 
     const [userLogin,setUserLogin] = useRecoilState(userLoginState);
-    const setUserToken = useSetRecoilState(userTokenState);
+    const [userToken,setUserToken] = useRecoilState(userTokenState);
 
     // 에러 처리
     const [idError, setIdError] = useState<string>('');
@@ -68,6 +69,7 @@ const SignIn: React.FC = () => {
               setUserLogin(true);
               setUserToken(response.data.data);
               Alert.alert('로그인 성공');
+              console.log(userToken);
               navigation.navigate('Main');
           } else {
               Alert.alert('로그인 실패');
@@ -108,12 +110,6 @@ const SignIn: React.FC = () => {
             // 서버 통신
             console.log(userLogin, '로그인 전 상태');
             loginfn(SignInForm);
-            console.log(SignInForm, '로그인 시도');
-            console.log(userLogin, '로그인 후 상태');
-            // 로그인 성공 시 메인 페이지로 이동
-            if(userLogin === true){
-                navigation.navigate('Main');
-            }
         }
     }   
     

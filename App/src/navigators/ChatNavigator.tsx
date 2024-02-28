@@ -1,8 +1,8 @@
 import React from 'react';
 import { Text } from 'react-native';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
-import PersonalChat from '../screens/Main/Chat/ChattingLog/PersonalChat';
-import GroupChat from '../screens/Main/Chat/ChattingLog/GroupChat';
+import PersonalChat from '../screens/Main/Chat/ChatListScreen/PersonalChat';
+import GroupChat from '../screens/Main/Chat/ChatListScreen/GroupChat';
 import { useRecoilValue } from 'recoil';
 import { userLoginState } from '../libs/Recoil/authState';
 import styled from 'styled-components/native';
