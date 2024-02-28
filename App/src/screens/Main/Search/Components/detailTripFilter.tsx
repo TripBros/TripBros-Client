@@ -13,17 +13,17 @@ const DetailTripFilter: React.FC = () => {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const handlePurposePress = (purpose: string) => {
-    setSelectedPurpose(purpose);
+    setSelectedPurpose(selectedPurpose === purpose ? null : purpose);
   };
-
+  
   const handleAgeRangePress = (ageRange: string) => {
-    setSelectedAgeRange(ageRange);
-  };
+    setSelectedAgeRange(selectedAgeRange === ageRange ? null : ageRange);
+  };  
 
   const handleSexPress = (Sex: string) => {
-    setSelectedSex(Sex);
+    setSelectedSex(selectedSex === Sex ? null : Sex);
   };
-
+  
   const toggleDropdown = () => {
     setIsFilterOpen(!isFilterOpen);
   };

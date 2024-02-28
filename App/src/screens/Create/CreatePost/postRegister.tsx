@@ -240,7 +240,6 @@ const HeaderTitle = styled.Text`
   font-weight: bold;
 `;
 
-//margin 위부터 시계 방향
 const Title = styled.Text`
     font-size: 16px;
     font-weight: bold;

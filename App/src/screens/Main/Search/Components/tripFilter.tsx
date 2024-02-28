@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import { Feather } from '@expo/vector-icons';
 import CalendarListModal from '../../../../components/Schedule/calanderListModal';
 import DateSelectionBar from '../../../../components/Schedule/dateSelectionBar';
+import CountryCityPicker from '../../../../components/Picker/countryCityPicker';
 
 const TripFilter: React.FC = () => {
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
@@ -56,8 +57,8 @@ const TripFilter: React.FC = () => {
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
       <SearchBarContainer>
         <Feather name="search" size={24} color="black" />
-        <SearchInput placeholder="도시를 입력하세요"/>
       </SearchBarContainer>
+      <CountryCityPicker />
 
       <DateSelectionBar
         displayedDates={displayedDates}
@@ -87,10 +88,4 @@ const SearchBarContainer = styled.View`
   padding-vertical: 5px;
   margin: 10px;
   width: 80%;
-`;
-
-const SearchInput = styled.TextInput`
-  flex: 1;
-  margin-left: 20px;
-  height: 40px;
 `;

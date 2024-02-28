@@ -58,5 +58,5 @@ const CalendarComponent: React.FC<CalendarComponentProps> = ({ scheduleData, onD
 export default CalendarComponent;
 
 const CalendarContainer = styled.View`
-  padding-horizontal: 20px;
+  padding: 20px;
 `;

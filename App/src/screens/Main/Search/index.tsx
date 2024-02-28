@@ -10,8 +10,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../navigators/RootNavigator';
 
-//id 추가
 export interface PostData {
+    id: number,
     nickname: string,
     profileImage: any,
     hit : number,
@@ -41,6 +41,7 @@ const Search: React.FC = () => {
     //dateOfWritind: 백엔드에 저장할 때 ISO 8601 형식을 사용하면 JS Date 객체와 호환됨. YYYY-MM-DD T HH:MM:SS
     const postDataList: PostData[] = [
         {
+            id: 1,
             nickname: '이현경',
             profileImage: ImageSource, 
             hit: 10,
@@ -60,9 +61,10 @@ const Search: React.FC = () => {
             requiredHeadCount: 3,
             nowHeadCount: 2,
             chatCount: 2,
-            createdAt: '2024-02-10T11:00:00Z',
+            createdAt: '2024-02-24T11:00:00Z',
         },
         {
+            id: 2,
             nickname: '이현경',
             profileImage: ImageSource, 
             hit: 20,
@@ -82,9 +84,10 @@ const Search: React.FC = () => {
             requiredHeadCount: 3,
             nowHeadCount: 2,
             chatCount: 2,
-            createdAt: '2024-02-9T11:00:00Z',
+            createdAt: '2024-02-23T11:00:00Z',
         },
         {
+            id: 3,
             nickname: '이현경',
             profileImage: ImageSource, 
             hit: 10,
@@ -104,14 +107,13 @@ const Search: React.FC = () => {
             requiredHeadCount: 3,
             nowHeadCount: 2,
             chatCount: 2,
-            createdAt: '2024-02-10T11:00:00Z',
+            createdAt: '2024-02-22T11:00:00Z',
         },
     ];
 
     return (
         <ScrollView style={{ backgroundColor: 'white' }}>
             <SearchContainer>
-            <Title>여행 정보를 입력하세요</Title>
             <TripFilter />
             <DetailTripFilter />
             <SubmitButton>
@@ -136,9 +138,9 @@ const SearchContainer = styled.View`
 `
 
 const Title = styled.Text`
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
-    padding: 18px;
+    margin: 10px 0px 20px 30px;
 `;
 
 const SubmitButton = styled.TouchableOpacity`

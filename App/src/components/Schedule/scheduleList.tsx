@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Text, View, TouchableOpacity } from 'react-native';
+import { Text, View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
 import { ScheduleData } from '../../libs/Recoil/scheduleList';
-import { SwipeListView } from 'react-native-swipe-list-view';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 interface ScheduleElementProps {
   scheduleData: ScheduleData[];
@@ -39,27 +41,53 @@ const calculateDDay = (startDateString: string, endDateString: string): string =
   return '';
 };
 
-const ScheduleList: React.FC<ScheduleElementProps & { onSelectSchedule?: (schedule: ScheduleData) => void }> = ({ scheduleData, isDetailed = false, onSelectSchedule }) => {
-  return (
-    <>
-      {scheduleData.map((schedule, index) => {
-        const dDay = calculateDDay(schedule.startDate, schedule.endDate);
+const ScheduleList: React.FC<ScheduleElementProps & { onSelectSchedule?: (schedule: ScheduleData) => void, onDeleteSchedule?: (index: number) => void }> = ({ scheduleData, isDetailed = false, onDeleteSchedule }) => {
+  const [visibleIndex, setVisibleIndex] = useState<number | null>(null);
 
-        return (
-          <ScheduleListContainer key={index}>
-            <CityImage source={schedule.image} />
-            <ScheduleTextContainer>
-              { isDetailed && <CityTitle>{`${schedule.city} ${dDay}`}</CityTitle>}
-              { !isDetailed && <CityTitle>{`${schedule.country} ${schedule.city}`}</CityTitle>}
-              <Text>{`${formatDate(new Date(schedule.startDate))} - ${formatDate(new Date(schedule.endDate))}`}</Text>
-            </ScheduleTextContainer>
-          </ScheduleListContainer>
-        );
-      })}
-    </>
+  const toggleActionVisibility = (index: number) => {
+    setVisibleIndex(visibleIndex === index ? null : index);
+  };
+
+  return (
+    <TouchableWithoutFeedback onPress={() => setVisibleIndex(null)}>
+      <View onStartShouldSetResponder={() => true}>
+        {scheduleData.map((schedule, index) => {
+          const dDay = calculateDDay(schedule.startDate, schedule.endDate);
+
+          return (
+            <ScheduleListContainer key={schedule.scheduleId}>
+              <CityImage source={schedule.image} />
+              <ScheduleTextContainer>
+                {isDetailed && <CityTitle>{`${schedule.city} 여행 ${dDay}`}</CityTitle>}
+                {!isDetailed && <CityTitle>{`${schedule.country} ${schedule.city}`}</CityTitle>}
+                <Text>{`${formatDate(new Date(schedule.startDate))} - ${formatDate(new Date(schedule.endDate))}`}</Text>
+              </ScheduleTextContainer>
+              <ActionContainer>
+                {visibleIndex === index ? (
+                  <>
+                    <TouchableOpacity onPress={() =>{}} 
+                                      style={{ marginHorizontal: 5 }}>
+                      <AntDesign name="edit" size={20} color="black" />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={() => onDeleteSchedule && onDeleteSchedule(schedule.scheduleId)}>
+                      <Ionicons name="trash-outline" size={20} color="black" />
+                    </TouchableOpacity>
+                  </>
+                ) : (
+                  <TouchableOpacity onPress={() => toggleActionVisibility(index)}>
+                    <MaterialCommunityIcons name="dots-vertical" size={22} color="black" />
+                  </TouchableOpacity>
+                )}
+              </ActionContainer>
+            </ScheduleListContainer>
+          );
+        })}
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 export default ScheduleList;
+
 
 const ScheduleListContainer = styled.View`
     flex-direction: row;
@@ -84,46 +112,9 @@ const CityTitle = styled.Text`
     margin-bottom: 2px;
 `;
 
-const RowFront = styled.View`
-  background-color: #FFF;
-  justify-content: center;
-  height: 50px;
-  margin: 5px;
-  border-radius: 5px;
-  border: 1px solid #CCC;
-  padding-left: 15px;
-`;
-
-const RowBack = styled.View`
-  align-items: center;
-  background-color: #DDD;
-  flex: 1;
-  flex-direction: row;
-  justify-content: flex-end;
-  height: 100%;
-`;
-
-const ActionButton = styled.TouchableOpacity`
-  align-items: center;
-  justify-content: center;
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 75px;
-`;
-
-
-
-const EditButton = styled(ActionButton)`
-  background-color: blue;
-  right: 75px;
-`;
-
-const DeleteButton = styled(ActionButton)`
-  background-color: red;
-  right: 0;
-`;
-
-const ActionButtonText = styled.Text`
-  color: #FFF;
+const ActionContainer = styled.View`
+flex-direction: row;
+justify-content: flex-end; 
+align-items: center;
+flex: 1; 
 `;

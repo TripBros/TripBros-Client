@@ -1,6 +1,7 @@
 import { atom } from 'recoil';
 
 export interface ScheduleData {
+  scheduleId: number;
   startDate: string;
   endDate: string;
   country: string;

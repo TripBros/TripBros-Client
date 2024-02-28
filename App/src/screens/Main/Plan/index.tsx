@@ -1,5 +1,5 @@
 import React , { useState, useEffect } from 'react';
-import { ScrollView, RefreshControl, Text } from 'react-native';
+import { ScrollView, RefreshControl, Text, Modal, View, TouchableOpacity } from 'react-native';
 import styled from 'styled-components/native';
 import ImageSource from '../../../assets/Bangkok.jpg';
 import CalendarComponent from './Components/calanderComponent';
@@ -7,6 +7,8 @@ import { useRecoilState } from 'recoil';
 import { scheduleListState } from '../../../libs/Recoil/scheduleList';
 import ScheduleList from '../../../components/Schedule/scheduleList';
 import ScheduleInfo from './Components/scheduleInfo';
+import DeleteModal from '../../../components/EditAndDelete/deleteModal';
+import axios from 'axios';
 
 const classifySchedules = (schedules) => {
     const today = new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
@@ -35,7 +37,6 @@ const classifySchedules = (schedules) => {
     return { pastSchedules, currentSchedules, futureSchedules };
 };      
 
-
 const Plan: React.FC = () => {
     const [selectedDate, setSelectedDate] = useState(''); //#2024년 2월 3일
     const [scheduleInfo, setScheduleInfo] = useState<React.ReactNode>(''); //일정 세부 내용들 or 일정이 없습니다.
@@ -44,6 +45,25 @@ const Plan: React.FC = () => {
     const [scheduleData, setScheduleData] = useRecoilState(scheduleListState);
 
     const { pastSchedules, currentSchedules, futureSchedules } = classifySchedules(scheduleData);
+
+    //일정 삭제
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [scheduleIdToDelete, setScheduleIdToDelete] = useState<Number | null>(null);
+
+    const onDeleteSchedule = (Id: Number) => {
+        setScheduleData(current => current.filter(schedule => schedule.scheduleId !== Id));
+        setIsModalVisible(false);
+    };
+
+    const showDeleteConfirmation = (Id: Number) => {
+        setScheduleIdToDelete(Id);
+        setIsModalVisible(true);
+    };
+
+    const cancelDelete = () => {
+        setIsModalVisible(false);
+        setScheduleIdToDelete(null);
+    };
 
     const onRefresh = () => {
         setRefreshing(true);
@@ -55,34 +75,31 @@ const Plan: React.FC = () => {
     };
     
     //컴포넌트 마운트 시 scheduleData 배열에 있는 모든 일정을 표시
-    //백엔드에서 받아온 데이터로 변경
     useEffect(() => {
-        setScheduleData([
-            {
-                startDate: '2024-02-06',
-                endDate: '2024-02-09',
-                country: '태국',
-                city: '방콕',
-                image: ImageSource,
-                memo: '',
-            },
-            {
-                startDate: '2024-02-20',
-                endDate: '2024-02-24',
-                country: '대한민국',
-                city: '부산',
-                image: ImageSource,
-                memo: '광안대교 가기',
-            },
-            {
-                startDate: '2024-02-27',
-                endDate: '2024-02-28',
-                country: '미국',
-                city: '뉴욕',
-                image: ImageSource,
-                memo: '베이글',
-            },
-        ]);
+        const fetchSchedules = async () => {
+            try {
+                const response = await axios.get('http://20.214.153.179:8080/api/schedule');
+                const data = response.data;
+                const adaptedData = data.data.map(schedule => ({
+                    scheduleId: schedule.id,
+                    startDate: schedule.startDate,
+                    endDate: schedule.endDate,
+                    country: schedule.country,
+                    city: schedule.city,
+                    image: ImageSource,
+                    memo: schedule.memo,
+                }));
+                setScheduleData(adaptedData);
+            } catch (error) {
+                if (error.response) {
+                    console.log(error.response.data);
+                    console.log(error.response.status);
+                    console.log(error.response.headers);
+                }
+            }
+        };
+
+        fetchSchedules();
     }, [refreshing]);
 
     const NoScheduleInfo = () => (
@@ -123,28 +140,30 @@ const Plan: React.FC = () => {
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
                     style={{ backgroundColor: 'white' }}>
             <PlanContainer>
-                <Title>나의 캘린더</Title>
                 <CalendarComponent scheduleData={scheduleData} onDayPress={handleDayPress} />
                 <DivisionLine/>
                 <TravlePlanContainer>
-                    <TravelPlanTitle>나의 여행일정</TravelPlanTitle>
+                    <TravelPlanTitle>나의 일정</TravelPlanTitle>
                     {selectedDate && <CalendarText>{selectedDate}</CalendarText>}
                 </TravlePlanContainer>
                 {!selectedDate ? (
                 <ScheduleListContainer>
                     {currentSchedules.length > 0 && (
-                        <ScheduleList scheduleData={currentSchedules} isDetailed={true} />
+                        <ScheduleList 
+                            scheduleData={currentSchedules} isDetailed={true} onDeleteSchedule={showDeleteConfirmation}/>
                     )}
                     {futureSchedules.length > 0 && (
                         <PastFutureContainer>
                             <ScheduleInfoText>예정된 여행 일정</ScheduleInfoText>
-                            <ScheduleList scheduleData={futureSchedules} isDetailed={true} />
+                            <ScheduleList 
+                                scheduleData={futureSchedules} isDetailed={true} onDeleteSchedule={showDeleteConfirmation}/>
                         </PastFutureContainer>
                     )}
                     {pastSchedules.length > 0 && (
                         <PastFutureContainer>
                             <ScheduleInfoText>지난 여행 일정</ScheduleInfoText>
-                            <ScheduleList scheduleData={pastSchedules} isDetailed={true} />
+                            <ScheduleList 
+                                scheduleData={pastSchedules} isDetailed={true} onDeleteSchedule={showDeleteConfirmation}/>
                         </PastFutureContainer>
                     )}
                     {scheduleData.length === 0 && <Text>일정이 없습니다.</Text>}
@@ -155,6 +174,12 @@ const Plan: React.FC = () => {
                     {scheduleInfo}
                 </ScheduleInfoContainer>
             )}
+            <DeleteModal
+                isVisible={isModalVisible}
+                onRequestClose={() => setIsModalVisible(false)}
+                onCancel=  {cancelDelete}
+                onConfirm={() => scheduleIdToDelete && onDeleteSchedule(scheduleIdToDelete)}
+            />
             </PlanContainer>
         </ScrollView>
     );
@@ -165,12 +190,6 @@ const PlanContainer = styled.View`
     flex: 1;
     background-color: white;
 `
-
-const Title = styled.Text`
-    font-size: 20px;
-    font-weight: bold;
-    padding: 20px;
-`;
 
 const DivisionLine = styled.View`
     height: 1px;
@@ -185,7 +204,7 @@ const TravlePlanContainer = styled.View`
 `;
 
 const TravelPlanTitle = styled.Text`
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
 `;
 

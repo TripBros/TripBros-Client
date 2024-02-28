@@ -19,7 +19,7 @@ const MemoModal = ({ visible, onClose, onSave, initialMemo }) => {
 
   return (
     <Modal
-      animationType="slide"
+      animationType="none"
       transparent={true}
       visible={visible}
       onRequestClose={onClose}>
@@ -116,11 +116,10 @@ const MemoText = styled.Text`
     color: ${props => props.memo ? 'black' : '#A3A3A3'};
 `;
 
-const ModalContainer = styled.View`
+export const ModalContainer = styled.View`
   flex: 1;
   justify-content: center;
   align-items: center;
-  margin-top: 22px;
   background-color: rgba(0,0,0,0.5);
 `;
 
@@ -140,19 +139,19 @@ const MemoInput = styled.TextInput`
   margin-bottom: 20px;
 `;
 
-const ModalFooter = styled.View`
+export const ModalFooter = styled.View`
   flex-direction: row;
   justify-content: space-between;
   margin-top: 10px; 
 `;
 
-const ButtonContainer = styled.TouchableOpacity`
+export const ButtonContainer = styled.TouchableOpacity`
   padding: 10px 20px;
   border-radius: 5px; 
   flex: 1;
 `;
 
-const ButtonText = styled.Text`
+export const ButtonText = styled.Text`
   text-align: center;
   font-size: 13px;
   font-weight: bold;
