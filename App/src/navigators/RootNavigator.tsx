@@ -19,6 +19,9 @@ import Alarm from '../screens/Alarm/index';
 import ModificationAccept from '../screens/Alarm/modificationAccept';
 import { PostData } from '../screens/Main/Search/index';
 import CreatePlanScreen from '../screens/Create/CreatePlan';
+import PersonalChatroom from '../screens/Main/Chat/ChatroomScreen/PersonalChatroom';
+import GroupChatroom from '../screens/Main/Chat/ChatroomScreen/GroupChatroom';
+
 
 export type RootStackParamList = {
   Main: undefined;
@@ -38,6 +41,12 @@ export type RootStackParamList = {
   Alarm: undefined;
   ModificationAccept: undefined;
   CreatePlan: undefined;
+  PersonalChatroom: {
+    chatroomId: string;
+  };
+  GroupChatroom: {
+    chatroomId: string;
+  }
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -60,6 +69,8 @@ const RootNavigator: React.FC = () => {
         <Stack.Screen name="Alarm" component={Alarm} />
         <Stack.Screen name="ModificationAccept" component={ModificationAccept} />
         <Stack.Screen name="CreatePlan" component={CreatePlanScreen} />
+        <Stack.Screen name="PersonalChatroom" component={PersonalChatroom}/>
+        <Stack.Screen name="GroupChatroom" component={GroupChatroom} />
       </Stack.Navigator>
 
   );
