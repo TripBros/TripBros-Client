@@ -204,7 +204,7 @@ const PersonalChat = () => {
                 handleComponent={null} // 핸들 컴포넌트를 제거하여 드래그 비활성화
                 onChange={handleSheetChanges} // Bottom Sheet 상태 변경 시 콜백
             >
-                <View style={{flex: 1, alignItems: 'center'}}>
+                <View style={{flex: 1, alignItems: 'center',borderRadius:10}}>
                     <ModalButtonContainer bottomSheetRef={bottomSheetRef} // prop으로 bottomSheetRef 전달
                         setKindOfChat={setKindOfChat}>
                         <ModalButton onPress={() => {
@@ -238,6 +238,7 @@ export default PersonalChat;
 const ModalButtonContainer = styled.View`
     align-items: center;
     margin-top: 20px;
+    
     `;
 
 const ModalButton = styled.TouchableOpacity`

@@ -27,6 +27,7 @@ import { userTokenState } from '../../../../libs/Recoil/authState';
 import { useRoute } from '@react-navigation/native';
 import axios from 'axios';
 import * as StompJs from "@stomp/stompjs";
+import { SERVER_BASE_URL } from '../../../../utils/constants';
 //icon
 import { SimpleLineIcons } from "@expo/vector-icons";
 import { Entypo } from "@expo/vector-icons";
@@ -38,15 +39,28 @@ interface messageProp {
   profileImage: string;
   content: string;
   sentAt: string;
-	// isSystemMessage:boolean;
+	isSystemMessage:boolean;
 }
 const GroupChatroom = () => {
     const route = useRoute();
     const { chatroomId } = route.params as { chatroomId: string };
     const token = useRecoilValue(userTokenState);
 
-    // 클라이언트 이름 상태 변수
-    const [clientName, setClientName] = useState<string>('seungjun'); 
+   // 클라이언트 이름 상태 변수
+    const [clientName, setClientName] = useState<string>('');
+
+    const fetchClientName = async () => {
+      try {
+        const response = await axios.get(`${SERVER_BASE_URL}/api/user/nickname`, {
+          headers: {
+            Authorization: `Bearer ${token.accessToken}`,
+            },});
+        setClientName(response.data.data);
+        console.log('클라이언트 이름:', response.data.data);
+      } catch (error) {
+        console.error('API 호출 중 오류 발생:', error);
+      }
+    };
 
     // 메시지 상태 변수
     const [message, setMessage] = useState<messageProp>({
@@ -54,6 +68,7 @@ const GroupChatroom = () => {
       profileImage: "https://placeimg.com/100/100/any",
       content: "",
       sentAt: "",
+      isSystemMessage:false
     });
 
     const initialMessages = [
@@ -61,13 +76,15 @@ const GroupChatroom = () => {
         "userName": "Jinsoo",
         "profileImage": "https://example.com/profiles/jinsoo.jpg",
         "content": "안녕하세요, 첫 번째 메시지입니다!",
-        "sentAt": "2024-02-25T09:00:00Z"
+        "sentAt": "2024-02-25T09:00:00Z",
+        "isSystemMessage":false
       },
       {
         "userName": "Minji",
         "profileImage": "https://example.com/profiles/minji.jpg",
         "content": "오늘 모두 좋은 하루 보내세요!",
-        "sentAt": "2024-02-25T09:05:00Z"
+        "sentAt": "2024-02-25T09:05:00Z",
+        "isSystemMessage":false
       },
       ];
 
@@ -121,7 +138,7 @@ const GroupChatroom = () => {
 
       // 서버로 메시지 전송
       stompClientState.publish({
-        destination: "/pub/chat/9b4c8864-8233-4b6f-9fc0-cf97569fef94", // 메시지를 전송할 서버의 엔드포인트. 실제 엔드포인트로 변경해야 합니다.
+        destination: "/pub/chat/6d2dd46f-7344-4b0d-a017-057c99014b9f", // 메시지를 전송할 서버의 엔드포인트. 실제 엔드포인트로 변경해야 합니다.
         body: JSON.stringify(chatMessage),
       });
       console.log('메시지 전송 후:', chatMessage);
@@ -166,16 +183,13 @@ const GroupChatroom = () => {
     console.log('STOMPJS 웹소켓 연결:', frame);
 
     // 서버에 구독
-    stompClient.subscribe('/sub/chat/9b4c8864-8233-4b6f-9fc0-cf97569fef94', (message) => {
+    stompClient.subscribe('/sub/chat/6d2dd46f-7344-4b0d-a017-057c99014b9f', (message) => {
       // 메시지 처리
       const receivedMessage = JSON.parse(message.body);
       setMessages((prevMessages) => [...prevMessages, receivedMessage]);
       console.log(receivedMessage);
     },headers);
   };
-
-  
-
   // 컴포넌트 언마운트 시 연결 해제
   return () => {
     if (stompClient) {
@@ -185,6 +199,11 @@ const GroupChatroom = () => {
     }
   };
 }, []);
+
+useEffect(() => {
+  fetchClientName();
+}
+, []);
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
             <ChatroomStackHeader title={chatroomData.name} age={""} />

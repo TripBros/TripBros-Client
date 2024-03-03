@@ -9,6 +9,7 @@ import { useRoute } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ChatroomStackHeader from "../../../../components/Header/chatroomStackHeader";
 import styled from "styled-components/native";
+import { SERVER_BASE_URL } from "../../../../utils/constants";
 
 // 채팅을 위한 라이브러리 import
 import SockJS from "sockjs-client";
@@ -47,7 +48,7 @@ interface messageProp {
   profileImage: string;
   content: string;
   sentAt: string;
-	// isSystemMessage:boolean;
+	isSystemMessage:boolean;
 }
 
 const PersonalChatroom: React.FC = () => {
@@ -56,20 +57,36 @@ const PersonalChatroom: React.FC = () => {
   const token = useRecoilValue(userTokenState);
 
   // 클라이언트 이름 상태 변수
-  const [clientName, setClientName] = useState<string>('seungjun'); 
+  const [clientName, setClientName] = useState<string>('');
+
+  const fetchClientName = async () => {
+    try {
+      const response = await axios.get(`${SERVER_BASE_URL}/api/user/nickname`, {
+        headers: {
+          Authorization: `Bearer ${token.accessToken}`,
+          },});
+      setClientName(response.data.data);
+      console.log('클라이언트 이름:', response.data.data);
+    } catch (error) {
+      console.error('API 호출 중 오류 발생:', error);
+    }
+  };
+
 
   const initialMessages = [
     {
       "userName": "seungjun",
       "profileImage": "https://example.com/profiles/jinsoo.jpg",
       "content": "안녕하세요, 첫 번째 메시지입니다!",
-      "sentAt": "2024-02-25T09:00:00Z"
+      "sentAt": "2024-02-25T09:00:00Z",
+      "isSystemMessage": false
     },
     {
       "userName": "Minji",
       "profileImage": "https://example.com/profiles/minji.jpg",
       "content": "오늘 모두 좋은 하루 보내세요!",
-      "sentAt": "2024-02-25T09:05:00Z"
+      "sentAt": "2024-02-25T09:05:00Z",
+      "isSystemMessage": false
     },
     ];
 
@@ -84,6 +101,7 @@ const PersonalChatroom: React.FC = () => {
     profileImage: "https://placeimg.com/100/100/any",
     content: "",
     sentAt: "",
+    isSystemMessage:false
   });
   const [messages, setMessages] = useState<messageProp[]>(initialMessages); // 채팅방 메시지를 저장할 상태
 
@@ -108,10 +126,11 @@ const PersonalChatroom: React.FC = () => {
     [chatroomId],
   ); // chatRoomId가 변경될 때만 함수를 재생성
 
-  // useEffect(() => {
-  //   // 채팅방 정보를 불러오는 API 호출
-  //   fetchChatroomData(chatroomId);
-  // }, [chatroomId, token]); // chatroomId와 userToken이 변경될 때마다 effect를 다시 실행
+  useEffect(() => {
+    // 채팅방 정보를 불러오는 API 호출
+    // fetchChatroomData(chatroomId);
+    fetchClientName();
+  }, [chatroomId, token]); // chatroomId와 userToken이 변경될 때마다 effect를 다시 실행
 
   const formatMessageTime = (sentAt: string) => {
     const sentDate: Date = new Date(sentAt);
@@ -137,7 +156,7 @@ const PersonalChatroom: React.FC = () => {
 
       // 서버로 메시지 전송
       stompClientState.publish({
-        destination: "/pub/chat/9b4c8864-8233-4b6f-9fc0-cf97569fef94", // 메시지를 전송할 서버의 엔드포인트. 실제 엔드포인트로 변경해야 합니다.
+        destination: "/pub/chat/6d2dd46f-7344-4b0d-a017-057c99014b9f", // 메시지를 전송할 서버의 엔드포인트. 실제 엔드포인트로 변경해야 합니다.
         body: JSON.stringify(chatMessage),
       });
       console.log('메시지 전송 후:', chatMessage);
@@ -187,7 +206,7 @@ const PersonalChatroom: React.FC = () => {
       console.log('STOMPJS 웹소켓 연결:', frame);
 
       // 서버에 구독
-      stompClient.subscribe('/sub/chat/9b4c8864-8233-4b6f-9fc0-cf97569fef94', (message) => {
+      stompClient.subscribe('/sub/chat/6d2dd46f-7344-4b0d-a017-057c99014b9f', (message) => {
         // 메시지 처리
         const receivedMessage = JSON.parse(message.body);
         setMessages((prevMessages) => [...prevMessages, receivedMessage]);
