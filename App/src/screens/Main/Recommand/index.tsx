@@ -18,6 +18,17 @@ interface Item {
     bookmark: boolean;
 }
 
+interface recommandPlace {
+    id: number;
+    country: string | undefined
+    city: string | undefined
+    image: string;
+    quarter1: boolean;
+    quarter2: boolean;
+    quarter3: boolean;
+    quarter4: boolean;
+}
+
 const Items = [
     { id: 1, title: '장소1', content: '내용 1', image: require('./tmpImg.jpg'), bookmark: false },
     { id: 2, title: '장소2', content: '내용 2', image: require('./tmpImg.jpg'), bookmark: false },
@@ -31,30 +42,37 @@ const Recommand: React.FC = () => {
     const token = useRecoilValue(userTokenState);
     const loginState = useRecoilValue(userLoginState);
 
-    const [recommandPlace, setRecommandPlace] = useState<string>('');
+    const [recommandPlace, setRecommandPlace] = useState<recommandPlace>();
     const [recommandRestaurants, setRecommandRestaurants] = useState<Item[]>([]);
 
-    // // 추천장소 가져오기
-    // const getRecommandPlace = async () => {
-    //     try {
-    //         const response = await axios.get(`추천장소 API 주소`);
-    //         console.log(response.data);
-    //         setRecommandPlace(response.data);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
+    // 추천장소 가져오기
+    const getRecommandPlace = async () => {
+        try {
+            const response = await axios.get(`${SERVER_BASE_URL}/api/recommand`);
+            console.log(response.data);
+            setRecommandPlace(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
-    // // 해당 추천 장소의 맛집 가져오기
-    // const getRecommandRestaurants = async () => {
-    //     try {
-    //         const response = await axios.post(`추천맛집 API 주소`,recommandPlace);
-    //         console.log(response.data);
-    //         setRecommandRestaurants(response.data);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // }
+    // 해당 추천 장소의 맛집 가져오기
+    const getRecommandRestaurants = async (country:string, city:string) => {
+        try {
+            const response = await axios.get(`${SERVER_BASE_URL}/api/recommand/places`, {
+                params: {
+                    country: country,
+                    city: city
+                }
+            });
+            console.log(response.data);
+            setRecommandRestaurants(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    
+
     // 아이템들을 2개씩 그룹화합니다.
     const groupedItems = recommandRestaurants.reduce<Item[][]>((result, item, index) => {
         const chunkIndex = Math.floor(index / 2);
@@ -103,15 +121,18 @@ const Recommand: React.FC = () => {
       };
       
 
+    // 추천 장소 가져오기
     useEffect(() => {
-        // const fetchData = async () => {
-        //     await getRecommandPlace(); // 첫 번째 함수 호출을 기다립니다.
-        //     await getRecommandRestaurants(); // 첫 번째 함수가 완료된 후 두 번째 함수를 호출합니다.
-        // };
-    
-        // fetchData();
-        setRecommandRestaurants(Items);
-    },[]);
+        getRecommandPlace();
+    }, []);
+
+    // recommandPlace 상태가 설정되면 해당 추천 장소의 맛집 가져오기
+    useEffect(() => {
+        if (recommandPlace?.country && recommandPlace?.city) {
+            getRecommandRestaurants(recommandPlace.country, recommandPlace.city);
+        }
+    }, [recommandPlace]);
+
 
     useEffect(() => {
         console.log('좋아요 상태 변경됨', recommandRestaurants);
@@ -121,11 +142,11 @@ const Recommand: React.FC = () => {
         <RecommandContainer>
             <RecommadPlaceContainer>
                 <RecommandPlaceTheme>#가을여행</RecommandPlaceTheme>
-                <RecommandPlaceTitle>다음 여행은 <Text style = {{color: '#749BC2'}}>오사카</Text> 어떠세요 ?</RecommandPlaceTitle>
+                <RecommandPlaceTitle>다음 여행은 <Text style = {{color: '#749BC2'}}>{recommandPlace?.city}</Text> 어떠세요 ?</RecommandPlaceTitle>
             </RecommadPlaceContainer>
             <RecommandPlaceImageContainer>
                 <RecommandPlaceImage source={require('./osaka.jpg')} />
-                <RecommandPlaceText>오사카</RecommandPlaceText>
+                <RecommandPlaceText>{recommandPlace?.city}</RecommandPlaceText>
             </RecommandPlaceImageContainer>
             <RecommandRestaurantsContainer>
                 <RecommandRestaurantsTitle>Trip<Text style = {{color: '#749BC2'}}>bros</Text>에서 추천하는 <Text style = {{color: '#749BC2'}}>오사카</Text> 맛집</RecommandRestaurantsTitle>
