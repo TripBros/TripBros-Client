@@ -3,12 +3,13 @@ import { ScrollView, RefreshControl, Text, Modal, View, TouchableOpacity } from 
 import styled from 'styled-components/native';
 import ImageSource from '../../../assets/Bangkok.jpg';
 import CalendarComponent from './Components/calanderComponent';
-import { useRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue } from 'recoil';
 import { scheduleListState } from '../../../libs/Recoil/scheduleList';
 import ScheduleList from '../../../components/Schedule/scheduleList';
 import ScheduleInfo from './Components/scheduleInfo';
 import DeleteModal from '../../../components/EditAndDelete/deleteModal';
 import axios from 'axios';
+import { userTokenState } from '../../../libs/Recoil/authState';
 
 const classifySchedules = (schedules) => {
     const today = new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
@@ -43,6 +44,8 @@ const Plan: React.FC = () => {
     const [refreshing, setRefreshing] = useState(false); //for 새로고침
     
     const [scheduleData, setScheduleData] = useRecoilState(scheduleListState);
+    const token = useRecoilValue(userTokenState);
+    console.log(token);
 
     const { pastSchedules, currentSchedules, futureSchedules } = classifySchedules(scheduleData);
 
@@ -78,7 +81,12 @@ const Plan: React.FC = () => {
     useEffect(() => {
         const fetchSchedules = async () => {
             try {
-                const response = await axios.get('http://20.214.153.179:8080/api/schedule');
+                const response = await axios.get('http://20.214.153.179:8080/api/schedule', {
+                headers: {
+                    Authorization: `Bearer ${token.accessToken}`, 
+                },
+            });
+
                 const data = response.data;
                 const adaptedData = data.data.map(schedule => ({
                     scheduleId: schedule.id,
@@ -90,17 +98,16 @@ const Plan: React.FC = () => {
                     memo: schedule.memo,
                 }));
                 setScheduleData(adaptedData);
+                console.log(adaptedData);
             } catch (error) {
                 if (error.response) {
                     console.log(error.response.data);
-                    console.log(error.response.status);
-                    console.log(error.response.headers);
                 }
             }
         };
 
         fetchSchedules();
-    }, [refreshing]);
+    }, [refreshing, token]);
 
     const NoScheduleInfo = () => (
         <NoScheduleContainer>
@@ -179,6 +186,7 @@ const Plan: React.FC = () => {
                 onRequestClose={() => setIsModalVisible(false)}
                 onCancel=  {cancelDelete}
                 onConfirm={() => scheduleIdToDelete && onDeleteSchedule(scheduleIdToDelete)}
+                message="해당 일정을 삭제하시겠습니까?"
             />
             </PlanContainer>
         </ScrollView>

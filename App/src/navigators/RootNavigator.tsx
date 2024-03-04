@@ -19,6 +19,8 @@ import Alarm from '../screens/Alarm/index';
 import ModificationAccept from '../screens/Alarm/modificationAccept';
 import { PostData } from '../screens/Main/Search/index';
 import CreatePlanScreen from '../screens/Create/CreatePlan';
+import ReportPost from '../screens/Main/Search/reportPost';
+import EditPost from '../screens/Create/EditPost';
 
 export type RootStackParamList = {
   Main: undefined;
@@ -34,10 +36,12 @@ export type RootStackParamList = {
   };
   ModifyPassword: undefined;
   DetailPost: { postData: PostData };
-  PostRegister: undefined;
   Alarm: undefined;
   ModificationAccept: undefined;
   CreatePlan: undefined;
+  ReportPost: undefined;
+  PostRegister: undefined;
+  EditPost: { postData: PostData };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -60,6 +64,8 @@ const RootNavigator: React.FC = () => {
         <Stack.Screen name="Alarm" component={Alarm} />
         <Stack.Screen name="ModificationAccept" component={ModificationAccept} />
         <Stack.Screen name="CreatePlan" component={CreatePlanScreen} />
+        <Stack.Screen name="ReportPost" component={ReportPost} />
+        <Stack.Screen name="EditPost" component={EditPost} />
       </Stack.Navigator>
 
   );

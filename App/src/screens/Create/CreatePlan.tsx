@@ -2,17 +2,17 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import StackHeader from '../../components/Header/stackHeader';
 import { Picker } from '@react-native-picker/picker';
-import { Modal,StyleSheet, TouchableOpacity,View,Platform } from 'react-native';
+import { Platform } from 'react-native';
 import styled from 'styled-components/native';
-import { CalendarList } from 'react-native-calendars';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { Alert } from 'react-native';
-import { useNavigation,NavigationProp } from '@react-navigation/native';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigators/RootNavigator';
 import { userTokenState } from '../../libs/Recoil/authState';
-//icon
-import { Feather } from '@expo/vector-icons';
+
+import CalendarListModal from '../../components/Schedule/calendarListModal';
+import DateSelectionBar from '../../components/Schedule/dateSelectionBar';
+
 import { useRecoilValue } from 'recoil';
 
 interface PlanFormProps {
@@ -23,31 +23,34 @@ interface PlanFormProps {
     endDate:string;
     memo: string | null;
 }
+
 interface DateData {
     dateString: string;
     day: number;
     month: number;
     year: number;
     timestamp: number;
-  }
+}
+
 interface DisplayDatesTextProps {
     displayed: boolean;
-  }
-  
+}
+
 //더미데이터
 const countriesAndCities = {
     USA: ['New York', 'Los Angeles', 'Chicago'],
     Canada: ['Toronto', 'Vancouver', 'Montreal'],
-    // 다른 나라와 도시 추가
-  };
-  
+};
+
 const CreatePlanScreen = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const token = useRecoilValue(userTokenState);
-    // 날짜 선택을 위한 상태
-    //YYYY-MM-DD 형식으로 변환
-    const today = new Date().toISOString().split('T')[0];
+
+    //날짜 선택을 위한 상태
     const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+    const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
+    const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
+    const [displayedDates, setDisplayedDates] = useState('');
 
     //서버에 보낼 폼 데이터
     const [planForm, setPlanForm] = useState<PlanFormProps>({
@@ -61,17 +64,47 @@ const CreatePlanScreen = () => {
 
     const toggleCalendar = () => {
         setIsCalendarVisible(!isCalendarVisible);
-      };
+    };
 
-    const handleDayPress = (day:DateData) => {
-        if (!planForm.startDate || (planForm.startDate && planForm.endDate)) {
-            // 시작 날짜 설정 또는 새로운 범위 시작
-            setPlanForm({...planForm, startDate: day.dateString, endDate: ''});
-          } else if (planForm.startDate && !planForm.endDate) {
-            // 종료 날짜 설정
-            setPlanForm({...planForm, endDate: day.dateString});
-          }
-        console.log(day.dateString); // '2021-12-25'
+    const handleDayPress = (day: { dateString: string }) => {
+        const selectedDate = new Date(day.dateString);
+    
+        if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
+            setSelectedStartDate(selectedDate);
+            setSelectedEndDate(null);
+            // 시작 날짜를 선택하고, 확인 버튼의 텍스트를 업데이트
+            setDisplayedDates(formatDate(selectedDate));
+        } else {
+            // 종료 날짜를 설정하고, 시작 및 종료 날짜를 포함한 범위로 텍스트를 업데이트
+            setSelectedEndDate(selectedDate);
+            const startDateString = formatDate(selectedStartDate);
+            const endDateString = formatDate(selectedDate);
+            setDisplayedDates(`${startDateString} ~ ${endDateString}`);
+        }
+    };
+
+    const formatDate = (date: Date) => {
+        const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
+        return date.toLocaleDateString('ko-KR', options);
+    };
+
+    const handleConfirm = () => {
+        setIsCalendarVisible(false);
+        if (selectedStartDate && selectedEndDate) {
+            const startDateString = formatDateToISO(selectedStartDate);
+            const endDateString = formatDateToISO(selectedEndDate);
+            setPlanForm({
+                ...planForm,
+                startDate: startDateString,
+                endDate: endDateString,
+            });
+            setDisplayedDates(`${formatDate(selectedStartDate)} - ${formatDate(selectedEndDate)}`);
+        }
+    };
+
+    //yyyy-mm-dd 꼴로 변경
+    const formatDateToISO = (date) => {
+        return date.toISOString().split('T')[0];
     };
 
     const handleSubmit = async () => {
@@ -122,10 +155,10 @@ const CreatePlanScreen = () => {
                         />
                     </PlanTitleBox>
                     <PlanPlaceBox>
+                        
                         <PlanContainerText>나라를 선택해주세요</PlanContainerText>
                             <Picker
                                 selectedValue={planForm.country}
-                                // style={styles.picker}
                                 onValueChange={(itemValue) => {
                                 setPlanForm({...planForm, country: itemValue, city: ''})
                                 }}>
@@ -134,10 +167,10 @@ const CreatePlanScreen = () => {
                                 <Picker.Item key={country} label={country} value={country} />
                                 ))}
                             </Picker>
+
                             <PlanContainerText>도시를 선택해주세요</PlanContainerText>
                         <Picker
                             selectedValue={planForm.city}
-                            // style={styles.picker}
                             onValueChange={(itemValue) => setPlanForm({...planForm, city: itemValue})}
                             enabled={planForm.country!== ''}>
                             <Picker.Item label="City" value="" />
@@ -148,47 +181,21 @@ const CreatePlanScreen = () => {
                     </PlanPlaceBox>
                     <PlanDateBox>
                         <PlanContainerText>일정 날짜를 선택해주세요</PlanContainerText>
-                        <SearchBarContainer onPress={toggleCalendar}>
-                            <Feather name="calendar" size={24} color="black" />
-                            {planForm.startDate 
-                                ? <DisplayDatesText displayed={true}>{planForm.startDate} ~ {planForm.endDate}</DisplayDatesText>
-                                : <DisplayDatesText displayed={false}>날짜를 선택해주세요</DisplayDatesText>}
-                        </SearchBarContainer>
-                        <Modal
-                            animationType="slide"
-                            transparent={false}
-                            visible={isCalendarVisible}
-                            onRequestClose={() => setIsCalendarVisible(false)}
-                            >
-                            <SafeAreaProvider>
-                                <SafeAreaView style={{ flex: 1 }}></SafeAreaView>
-                                <ModalHeader>
-                                    <CloseButton onPress={() => setIsCalendarVisible(false)}>
-                                        <Feather name="x" size={24} color="black" />
-                                    </CloseButton>
-                                    <HeaderTitle>날짜 선택</HeaderTitle>
-                                    <View style={{width: 24, height: 24}}></View>{/* 빈 요소로 균형을 맞추기 위함 */}
-                                </ModalHeader>
-                            <CalendarList
-                                // 캘린더 옵션 설정
-                                pastScrollRange={0}
-                                futureScrollRange={12}
-                                scrollEnabled={true}
-                                showScrollIndicator={true}
-                                minDate={today}
-                                onDayPress={(day) => handleDayPress(day)}
-                                markedDates={{
-                                    [planForm.startDate]: {selected: true, color: 'blue'},
-                                    [planForm.endDate]: {selected: true, color: 'blue', endingDay: true}, // 이 부분을 수정
-                                  }}
-                                markingType={'period'}
-                            />
-                            <ConfirmButton onPress={toggleCalendar}>
-                                <ConfirmButtonText>확인</ConfirmButtonText>
-                            </ConfirmButton>
-                            </SafeAreaProvider>
-                        
-                        </Modal>
+
+                        <DateSelectionBar
+                            displayedDates={displayedDates}
+                            onPress={toggleCalendar}
+                        />
+
+                        <CalendarListModal
+                            isCalendarVisible={isCalendarVisible}
+                            onClose={() => setIsCalendarVisible(false)}
+                            onDayPress={handleDayPress}
+                            selectedStartDate={selectedStartDate}
+                            selectedEndDate={selectedEndDate}
+                            displayedDates={displayedDates}
+                            onConfirm={handleConfirm}
+                        />
                     </PlanDateBox>
                     <PlanMemoBox>
                         <PlanContainerText>메모</PlanContainerText>
@@ -214,29 +221,6 @@ const CreatePlanScreen = () => {
 };
 
 export default CreatePlanScreen;
-
-const pickerSelectStyles = StyleSheet.create({
-    inputIOS: {
-        fontSize: 16,
-        height: 50, 
-        width: 300, 
-        color: '#000000',
-        borderColor: '#000000', 
-        borderWidth: 1, 
-        borderRadius: 12,
-        padding: 10
-    },
-    inputAndroid: {
-        fontSize: 16,
-        height: 50, 
-        width: 300, 
-        color: '#000000',
-        borderColor: '#000000', 
-        borderWidth: 1, 
-        borderRadius: 12,
-        padding: 10
-    },
-});
 
 const CreatePlanContainer = styled.ScrollView`
     flex: 1;
@@ -283,52 +267,7 @@ const PlanPlaceBox = styled.View`
 
 const PlanDateBox = styled.View`
     margin-bottom: 20px;
-`;
-
-const DisplayDatesText = styled.Text<DisplayDatesTextProps>`
-  flex: 1;
-  height: 40px;
-  padding-horizontal: 20px;
-  padding-vertical: 10px;
-  color: ${props => props.displayed ? 'black' : '#C4C4C4'};
-`;
-const SearchBarContainer = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  border: 1px solid gray;
-  border-radius: 30px;
-  padding-horizontal: 20px;
-  padding-vertical: 5px;
-  margin: 10px;
-`;
-
-const ModalHeader = styled.View`
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  padding: 16px;
-`;
-
-const CloseButton = styled.TouchableOpacity`
-`;
-
-const HeaderTitle = styled.Text`
-  font-size: 20px;
-  font-weight: bold;
-`;
-
-const ConfirmButton = styled.TouchableOpacity`
-  align-items: center;
-  justify-content: center;
-  margin: 20px;
-  padding: 10px;
-  background-color: blue;
-  border-radius: 5px;
-`;
-
-const ConfirmButtonText = styled.Text`
-  color: #ffffff;
-  font-weight: bold;
+    align-items: center;
 `;
 
 const PlanMemoBox = styled.View`

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal, View, TouchableOpacity, Text } from 'react-native';
 import styled from 'styled-components/native';
 import { Feather } from '@expo/vector-icons';
-import CalendarListModal from '../../../../components/Schedule/calanderListModal';
+import CalendarListModal from '../../../../components/Schedule/calendarListModal';
 import DateSelectionBar from '../../../../components/Schedule/dateSelectionBar';
 import CountryCityPicker from '../../../../components/Picker/countryCityPicker';
 
@@ -45,19 +45,20 @@ const TripFilter: React.FC = () => {
     }
   };
 
-  const formatDate = (date: Date) => {
-    const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
-    return date.toLocaleDateString('ko-KR', options);
+  const formatDate = (date) => {
+    let formattedDate = date.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
+    
+    //0부터 일요일
+    const weekdays = ["일", "월", "화", "수", "목", "금", "토"];
+    const weekday = weekdays[date.getDay()];
+  
+    formattedDate = formattedDate.replace(/\.$/, '');
+  
+    return `${formattedDate} (${weekday})`;
   };
-
-  //YYYY-MM-DD 형식으로 변환
-  const today = new Date().toISOString().split('T')[0];
 
   return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <SearchBarContainer>
-        <Feather name="search" size={24} color="black" />
-      </SearchBarContainer>
       <CountryCityPicker />
 
       <DateSelectionBar
@@ -78,14 +79,3 @@ const TripFilter: React.FC = () => {
   );
 };
 export default TripFilter;
-
-const SearchBarContainer = styled.View`
-  flex-direction: row;
-  align-items: center;
-  border: 1px solid gray;
-  border-radius: 30px;
-  padding-horizontal: 20px;
-  padding-vertical: 5px;
-  margin: 10px;
-  width: 80%;
-`;

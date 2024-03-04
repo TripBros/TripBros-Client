@@ -3,7 +3,7 @@ import { Text, Modal, View } from 'react-native';
 import styled from "styled-components/native";
 import { ModalContainer, ModalFooter, ButtonContainer, ButtonText } from "../../screens/Main/Plan/Components/scheduleInfo";
 
-const DeleteModal = ({ isVisible, onRequestClose, onCancel, onConfirm }) => {
+const DeleteModal = ({ isVisible, onRequestClose, onCancel, onConfirm, message }) => {
   return (
     <Modal
       animationType="none"
@@ -12,7 +12,7 @@ const DeleteModal = ({ isVisible, onRequestClose, onCancel, onConfirm }) => {
       onRequestClose={onRequestClose}>
       <ModalContainer>
         <ModalView>
-          <ModalText>해당 일정을 삭제하시겠습니까?</ModalText>
+          <ModalText>{message}</ModalText>
             <ModalFooter>
               <ButtonContainer onPress={onCancel}>
                 <ButtonText>취소</ButtonText>
@@ -30,7 +30,7 @@ const DeleteModal = ({ isVisible, onRequestClose, onCancel, onConfirm }) => {
 export default DeleteModal;
 
 const ModalView = styled.View`
-  width: 70%;
+  width: 80%;
   height: 20%;
   background-color: white;
   border-radius: 10px;
@@ -40,5 +40,6 @@ const ModalView = styled.View`
 
 const ModalText = styled.Text`
   text-align: center;
-  padding: 13px; 
+  padding: 13px;
+  font-weight: bold;
 `;

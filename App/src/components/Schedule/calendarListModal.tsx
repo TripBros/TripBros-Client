@@ -1,11 +1,11 @@
 import React from 'react';
 import { Modal, View, TouchableOpacity, Text } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { CalendarList, DateData } from 'react-native-calendars';
+import { CalendarList } from 'react-native-calendars';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 
-interface CalendarListModalProps {
+interface calendarListModalProps {
   isCalendarVisible: boolean;
   onClose: () => void;
   onDayPress,
@@ -15,7 +15,7 @@ interface CalendarListModalProps {
   onConfirm: () => void;
 }
 
-const CalendarListModal: React.FC<CalendarListModalProps> = ({
+const CalendarListModal: React.FC<calendarListModalProps> = ({
   isCalendarVisible,
   onClose,
   onDayPress,

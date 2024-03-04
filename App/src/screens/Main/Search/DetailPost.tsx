@@ -3,16 +3,14 @@ import styled from 'styled-components/native';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../../navigators/RootNavigator';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { View, TouchableOpacity, Text } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { View, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { Feather } from '@expo/vector-icons';
-import { Octicons } from '@expo/vector-icons';
-import { Fontisto } from '@expo/vector-icons';
-import { SimpleLineIcons } from '@expo/vector-icons';
-import { AntDesign } from '@expo/vector-icons';
-import { calculateTimeWrittenAgo } from '../../../utils/timeUtils';
 import { ScrollView } from 'react-native-gesture-handler';
+
+import { calculateTimeWrittenAgo } from '../../../utils/timeUtils';
+import DetailPostHeader from './Components/DetailPost/detailPostHeader';
+import TripInformation from './Components/DetailPost/tripInformation';
+import DetailPostFooter from './Components/DetailPost/detailPostFooter';
 
 type DetailPostRouteProp = RouteProp<RootStackParamList, 'DetailPost'>;
 
@@ -20,11 +18,40 @@ interface DetailPostProps {
   route: DetailPostRouteProp;
 }
 
+function formatDateRange(startDate: string, endDate: string): string {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  const startYear = start.getFullYear().toString();
+  const startMonth = (start.getMonth() + 1).toString().padStart(2, '0');
+  const startDay = start.getDate().toString().padStart(2, '0');
+
+  const endYear = end.getFullYear().toString();
+  const endMonth = (end.getMonth() + 1).toString().padStart(2, '0');
+  const endDay = end.getDate().toString().padStart(2, '0');
+
+  // 날짜가 같은 경우
+  if (startDate === endDate) {
+    return `${startYear}.${startMonth}.${startDay}`;
+  }
+
+  // 연도가 같은 경우
+  const formattedStartDate = `${startYear}.${startMonth}.${startDay}`;
+  let formattedEndDate = `${endMonth}.${endDay}`;
+
+  // 연도가 다른 경우 endDate에 연도 포함
+  if (startYear !== endYear) {
+    formattedEndDate = `${endYear}.${formattedEndDate}`;
+  }
+
+  return `${formattedStartDate} - ${formattedEndDate}`;
+}
+
 const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
-  const navigation = useNavigation();
   const { postData } = route.params;
 
   const TimeWrittenAgo = calculateTimeWrittenAgo(postData.createdAt);
+  const formattedDateRange = formatDateRange(postData.startDate, postData.endDate);
 
   const [likes, setLikes] = useState(postData.bookmarkCount);
   const [isLiked, setIsLiked] = useState(postData.isBookmarked); //사용자의 좋아요 여부
@@ -44,14 +71,7 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
   return (
     <SafeAreaProvider>
       <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <HeaderContainer>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="chevron-back" size={25} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => {}}>
-          <Ionicons name="ellipsis-vertical" size={20} color="black" />
-        </TouchableOpacity>
-      </HeaderContainer>
+        <DetailPostHeader postData={postData}/>
 
       <ScrollView>
       <View>
@@ -90,10 +110,10 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
 
         <DetailPostContainer>
           <Title>{postData.title}</Title>
-            <DetailPostHeader>
+            <PurposeAndTimeContainer>
               <PurposeText>{`# ${postData.purpose}`}</PurposeText>
               <TimeWrittenAgoText>{TimeWrittenAgo}</TimeWrittenAgoText>
-            </DetailPostHeader>
+            </PurposeAndTimeContainer>
 
             <DivisionLine/>
             <ContentContainer>
@@ -105,53 +125,19 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
               <ChatViewText style={{ marginLeft: 10 }}>{`조회 ${postData.hit}`}</ChatViewText>
             </RowContainer>
 
-          <RoundedBackground>
-            <RowContainer>
-              <SimpleLineIcons name="plane" size={22} color="black" />
-              <DatailText>{`${postData.country} ${postData.city}`}</DatailText>
-            </RowContainer>
-            <RowContainer>
-              <Feather name="calendar" size={22} color="black" />
-              <DatailText>{`${postData.startDate} - ${postData.endDate}`}</DatailText>
-            </RowContainer>
-            <RowContainer>
-              <Octicons name="person" size={22} color="black" />
-              <DatailText>{`${postData.nowHeadCount}/${postData.requiredHeadCount}명`}</DatailText>
-            </RowContainer>
-            <RowContainer>
-              <Fontisto name="person" size={22} color="black" />
-              <DatailText>{`${postData.preferAgeRange} 선호`}</DatailText>
-            </RowContainer>
-            <RowContainer>
-              <Fontisto name="person" size={22} color="black" />
-              <DatailText>{`${postData.preferSex} 선호`}</DatailText>
-            </RowContainer>
-          </RoundedBackground>
+            <TripInformation postData={postData} formattedDateRange={formattedDateRange} />
         </DetailPostContainer>
       </ScrollView>
 
-      <DetailPostFooter>
-        <LikeContainer onPress={handleLikePress}>
-          <AntDesign name={isLiked ? "heart" : "hearto"} size={19} color="red"/>
-          <LikeText>{likes}</LikeText>
-        </LikeContainer>
-        <ChatButtonContainer onPress={() => {}}>
-          <ChatStartText>1:1 채팅 시작하기</ChatStartText>
-        </ChatButtonContainer>
-      </DetailPostFooter>
+        <DetailPostFooter 
+          likes={likes}
+          isLiked={isLiked}
+          handleLikePress={handleLikePress}/>
       </SafeAreaView>
     </SafeAreaProvider>
   );
 }
 export default DetailPost;
-
-const HeaderContainer = styled.View`
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: white;
-`;
 
 const ProfileContainer = styled.View`
   flex-direction: row;
@@ -187,7 +173,7 @@ const Title = styled.Text`
   font-weight: bold;
 `;
 
-const DetailPostHeader = styled.View`
+const PurposeAndTimeContainer = styled.View`
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
@@ -232,46 +218,6 @@ const ChatViewText = styled.Text`
   color: grey;
 `;
 
-const DatailText = styled.Text`
-  font-size: 14px;
-  margin-left: 10px;
-`;
-
-const DetailPostFooter = styled.View`
-  flex-direction: row;
-  align-items: center;
-  margin-top: 10px;
-`;
-
-const LikeContainer = styled.TouchableOpacity`
-  flex-direction: row;
-  align-items: center;
-  margin: 0px 30px;
-`;
-
-const LikeText = styled.Text`
-  margin-left: 5px;
-`;
-
-const ChatButtonContainer = styled.TouchableOpacity`
-  background-color: #91C8E4;
-  border-radius: 5px;
-`
-
-const ChatStartText = styled.Text`
-  color: white;
-  padding: 15px 80px;
-  font-size: 14px;
-  font-weight: 700;
-`;
-
-const RoundedBackground = styled.View`
-  background-color: #F9F9F9;
-  border-radius: 10px;
-  padding: 10px 15px;
-  margin-top: 10px;
-`;
-
 const HorizontalView = styled.View`
   flex-direction: row;
   margin: 15px 25px 0px;
@@ -280,7 +226,7 @@ const HorizontalView = styled.View`
 `;
 
 const TextContainer = styled.View`
-  background-color:  #F9F9F9;
+  background-color:  #F1F1F1;
   border-radius: 30px;
   margin-right: 7px;
   margin-bottom: 10px;

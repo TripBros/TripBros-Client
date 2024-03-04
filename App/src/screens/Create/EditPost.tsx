@@ -1,35 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import { SafeAreaView, ScrollView, View, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useRecoilValue } from 'recoil';
-import { scheduleListState } from '../../../libs/Recoil/scheduleList';
-import ScheduleList from '../../../components/Schedule/scheduleList';
-import { ScheduleData } from '../../../libs/Recoil/scheduleList';
-import HeadCounter from './Components/headCounter';
-import PreferredAgeRange from '../../../components/Filter/preferredAgeRange';
-import PreferredSex from '../../../components/Filter/preferredSex';
-import CalendarListModal from '../../../components/Schedule/calendarListModal';
-import DateSelectionBar from '../../../components/Schedule/dateSelectionBar';
-import { PostData } from '../../Main/Search';
-import ImageSource from '../../../assets/Bangkok.jpg';
+import { scheduleListState } from '../../libs/Recoil/scheduleList';
+import ScheduleList from '../../components/Schedule/scheduleList';
+import { ScheduleData } from '../../libs/Recoil/scheduleList';
+import HeadCounter from './CreatePost/Components/headCounter';
+import PreferredAgeRange from '../../components/Filter/preferredAgeRange';
+import PreferredSex from '../../components/Filter/preferredSex';
+import CalendarListModal from '../../components/Schedule/calendarListModal';
+import DateSelectionBar from '../../components/Schedule/dateSelectionBar';
+import { PostData } from '../Main/Search';
+import ImageSource from '../../assets/Bangkok.jpg';
 
-const PostRegister:React.FC = () => {
+const EditPost = ({ route }) => {
+  const { postData } = route.params;
+
   const [isCalanderOpen, setIsCalanderOpen] = useState(false);
   const scheduleData = useRecoilValue(scheduleListState); //read only
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData | null>(null);
 
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
-  const [Headcount, setHeadCount] = useState<number>(0);
-  const [selectedAgeRange, setSelectedAgeRange] = useState<string>('');
-  const [selectedSex, setSelectedSex] = useState<string>('');
+  //postData 데이터로 초기화
+  const [title, setTitle] = useState(postData.title);
+  const [content, setContent] = useState(postData.content);
+  const [selectedStartDate, setSelectedStartDate] = useState(new Date(postData.startDate));
+  const [selectedEndDate, setSelectedEndDate] = useState(new Date(postData.endDate));
+  const [displayedDates, setDisplayedDates] = useState('');
+
+  const [Headcount, setHeadCount] = useState<number>(postData.requiredHeadCount);
+  const [selectedAgeRange, setSelectedAgeRange] = useState<string>(postData.preferAgeRange);
+  const [selectedSex, setSelectedSex] = useState<string>(postData.preferSex);
   
   const [selectedView, setSelectedView] = useState('scheduleList'); //'scheduleList' 또는 'scheduleForm'
   const [isCalendarVisible, setIsCalendarVisible] = useState(false); //캘린더 리스트 모달
-  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
-  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
-  const [displayedDates, setDisplayedDates] = useState<string>('');
+
+  useEffect(() => {
+    // 날짜 범위 문자열 업데이트
+    const startDateString = formatDate(selectedStartDate);
+    const endDateString = formatDate(selectedEndDate);
+    setDisplayedDates(`${startDateString} - ${endDateString}`);
+  }, [selectedStartDate, selectedEndDate]);
 
   const toggleCalendar = () => {
     setIsCalendarVisible(!isCalendarVisible);
@@ -129,7 +140,7 @@ const PostRegister:React.FC = () => {
         <TouchableOpacity onPress={() => {}}>
           <Feather name="x" size={24} color="black" />
         </TouchableOpacity>
-        <HeaderTitle>게시글 작성</HeaderTitle>
+        <HeaderTitle>게시글 수정</HeaderTitle>
         <View style={{ width: 24 }}></View>
       </Header>
 
@@ -220,13 +231,13 @@ const PostRegister:React.FC = () => {
       </ScrollView>
       <View>
         <SubmitButton onPress={handleSubmit}>
-          <SubmitButtonText>등록하기</SubmitButtonText>
+          <SubmitButtonText>수정 완료</SubmitButtonText>
         </SubmitButton>
       </View>
     </SafeAreaView>
   );
 }
-export default PostRegister;
+export default EditPost;
 
 const Header = styled.View`
   flex-direction: row;
