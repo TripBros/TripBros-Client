@@ -14,6 +14,8 @@ import DateSelectionBar from '../../../components/Schedule/dateSelectionBar';
 import { PostData } from '../../Main/Search';
 import ImageSource from '../../../assets/Bangkok.jpg';
 
+import CreateCountryCityPicker from '../../../components/Picker/createCountryCityPicker';
+
 const PostRegister:React.FC = () => {
   const [isCalanderOpen, setIsCalanderOpen] = useState(false);
   const scheduleData = useRecoilValue(scheduleListState); //read only
@@ -161,7 +163,7 @@ const PostRegister:React.FC = () => {
         {selectedView === 'scheduleList' && (
           <>
             <PickContainer>
-              <Feather name="calendar" size={24} color="black" />
+              <Feather name="calendar" size={24} color="black" style={{ marginRight: 5 }}/>
               <HeaderTitle>나의 일정 캘린더</HeaderTitle>
               <CircleButton onPress={toggleDropdown}>
                 <Feather name={isCalanderOpen ? "chevron-up" : "chevron-down"} size={24} color="black"/>
@@ -182,10 +184,8 @@ const PostRegister:React.FC = () => {
         )}
         {selectedView === 'scheduleForm' && (
           <>
-            <Title>나라를 선택해주세요</Title>
-            <PostTitleInput placeholder="나라를 선택해주세요"/>
-            <Title>도시를 선택해주세요</Title>
-            <PostTitleInput placeholder="도시를 선택해주세요"/>
+            <CreateCountryCityPicker />
+            
             <Title>날짜를 선택해주세요</Title>
             <View style={{ flex: 1, alignItems: 'center' }}>
             <DateSelectionBar
@@ -238,6 +238,7 @@ const Header = styled.View`
 const HeaderTitle = styled.Text`
   text-align: center;
   font-weight: bold;
+  margin-right: 5px;
 `;
 
 const Title = styled.Text`
@@ -283,7 +284,7 @@ const ButtonText = styled.Text`
   font-weight: bold;
 `;
 
-  const PickContainer = styled.View`
+const PickContainer = styled.View`
     flex-direction: row;
     justify-content: center;
     align-items: center;

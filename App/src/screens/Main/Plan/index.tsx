@@ -11,6 +11,9 @@ import DeleteModal from '../../../components/EditAndDelete/deleteModal';
 import axios from 'axios';
 import { userTokenState } from '../../../libs/Recoil/authState';
 
+import useHandleScroll from '../../../hooks/useHandleScroll';
+import PlusButton from '../../../components/ActionButton/PlusButton';
+
 const classifySchedules = (schedules) => {
     const today = new Date(Date.UTC(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()));
 
@@ -39,6 +42,8 @@ const classifySchedules = (schedules) => {
 };      
 
 const Plan: React.FC = () => {
+    const { handleScroll, showButton } = useHandleScroll();
+    
     const [selectedDate, setSelectedDate] = useState(''); //#2024년 2월 3일
     const [scheduleInfo, setScheduleInfo] = useState<React.ReactNode>(''); //일정 세부 내용들 or 일정이 없습니다.
     const [refreshing, setRefreshing] = useState(false); //for 새로고침
@@ -144,8 +149,10 @@ const Plan: React.FC = () => {
     };
 
     return (
+        <>
         <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
-                    style={{ backgroundColor: 'white' }}>
+                    style={{ backgroundColor: 'white' }}
+                    onScroll={handleScroll} scrollEventThrottle={10}>
             <PlanContainer>
                 <CalendarComponent scheduleData={scheduleData} onDayPress={handleDayPress} />
                 <DivisionLine/>
@@ -190,6 +197,8 @@ const Plan: React.FC = () => {
             />
             </PlanContainer>
         </ScrollView>
+        {showButton && <PlusButton />}
+        </>
     );
 };
 export default Plan;

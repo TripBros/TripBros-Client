@@ -1,17 +1,14 @@
 import React  from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Header from '../components/Header';
-import { Image, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import styled from 'styled-components/native';
 
-// Import your screens here
 import Recommand from '../screens/Main/Recommand';
 import Plan from '../screens/Main/Plan';
 import Search from '../screens/Main/Search';
 import Chat from '../screens/Main/Chat';
 import MyPage from '../screens/Main/MyPage';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import PlusButton from '../components/ActionButton/PlusButton'
 
 //image
 import { SimpleLineIcons } from '@expo/vector-icons';
@@ -20,16 +17,13 @@ import { Feather } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 import { MaterialIcons } from '@expo/vector-icons';
 
-
-
 const Tab = createBottomTabNavigator();
 
-const BottomNavigator = () => {
+const BottomNavigator = () => {    
     return (
         <Background style={{ flex: 1 }}>
             <SafeAreaView style={{ flex: 1 , paddingBottom : -50}}>
                 <Header/>
-                <PlusButton/>
                 <Tab.Navigator
                 screenOptions={{
                     headerShown: false,

@@ -12,6 +12,7 @@ import { userTokenState } from '../../libs/Recoil/authState';
 
 import CalendarListModal from '../../components/Schedule/calendarListModal';
 import DateSelectionBar from '../../components/Schedule/dateSelectionBar';
+import CreateCountryCityPicker from '../../components/Picker/createCountryCityPicker';
 
 import { useRecoilValue } from 'recoil';
 
@@ -154,31 +155,8 @@ const CreatePlanScreen = () => {
                             placeholder="일정 제목을 입력해주세요"
                         />
                     </PlanTitleBox>
-                    <PlanPlaceBox>
-                        
-                        <PlanContainerText>나라를 선택해주세요</PlanContainerText>
-                            <Picker
-                                selectedValue={planForm.country}
-                                onValueChange={(itemValue) => {
-                                setPlanForm({...planForm, country: itemValue, city: ''})
-                                }}>
-                                <Picker.Item label="Country" value="" />
-                                {Object.keys(countriesAndCities).map(country => (
-                                <Picker.Item key={country} label={country} value={country} />
-                                ))}
-                            </Picker>
 
-                            <PlanContainerText>도시를 선택해주세요</PlanContainerText>
-                        <Picker
-                            selectedValue={planForm.city}
-                            onValueChange={(itemValue) => setPlanForm({...planForm, city: itemValue})}
-                            enabled={planForm.country!== ''}>
-                            <Picker.Item label="City" value="" />
-                            {planForm.country ? countriesAndCities[planForm.country].map(city => (
-                            <Picker.Item key={city} label={city} value={city} />
-                            )) : null}
-                        </Picker>
-                    </PlanPlaceBox>
+                        <CreateCountryCityPicker />
                     <PlanDateBox>
                         <PlanContainerText>일정 날짜를 선택해주세요</PlanContainerText>
 

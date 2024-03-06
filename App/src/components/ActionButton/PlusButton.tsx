@@ -8,7 +8,6 @@ import { RootStackParamList } from '../../navigators/RootNavigator';
 import { useRecoilValue } from "recoil";
 import { userLoginState } from '../../libs/Recoil/authState';
 
-
 const PlusButton: React.FC = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const loginState = useRecoilValue(userLoginState);
@@ -26,7 +25,7 @@ const PlusButton: React.FC = () => {
       flex:1,
       position: 'absolute',
       right: 0,
-      bottom: 80,
+      bottom: 0,
       width: 90,
       height: 90,
       zIndex: 10,

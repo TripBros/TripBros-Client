@@ -24,16 +24,21 @@
     ],
     "ios": {
       "supportsTablet": true,
+      "bundleIdentifier": "com.tripbros",
+      "config": {
+        "googleMapsApiKey": "AIzaSyBGKCwKZnhfyBiEK2GaZ8n8CG-YwtqLrcU"
+      },
       "infoPlist": {
-      "NSPhotoLibraryUsageDescription": "이 앱은 프로필 사진을 선택하기 위해 사진 라이브러리에 접근합니다."
-  }
+        "NSPhotoLibraryUsageDescription": "이 앱은 프로필 사진을 선택하기 위해 사진 라이브러리에 접근합니다."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./App/src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permissions": ["READ_EXTERNAL_STORAGE"]
+      "permissions": ["READ_EXTERNAL_STORAGE"],
+      "package": "com.tripbros"
     },
     "web": {
       "favicon": ""

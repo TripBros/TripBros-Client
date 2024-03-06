@@ -10,6 +10,9 @@ import { userLoginState } from '../../../libs/Recoil/authState';
 //icon
 import { AntDesign } from '@expo/vector-icons';
 
+import useHandleScroll from '../../../hooks/useHandleScroll';
+import PlusButton from '../../../components/ActionButton/PlusButton';
+
 interface Item {
     id: number;
     title: string;
@@ -30,6 +33,7 @@ const Recommand: React.FC = () => {
     const navigation = useNavigation();
     const token = useRecoilValue(userTokenState);
     const loginState = useRecoilValue(userLoginState);
+    const { handleScroll, showButton } = useHandleScroll();
 
     const [recommandPlace, setRecommandPlace] = useState<string>('');
     const [recommandRestaurants, setRecommandRestaurants] = useState<Item[]>([]);
@@ -118,7 +122,8 @@ const Recommand: React.FC = () => {
       }, [recommandRestaurants]);
       
     return (
-        <RecommandContainer>
+        <>
+        <RecommandContainer onScroll={handleScroll} scrollEventThrottle={10}>
             <RecommadPlaceContainer>
                 <RecommandPlaceTheme>#가을여행</RecommandPlaceTheme>
                 <RecommandPlaceTitle>다음 여행은 <Text style = {{color: '#749BC2'}}>오사카</Text> 어떠세요 ?</RecommandPlaceTitle>
@@ -146,7 +151,8 @@ const Recommand: React.FC = () => {
                 ))}
             </RecommandRestaurantsContainer>
         </RecommandContainer>
-                                
+        {showButton && <PlusButton />}
+        </>
     );
 };
 

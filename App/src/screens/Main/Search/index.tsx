@@ -10,6 +10,9 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../../navigators/RootNavigator';
 
+import useHandleScroll from '../../../hooks/useHandleScroll';
+import PlusButton from "../../../components/ActionButton/PlusButton"
+
 export interface PostData {
     id: number,
     nickname: string,
@@ -36,6 +39,7 @@ export interface PostData {
 
 const Search: React.FC = () => {
     const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+    const { handleScroll, showButton } = useHandleScroll();
 
     //백엔드에서 받아온 데이터로 변경
     //dateOfWritind: 백엔드에 저장할 때 ISO 8601 형식을 사용하면 JS Date 객체와 호환됨. YYYY-MM-DD T HH:MM:SS
@@ -112,7 +116,8 @@ const Search: React.FC = () => {
     ];
 
     return (
-        <ScrollView style={{ backgroundColor: 'white' }}>
+        <>
+        <ScrollView onScroll={handleScroll} scrollEventThrottle={10} style={{ backgroundColor: 'white' }}>
             <SearchContainer>
             <TripFilter />
             <DetailTripFilter />
@@ -128,6 +133,8 @@ const Search: React.FC = () => {
             </TouchableOpacity>
         ))}
         </ScrollView>
+        {showButton && <PlusButton />}
+        </>
     );
 };
 export default Search;

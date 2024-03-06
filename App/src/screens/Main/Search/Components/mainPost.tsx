@@ -7,16 +7,16 @@ import { AntDesign } from '@expo/vector-icons';
 import { calculateTimeWrittenAgo } from '../../../../utils/timeUtils';
 import { PostData } from '../index';
 
-const MainPost: React.FC<{postData: PostData}> = ({ postData }) => {
-
-  //'MM.DD' 형식으로 문자열 생성
-  const formatDate = (dateString: string) => {
+//'MM.DD' 형식으로 문자열 생성
+export const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     const month = date.getMonth() + 1;
     const day = date.getDate();
 
     return `${month.toString().padStart(2, '0')}.${day.toString().padStart(2, '0')}`;
-  };
+};
+
+const MainPost: React.FC<{postData: PostData}> = ({ postData }) => {
 
   const TimeWrittenAgo = calculateTimeWrittenAgo(postData.createdAt);
   const FormattedStartDate = formatDate(postData.startDate);
