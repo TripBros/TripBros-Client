@@ -35,6 +35,11 @@ export interface PostData {
     nowHeadCount: number,
     chatCount: number,
     createdAt: string,
+
+    placeName?: string,
+    placeLatitude?: number,
+    placeLongitude?: number,
+    placeId?: string,
 };
 
 const Search: React.FC = () => {
@@ -89,6 +94,10 @@ const Search: React.FC = () => {
             nowHeadCount: 2,
             chatCount: 2,
             createdAt: '2024-02-23T11:00:00Z',
+            placeName: 'Liberty Bagels Midtown, West 35th Street, New York, NY, USA',
+            placeLatitude: 40.7524936,
+            placeLongitude: -73.99252969999999,
+            placeId: 'ChIJEWqQDLJZwokR8K5wVBL9n6g',
         },
         {
             id: 3,

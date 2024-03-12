@@ -3,14 +3,17 @@ import styled from 'styled-components/native';
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../../navigators/RootNavigator';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
-import { View, TouchableOpacity } from 'react-native';
+import { View, TouchableOpacity, Linking, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { ScrollView } from 'react-native-gesture-handler';
+import { SimpleLineIcons } from '@expo/vector-icons';
 
 import { calculateTimeWrittenAgo } from '../../../utils/timeUtils';
 import DetailPostHeader from './Components/DetailPost/detailPostHeader';
 import TripInformation from './Components/DetailPost/tripInformation';
 import DetailPostFooter from './Components/DetailPost/detailPostFooter';
+
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 
 type DetailPostRouteProp = RouteProp<RootStackParamList, 'DetailPost'>;
 
@@ -56,6 +59,16 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
   const [likes, setLikes] = useState(postData.bookmarkCount);
   const [isLiked, setIsLiked] = useState(postData.isBookmarked); //사용자의 좋아요 여부
 
+  const placeUrl = `https://www.google.com/maps/place/?q=place_id:${postData.placeId}`;
+
+  const handlePlacePress = async () => {
+    try {
+      await Linking.openURL(placeUrl);
+    } catch (err) {
+      console.error("Couldn't load page", err);
+    }
+  };
+
   const handleLikePress = () => {
     setIsLiked(!isLiked);
     setLikes(isLiked ? likes - 1 : likes + 1);
@@ -80,7 +93,7 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
             <ProfileImage source={postData.profileImage}/>
             <View>
               <NameText>{postData.nickname}</NameText>
-              <AgeSexText>{`${postData.age} ${postData.sex}`}</AgeSexText>
+              <Text style={{ fontSize: 12 }}>{`${postData.age} ${postData.sex}`}</Text>
             </View>
           </View>
           <TouchableOpacity onPress={toggleProfileMore}>
@@ -119,7 +132,32 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
             <ContentContainer>
               <Content>{postData.content}</Content>
             </ContentContainer>
-            
+
+            {postData.placeLatitude !== undefined && postData.placeLongitude !== undefined && (
+              <>
+              <Text style={{ fontSize: 14, fontWeight: 'bold', marginBottom: 3 }}>장소</Text>
+                <TouchableOpacity onPress={handlePlacePress}>
+                <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 5 }}>
+                  <Text style={{ fontSize: 13, marginRight: 6 }}>{postData.placeName}</Text>
+                  <SimpleLineIcons name="arrow-right" size={16} color="black" />
+                </View>
+                </TouchableOpacity>
+              <MapView 
+              provider={PROVIDER_GOOGLE}
+              style={{ width: '100%', height: 150, marginVertical: 10, borderRadius: 5 }}
+              initialRegion={{
+                latitude: postData.placeLatitude,
+                longitude: postData.placeLongitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421, 
+              }}>
+              <Marker
+                coordinate={{ latitude: postData.placeLatitude, longitude: postData.placeLongitude }}
+                pinColor="#2D63E2"/>
+              </MapView>
+              </>
+            )}
+
             <RowContainer>
               <ChatViewText>{`채팅 ${postData.chatCount}`}</ChatViewText>
               <ChatViewText style={{ marginLeft: 10 }}>{`조회 ${postData.hit}`}</ChatViewText>
@@ -158,10 +196,6 @@ const NameText = styled.Text`
   font-size: 13px;
   margin-bottom: 4px;
   font-weight: bold;
-`;
-
-const AgeSexText = styled.Text`
-  font-size: 12.5px;
 `;
 
 const DetailPostContainer = styled.View`
@@ -210,7 +244,8 @@ const Content = styled.Text`
 const RowContainer = styled.View`
   flex-direction: row;
   align-items: center;
-  padding: 7px 0px;
+  padding-top: 20px;
+  padding-bottom: 7px;
 `;
 
 const ChatViewText = styled.Text`

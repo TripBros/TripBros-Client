@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import { SafeAreaView, ScrollView, View, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useRecoilValue } from 'recoil';
 import { scheduleListState } from '../../../libs/Recoil/scheduleList';
-import ScheduleList from '../../../components/Schedule/scheduleList';
 import { ScheduleData } from '../../../libs/Recoil/scheduleList';
 import HeadCounter from './Components/headCounter';
 import PreferredAgeRange from '../../../components/Filter/preferredAgeRange';
@@ -13,8 +12,16 @@ import CalendarListModal from '../../../components/Schedule/calendarListModal';
 import DateSelectionBar from '../../../components/Schedule/dateSelectionBar';
 import { PostData } from '../../Main/Search';
 import ImageSource from '../../../assets/Bangkok.jpg';
-
 import CreateCountryCityPicker from '../../../components/Picker/createCountryCityPicker';
+
+import MyScheduleList from './Components/myScheduleList';
+import SingleCalendar from './Components/singleCalendar';
+
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../../navigators/RootNavigator';
+
+type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 const PostRegister:React.FC = () => {
   const [isCalanderOpen, setIsCalanderOpen] = useState(false);
@@ -32,6 +39,20 @@ const PostRegister:React.FC = () => {
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
   const [displayedDates, setDisplayedDates] = useState<string>('');
+
+  const [selectedPlace, setSelectedPlace] = useState('');
+  const [placeId, setPlaceId] = useState('');
+  const [placeLatitude, setPlaceLatitude] = useState(null);
+  const [placeLongitude, setPlaceLongitude] = useState(null);
+  
+  // useEffect(() => {
+  //   console.log(`Selected Place: ${selectedPlace}`);
+  //   console.log(`Latitude: ${placeLatitude}`);
+  //   console.log(`Longitude: ${placeLongitude}`);
+  //   console.log(`PlaceID: ${placeId}`);
+  // }, [placeId]);
+
+  const navigation = useNavigation<NavigationProp>();
 
   const toggleCalendar = () => {
     setIsCalendarVisible(!isCalendarVisible);
@@ -81,7 +102,12 @@ const PostRegister:React.FC = () => {
   };
 
   const handleSelectSchedule = (schedule: ScheduleData) => {
-    setSelectedSchedule(schedule);
+    //선택된 일정을 다시 클릭하면, 전체 목록을 다시 보여줌
+    if (selectedSchedule && selectedSchedule.scheduleId === schedule.scheduleId) {
+      setSelectedSchedule(null);
+    } else {
+      setSelectedSchedule(schedule);
+    }
   };
 
   const handleAgeRangePress = (ageRange: string) => {
@@ -170,11 +196,15 @@ const PostRegister:React.FC = () => {
               </CircleButton>
             </PickContainer>
             {isCalanderOpen && (
-              <ScheduleList 
+              <MyScheduleList 
                 scheduleData={selectedSchedule ? [selectedSchedule] : scheduleData} 
-                isDetailed={false} 
-                onSelectSchedule={handleSelectSchedule}/>
+                handleSelectSchedule={handleSelectSchedule}/>
             )}
+            {selectedSchedule && (
+              <>
+              <Title>날짜를 선택해주세요</Title>
+              <SingleCalendar scheduleData={selectedSchedule} onDayPress={handleDayPress}/>
+              </>)}
           </>
         )}
         {selectedView === 'scheduleList' && !isCalanderOpen && (
@@ -205,6 +235,23 @@ const PostRegister:React.FC = () => {
           </>
         )}
 
+      <Title>특정 장소를 추가해주세요 (선택)</Title>
+      <SearchBarContainer onPress={() => 
+        navigation.navigate('SearchPlace', {
+          onReturn: (place) => {
+            setSelectedPlace(place.description);
+            setPlaceLatitude(place.latitude);
+            setPlaceLongitude(place.longitude);
+            setPlaceId(place.placeId);
+          }
+        })
+      }>
+        <Feather name="search" size={24} color="black" />
+        <PlaceText selected={selectedPlace}>
+          {selectedPlace || "장소 검색"}
+        </PlaceText>
+      </SearchBarContainer>
+
       <Title>인원을 선택해주세요</Title>
       <HeadCounter count={Headcount} setCount={setHeadCount} />
 
@@ -217,6 +264,7 @@ const PostRegister:React.FC = () => {
       <PreferredSex
         selectedSex={selectedSex}
         onSelectSex={handleSexPress}/>
+
       </ScrollView>
       <View>
         <SubmitButton onPress={handleSubmit}>
@@ -319,4 +367,19 @@ const SubmitButtonText = styled.Text`
     color: white;
     font-size: 16px;
     font-weight: bold;
+`;
+
+const SearchBarContainer = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding-horizontal: 20px;
+  padding-vertical: 10px;
+  margin: 0px 25px;
+`;
+
+const PlaceText = styled.Text`
+  margin-left: 15px;
+  color: ${props => props.selected ? 'black' : 'gray'};
 `;

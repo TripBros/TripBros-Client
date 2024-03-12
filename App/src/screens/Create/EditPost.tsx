@@ -4,7 +4,7 @@ import { SafeAreaView, ScrollView, View, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useRecoilValue } from 'recoil';
 import { scheduleListState } from '../../libs/Recoil/scheduleList';
-import ScheduleList from '../../components/Schedule/scheduleList';
+import ScheduleList from '../Main/Plan/Components/scheduleList';
 import { ScheduleData } from '../../libs/Recoil/scheduleList';
 import HeadCounter from './CreatePost/Components/headCounter';
 import PreferredAgeRange from '../../components/Filter/preferredAgeRange';
@@ -197,6 +197,9 @@ const EditPost = ({ route }) => {
             <PostTitleInput placeholder="나라를 선택해주세요"/>
             <Title>도시를 선택해주세요</Title>
             <PostTitleInput placeholder="도시를 선택해주세요"/>
+
+
+
             <Title>날짜를 선택해주세요</Title>
             <View style={{ flex: 1, alignItems: 'center' }}>
             <DateSelectionBar

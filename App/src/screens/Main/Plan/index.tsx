@@ -5,7 +5,7 @@ import ImageSource from '../../../assets/Bangkok.jpg';
 import CalendarComponent from './Components/calanderComponent';
 import { useRecoilState, useRecoilValue } from 'recoil';
 import { scheduleListState } from '../../../libs/Recoil/scheduleList';
-import ScheduleList from '../../../components/Schedule/scheduleList';
+import ScheduleList from './Components/scheduleList';
 import ScheduleInfo from './Components/scheduleInfo';
 import DeleteModal from '../../../components/EditAndDelete/deleteModal';
 import axios from 'axios';
@@ -83,36 +83,67 @@ const Plan: React.FC = () => {
     };
     
     //컴포넌트 마운트 시 scheduleData 배열에 있는 모든 일정을 표시
+    // useEffect(() => {
+    //     const fetchSchedules = async () => {
+    //         try {
+    //             const response = await axios.get('http://20.214.153.179:8080/api/schedule', {
+    //             headers: {
+    //                 Authorization: `Bearer ${token.accessToken}`, 
+    //             },
+    //         });
+
+    //             const data = response.data;
+    //             const adaptedData = data.data.map(schedule => ({
+    //                 scheduleId: schedule.id,
+    //                 startDate: schedule.startDate,
+    //                 endDate: schedule.endDate,
+    //                 country: schedule.country,
+    //                 city: schedule.city,
+    //                 image: ImageSource,
+    //                 memo: schedule.memo,
+    //             }));
+    //             setScheduleData(adaptedData);
+    //             console.log(adaptedData);
+    //         } catch (error) {
+    //             if (error.response) {
+    //                 console.log(error.response.data);
+    //             }
+    //         }
+    //     };
+
+    //     fetchSchedules();
+    // }, [refreshing, token]);
     useEffect(() => {
-        const fetchSchedules = async () => {
-            try {
-                const response = await axios.get('http://20.214.153.179:8080/api/schedule', {
-                headers: {
-                    Authorization: `Bearer ${token.accessToken}`, 
-                },
-            });
-
-                const data = response.data;
-                const adaptedData = data.data.map(schedule => ({
-                    scheduleId: schedule.id,
-                    startDate: schedule.startDate,
-                    endDate: schedule.endDate,
-                    country: schedule.country,
-                    city: schedule.city,
-                    image: ImageSource,
-                    memo: schedule.memo,
-                }));
-                setScheduleData(adaptedData);
-                console.log(adaptedData);
-            } catch (error) {
-                if (error.response) {
-                    console.log(error.response.data);
-                }
-            }
-        };
-
-        fetchSchedules();
-    }, [refreshing, token]);
+        setScheduleData([
+            {
+                scheduleId: 1,
+                startDate: '2024-03-06',
+                endDate: '2024-03-09',
+                country: '태국',
+                city: '방콕',
+                image: ImageSource,
+                memo: '푸팟퐁커리',
+            },
+            {
+                scheduleId: 2,
+                startDate: '2024-03-14',
+                endDate: '2024-03-17',
+                country: '대한민국',
+                city: '부산',
+                image: ImageSource,
+                memo: '광안대교 가기',
+            },
+            {
+                scheduleId: 3,
+                startDate: '2024-03-20',
+                endDate: '2024-03-28',
+                country: '미국',
+                city: '뉴욕',
+                image: ImageSource,
+                memo: '베이글',
+            },
+        ]);
+    }, [refreshing]);
 
     const NoScheduleInfo = () => (
         <NoScheduleContainer>
@@ -164,20 +195,20 @@ const Plan: React.FC = () => {
                 <ScheduleListContainer>
                     {currentSchedules.length > 0 && (
                         <ScheduleList 
-                            scheduleData={currentSchedules} isDetailed={true} onDeleteSchedule={showDeleteConfirmation}/>
+                            scheduleData={currentSchedules} onDeleteSchedule={showDeleteConfirmation}/>
                     )}
                     {futureSchedules.length > 0 && (
                         <PastFutureContainer>
                             <ScheduleInfoText>예정된 여행 일정</ScheduleInfoText>
                             <ScheduleList 
-                                scheduleData={futureSchedules} isDetailed={true} onDeleteSchedule={showDeleteConfirmation}/>
+                                scheduleData={futureSchedules} onDeleteSchedule={showDeleteConfirmation}/>
                         </PastFutureContainer>
                     )}
                     {pastSchedules.length > 0 && (
                         <PastFutureContainer>
                             <ScheduleInfoText>지난 여행 일정</ScheduleInfoText>
                             <ScheduleList 
-                                scheduleData={pastSchedules} isDetailed={true} onDeleteSchedule={showDeleteConfirmation}/>
+                                scheduleData={pastSchedules} onDeleteSchedule={showDeleteConfirmation}/>
                         </PastFutureContainer>
                     )}
                     {scheduleData.length === 0 && <Text>일정이 없습니다.</Text>}

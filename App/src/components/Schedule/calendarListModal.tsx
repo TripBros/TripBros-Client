@@ -26,6 +26,42 @@ const CalendarListModal: React.FC<calendarListModalProps> = ({
 }) => {
   const today = new Date().toISOString().split('T')[0];
 
+  const generateMarkedDates = () => {
+    let markedDates = {};
+    // selectedStartDate와 selectedEndDate가 null인 경우를 처리
+    const startDateStr = selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : null;
+    const endDateStr = selectedEndDate ? selectedEndDate.toISOString().split('T')[0] : null;
+    const isSameDay = startDateStr && endDateStr && startDateStr === endDateStr;
+  
+    if (startDateStr) {
+      if (isSameDay) {
+        // 시작 날짜와 종료 날짜가 같은 경우
+        markedDates[startDateStr] = { selected: true, startingDay: true, endingDay: true, color: '#91C8E4', textColor: 'white' };
+      } else {
+        // 시작 날짜만 선택되었거나, 시작 날짜와 종료 날짜가 다른 경우
+        markedDates[startDateStr] = { startingDay: true, color: '#91C8E4', textColor: 'white' };
+        
+        if (selectedStartDate && selectedEndDate) {
+          let date = new Date(selectedStartDate);
+          while (date <= selectedEndDate) {
+            const dateStr = date.toISOString().split('T')[0];
+    
+            if (endDateStr && dateStr === endDateStr) {
+              markedDates[dateStr] = { endingDay: true, color: '#91C8E4', textColor: 'white' };
+            } else if (dateStr !== startDateStr) {
+              markedDates[dateStr] = { color: '#91C8E4', textColor: 'white' };
+            }
+    
+            date.setDate(date.getDate() + 1); // 다음 날짜로
+          }
+        }
+      }
+    }
+    
+    return markedDates;
+  };
+  
+
   return (
     <Modal
       animationType="slide"
@@ -57,16 +93,7 @@ const CalendarListModal: React.FC<calendarListModalProps> = ({
                   minDate={today}
                   monthFormat={'yyyy년 M월'}
                   markingType={'period'}
-                  markedDates={{
-                    [selectedStartDate ? selectedStartDate.toISOString().split('T')[0] : '']: {
-                      selected: true,
-                      color: '#91C8E4',
-                    },
-                    [selectedEndDate ? selectedEndDate.toISOString().split('T')[0] : '']: {
-                      selected: true,
-                      color: '#91C8E4',
-                    },
-                  }}
+                  markedDates={generateMarkedDates()}
                   onDayPress={onDayPress}
                 />
             </View>

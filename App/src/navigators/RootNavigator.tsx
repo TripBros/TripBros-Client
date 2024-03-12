@@ -21,6 +21,7 @@ import { PostData } from '../screens/Main/Search/index';
 import CreatePlanScreen from '../screens/Create/CreatePlan';
 import ReportPost from '../screens/Main/Search/reportPost';
 import EditPost from '../screens/Create/EditPost';
+import SearchPlace from '../screens/Create/SearchPlace';
 
 export type RootStackParamList = {
   Main: undefined;
@@ -42,6 +43,7 @@ export type RootStackParamList = {
   ReportPost: undefined;
   PostRegister: undefined;
   EditPost: { postData: PostData };
+  SearchPlace: { onReturn: (place: any) => void };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -66,6 +68,7 @@ const RootNavigator: React.FC = () => {
         <Stack.Screen name="CreatePlan" component={CreatePlanScreen} />
         <Stack.Screen name="ReportPost" component={ReportPost} />
         <Stack.Screen name="EditPost" component={EditPost} />
+        <Stack.Screen name="SearchPlace" component={SearchPlace} />
       </Stack.Navigator>
 
   );

@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Text, View, TouchableOpacity, TouchableWithoutFeedback } from 'react-native';
 import styled from 'styled-components/native';
-import { ScheduleData } from '../../libs/Recoil/scheduleList';
+import { ScheduleData } from '../../../../libs/Recoil/scheduleList';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
 import { Ionicons } from '@expo/vector-icons';
 
 interface ScheduleElementProps {
   scheduleData: ScheduleData[];
-  isDetailed?: boolean;
+  onDeleteSchedule?: (index: number) => void;
 }
 
 const formatDate = (date) => {
@@ -41,7 +41,7 @@ const calculateDDay = (startDateString: string, endDateString: string): string =
   return '';
 };
 
-const ScheduleList: React.FC<ScheduleElementProps & { onSelectSchedule?: (schedule: ScheduleData) => void, onDeleteSchedule?: (index: number) => void }> = ({ scheduleData, isDetailed = false, onDeleteSchedule }) => {
+const ScheduleList: React.FC<ScheduleElementProps> = ({ scheduleData, onDeleteSchedule }) => {
   const [visibleIndex, setVisibleIndex] = useState<number | null>(null);
 
   const toggleActionVisibility = (index: number) => {
@@ -58,8 +58,7 @@ const ScheduleList: React.FC<ScheduleElementProps & { onSelectSchedule?: (schedu
             <ScheduleListContainer key={schedule.scheduleId}>
               <CityImage source={schedule.image} />
               <ScheduleTextContainer>
-                {isDetailed && <CityTitle>{`${schedule.city} 여행 ${dDay}`}</CityTitle>}
-                {!isDetailed && <CityTitle>{`${schedule.country} ${schedule.city}`}</CityTitle>}
+                <CityTitle>{`${schedule.city} 여행 ${dDay}`}</CityTitle>
                 <Text>{`${formatDate(new Date(schedule.startDate))} - ${formatDate(new Date(schedule.endDate))}`}</Text>
               </ScheduleTextContainer>
               <ActionContainer>
@@ -69,7 +68,7 @@ const ScheduleList: React.FC<ScheduleElementProps & { onSelectSchedule?: (schedu
                                       style={{ marginHorizontal: 5 }}>
                       <AntDesign name="edit" size={20} color="black" />
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => onDeleteSchedule && onDeleteSchedule(schedule.scheduleId)}>
+                    <TouchableOpacity onPress={() => onDeleteSchedule?.(schedule.scheduleId)}>
                       <Ionicons name="trash-outline" size={20} color="black" />
                     </TouchableOpacity>
                   </>
