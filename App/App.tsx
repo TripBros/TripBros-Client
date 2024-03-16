@@ -1,4 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
+import { TextEncoder, TextDecoder } from 'text-encoding';
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder;
+import 'react-native-gesture-handler';
 
 import * as SplashScreen from 'expo-splash-screen';
 

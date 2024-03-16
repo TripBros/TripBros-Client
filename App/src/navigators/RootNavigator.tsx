@@ -22,6 +22,8 @@ import CreatePlanScreen from '../screens/Create/CreatePlan';
 import ReportPost from '../screens/Main/Search/reportPost';
 import EditPost from '../screens/Create/EditPost';
 import SearchPlace from '../screens/Create/SearchPlace';
+import PersonalChatroom from '../screens/Main/Chat/ChatroomScreen/PersonalChatroom';
+import GroupChatroom from '../screens/Main/Chat/ChatroomScreen/GroupChatroom';
 
 export type RootStackParamList = {
   Main: undefined;
@@ -44,6 +46,12 @@ export type RootStackParamList = {
   PostRegister: undefined;
   EditPost: { postData: PostData };
   SearchPlace: { onReturn: (place: any) => void };
+  PersonalChatroom: {
+    chatroomId: string;
+  };
+  GroupChatroom: {
+    chatroomId: string;
+  }
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -69,6 +77,8 @@ const RootNavigator: React.FC = () => {
         <Stack.Screen name="ReportPost" component={ReportPost} />
         <Stack.Screen name="EditPost" component={EditPost} />
         <Stack.Screen name="SearchPlace" component={SearchPlace} />
+        <Stack.Screen name="PersonalChatroom" component={PersonalChatroom}/>
+        <Stack.Screen name="GroupChatroom" component={GroupChatroom} />
       </Stack.Navigator>
 
   );
