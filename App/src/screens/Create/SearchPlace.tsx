@@ -5,8 +5,7 @@ import { TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import styled from "styled-components/native";
-
-const API_KEY = 'AIzaSyA_mnXBbHwf7YMHFbR0T06JLhOwoXByzDc';
+import { GOOGLE_MAP_API_KEY } from "@env"
 
 const SearchPlace = ({ route }) => {
   const { onReturn } = route.params;
@@ -41,7 +40,7 @@ const SearchPlace = ({ route }) => {
             navigation.goBack();
           }}
           fetchDetails={true}
-          query={{  key: API_KEY,
+          query={{  key: GOOGLE_MAP_API_KEY,
                   language: 'en'  }}
           onFail={error => console.log(error)}
           styles={{

@@ -136,7 +136,7 @@ const Plan: React.FC = () => {
             {
                 scheduleId: 3,
                 startDate: '2024-03-20',
-                endDate: '2024-03-28',
+                endDate: '2024-03-31',
                 country: '미국',
                 city: '뉴욕',
                 image: ImageSource,

@@ -7,13 +7,13 @@ import DateSelectionBar from '../../../../components/Schedule/dateSelectionBar';
 import CountryCityPicker from '../../../../components/Picker/countryCityPicker';
 
 const TripFilter: React.FC = () => {
-  const [isCalendarVisible, setIsCalendarVisible] = useState(false);
+  const [isCalendarListVisible, setIsCalendarListVisible] = useState(false);
   const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
   const [displayedDates, setDisplayedDates] = useState<string>(''); //사용자가 확인을 눌렀을 때 선택된 날짜를 표시하기 위함
 
   const toggleCalendar = () => {
-    setIsCalendarVisible(!isCalendarVisible);
+    setIsCalendarListVisible(!isCalendarListVisible);
   };
 
   // 1. 시작 날짜가 선택되지 않았거나 or 시작 및 종료 날짜가 모두 선택된 경우
@@ -37,7 +37,7 @@ const TripFilter: React.FC = () => {
   };
 
   const handleConfirm = () => {
-    setIsCalendarVisible(false);
+    setIsCalendarListVisible(false);
     if (selectedStartDate && selectedEndDate) {
       const startDateString = formatDate(selectedStartDate);
       const endDateString = formatDate(selectedEndDate);
@@ -67,8 +67,8 @@ const TripFilter: React.FC = () => {
       />
 
       <CalendarListModal
-        isCalendarVisible={isCalendarVisible}
-        onClose={() => setIsCalendarVisible(false)}
+        isCalendarListVisible={isCalendarListVisible}
+        onClose={() => setIsCalendarListVisible(false)}
         onDayPress={handleDayPress}
         selectedStartDate={selectedStartDate}
         selectedEndDate={selectedEndDate}

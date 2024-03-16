@@ -31,7 +31,7 @@ const generateMarkedDates = (scheduleData: ScheduleData[]) => {
           } else if (dateStr === schedule.endDate) {
             markedDates[dateStr] = { endingDay: true, color: '#91C8E4', textColor: 'white' };
           } else {
-            markedDates[dateStr] = { color: '#AACDDF', textColor: 'white' };
+            markedDates[dateStr] = { color: '#91C8E4', textColor: 'white' };
           }
         }
       });

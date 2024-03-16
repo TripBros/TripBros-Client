@@ -7,3 +7,6 @@ declare module '*.jpg' {
     export = value;
   }
   
+declare module '@env' {
+  export const GOOGLE_MAP_API_URL: string;
+}

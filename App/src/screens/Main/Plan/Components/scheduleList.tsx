@@ -11,7 +11,7 @@ interface ScheduleElementProps {
   onDeleteSchedule?: (index: number) => void;
 }
 
-const formatDate = (date) => {
+export const formatDate = (date) => {
   // 'ko-KR' 로케일을 사용하여 날짜를 가져옵니다. 이때 반환 형식은 '2.20. '와 같이 될 수 있습니다.
   let formattedDate = date.toLocaleDateString('ko-KR', { month: 'numeric', day: 'numeric' });
   

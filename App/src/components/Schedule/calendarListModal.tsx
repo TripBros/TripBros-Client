@@ -6,7 +6,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import styled from 'styled-components/native';
 
 interface calendarListModalProps {
-  isCalendarVisible: boolean;
+  isCalendarListVisible: boolean;
   onClose: () => void;
   onDayPress,
   selectedStartDate: Date | null;
@@ -16,7 +16,7 @@ interface calendarListModalProps {
 }
 
 const CalendarListModal: React.FC<calendarListModalProps> = ({
-  isCalendarVisible,
+  isCalendarListVisible,
   onClose,
   onDayPress,
   selectedStartDate,
@@ -66,7 +66,7 @@ const CalendarListModal: React.FC<calendarListModalProps> = ({
     <Modal
       animationType="slide"
       transparent={false}
-      visible={isCalendarVisible}
+      visible={isCalendarListVisible}
       onRequestClose={onClose}
     >
       <SafeAreaProvider>

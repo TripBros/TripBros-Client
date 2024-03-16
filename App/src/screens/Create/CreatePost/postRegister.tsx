@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
-import { SafeAreaView, ScrollView, View, TouchableOpacity } from 'react-native';
+import { SafeAreaView, ScrollView, View, TouchableOpacity, Modal } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import ImageSource from '../../../assets/Bangkok.jpg';
+
 import { useRecoilValue } from 'recoil';
 import { scheduleListState } from '../../../libs/Recoil/scheduleList';
 import { ScheduleData } from '../../../libs/Recoil/scheduleList';
+import { PostData } from '../../Main/Search';
+
 import HeadCounter from './Components/headCounter';
 import PreferredAgeRange from '../../../components/Filter/preferredAgeRange';
 import PreferredSex from '../../../components/Filter/preferredSex';
 import CalendarListModal from '../../../components/Schedule/calendarListModal';
 import DateSelectionBar from '../../../components/Schedule/dateSelectionBar';
-import { PostData } from '../../Main/Search';
-import ImageSource from '../../../assets/Bangkok.jpg';
 import CreateCountryCityPicker from '../../../components/Picker/createCountryCityPicker';
 
 import MyScheduleList from './Components/myScheduleList';
+import { formatDate } from '../../Main/Plan/Components/scheduleList';
 import SingleCalendar from './Components/singleCalendar';
 
 import { useNavigation } from '@react-navigation/native';
@@ -24,7 +27,7 @@ import { RootStackParamList } from '../../../navigators/RootNavigator';
 type NavigationProp = StackNavigationProp<RootStackParamList>;
 
 const PostRegister:React.FC = () => {
-  const [isCalanderOpen, setIsCalanderOpen] = useState(false);
+  const [isCalanderOpen, setIsCalanderOpen] = useState(false); //등록된 일정 리스트 열기
   const scheduleData = useRecoilValue(scheduleListState); //read only
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData | null>(null);
 
@@ -35,10 +38,15 @@ const PostRegister:React.FC = () => {
   const [selectedSex, setSelectedSex] = useState<string>('');
   
   const [selectedView, setSelectedView] = useState('scheduleList'); //'scheduleList' 또는 'scheduleForm'
-  const [isCalendarVisible, setIsCalendarVisible] = useState(false); //캘린더 리스트 모달
-  const [selectedStartDate, setSelectedStartDate] = useState<Date | null>(null);
-  const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
-  const [displayedDates, setDisplayedDates] = useState<string>('');
+  const [isCalendarVisible, setIsCalendarVisible] = useState(false); //단일 캘린더 모달
+  const [isCalendarListVisible, setIsCalendarListVisible] = useState(false); //캘린더 리스트 모달
+
+  const [listStartDate, setListStartDate] = useState<Date | null>(null);
+  const [listEndDate, setListEndDate] = useState<Date | null>(null);
+  const [formStartDate, setFormStartDate] = useState<Date | null>(null);
+  const [formEndDate, setFormEndDate] = useState<Date | null>(null);
+  const [listDisplayedDates, setListDisplayedDates] = useState<string>('');
+  const [formDisplayedDates, setFormDisplayedDates] = useState<string>('');
 
   const [selectedPlace, setSelectedPlace] = useState('');
   const [placeId, setPlaceId] = useState('');
@@ -58,43 +66,61 @@ const PostRegister:React.FC = () => {
     setIsCalendarVisible(!isCalendarVisible);
   };
 
+  const toggleCalendarList = () => {
+    setIsCalendarListVisible(!isCalendarListVisible);
+  };
+
   const handleDayPress = (day: { dateString: string }) => {
     const selectedDate = new Date(day.dateString);
 
-    if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
-      setSelectedStartDate(selectedDate);
-      setSelectedEndDate(null);
-      setDisplayedDates(formatDate(selectedDate));
-    } else {
-      setSelectedEndDate(selectedDate);
-      const startDateString = formatDate(selectedStartDate);
-      const endDateString = formatDate(selectedDate);
-      setDisplayedDates(`${startDateString} ~ ${endDateString}`);
+    if (selectedView === 'scheduleForm') {
+      if (!formStartDate || (formStartDate && formEndDate)) {
+        setFormStartDate(selectedDate);
+        setFormEndDate(null);
+        setFormDisplayedDates(formatDate(selectedDate));
+      } else {
+        setFormEndDate(selectedDate);
+        const startDateString = formatDate(formStartDate);
+        const endDateString = formatDate(selectedDate);
+        setFormDisplayedDates(`${startDateString} ~ ${endDateString}`);
+      }
+    } else if (selectedView === 'scheduleList') {
+      if (!listStartDate || (listStartDate && listEndDate)) {
+        setListStartDate(selectedDate);
+        setListEndDate(null);
+        setListDisplayedDates(formatDate(selectedDate));
+      } else {
+        setListEndDate(selectedDate);
+        const startDateString = formatDate(listStartDate);
+        const endDateString = formatDate(selectedDate);
+        setListDisplayedDates(`${startDateString} ~ ${endDateString}`);
+      }
     }
   };
 
   const handleConfirm = () => {
-    setIsCalendarVisible(false);
-    if (selectedStartDate && selectedEndDate) {
-      const startDateString = formatDate(selectedStartDate);
-      const endDateString = formatDate(selectedEndDate);
-      setDisplayedDates(`${startDateString} - ${endDateString}`);
+    setIsCalendarListVisible(false);
+    if (formStartDate && formEndDate) {
+      const startDateString = formatDate(formStartDate);
+      const endDateString = formatDate(formEndDate);
+      setFormDisplayedDates(`${startDateString} - ${endDateString}`);
     }
-  };
-
-  const formatDate = (date: Date) => {
-    const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
-    return date.toLocaleDateString('ko-KR', options);
   };
 
   // '고르기' 버튼 클릭
   const handleChoosePress = () => {
     setSelectedView('scheduleList');
+    setFormStartDate(null);
+    setFormEndDate(null);
+    setFormDisplayedDates('');
   };
 
   // '작성하기' 버튼 클릭
   const handleWritePress = () => {
     setSelectedView('scheduleForm');
+    setListStartDate(null);
+    setListEndDate(null);
+    setListDisplayedDates('');
   };
 
   const toggleDropdown = () => {
@@ -120,7 +146,10 @@ const PostRegister:React.FC = () => {
 
   //예외 처리 필요
   const handleSubmit = () => {
-    if (!title || !content || !selectedStartDate || !selectedEndDate || Headcount === 0) {
+    const startDate = selectedView === 'scheduleForm' ? formStartDate : listStartDate;
+    const endDate = selectedView === 'scheduleForm' ? formEndDate : listEndDate;
+
+    if (!title || !content || !startDate || !endDate || Headcount === 0) {
       alert('모든 필드를 채워주세요.');
       return;
     }
@@ -140,8 +169,8 @@ const PostRegister:React.FC = () => {
       bookmarkCount: 0,
       preferSex: selectedSex,
       preferAgeRange: selectedAgeRange,
-      startDate: selectedStartDate.toISOString().split('T')[0], 
-      endDate: selectedEndDate.toISOString().split('T')[0],
+      startDate: startDate.toISOString().split('T')[0], 
+      endDate: endDate.toISOString().split('T')[0],
       requiredHeadCount: Headcount,
       nowHeadCount: 1,
       chatCount: 0,
@@ -202,8 +231,19 @@ const PostRegister:React.FC = () => {
             )}
             {selectedSchedule && (
               <>
-              <Title>날짜를 선택해주세요</Title>
-              <SingleCalendar scheduleData={selectedSchedule} onDayPress={handleDayPress}/>
+              <Title>동행을 구할 날짜를 선택해주세요</Title>
+              <View style={{ flex: 1, alignItems: 'center' }}>
+              <DateSelectionBar
+                displayedDates={listDisplayedDates}
+                onPress={toggleCalendar}
+              />
+              </View>
+              <SingleCalendar scheduleData={selectedSchedule} 
+                              onDayPress={handleDayPress} 
+                              isVisible={isCalendarVisible} 
+                              onClose={() => setIsCalendarVisible(false)}
+                              selectedStartDate={listStartDate}
+                              selectedEndDate={listEndDate}/>
               </>)}
           </>
         )}
@@ -219,17 +259,17 @@ const PostRegister:React.FC = () => {
             <Title>날짜를 선택해주세요</Title>
             <View style={{ flex: 1, alignItems: 'center' }}>
             <DateSelectionBar
-              displayedDates={displayedDates}
-              onPress={toggleCalendar}
+              displayedDates={formDisplayedDates}
+              onPress={toggleCalendarList}
             />
             </View>
             <CalendarListModal
-              isCalendarVisible={isCalendarVisible}
-              onClose={() => setIsCalendarVisible(false)}
+              isCalendarListVisible={isCalendarListVisible}
+              onClose={() => setIsCalendarListVisible(false)}
               onDayPress={handleDayPress}
-              selectedStartDate={selectedStartDate}
-              selectedEndDate={selectedEndDate}
-              displayedDates={displayedDates}
+              selectedStartDate={formStartDate}
+              selectedEndDate={formEndDate}
+              displayedDates={formDisplayedDates}
               onConfirm={handleConfirm}
             />
           </>
@@ -381,5 +421,6 @@ const SearchBarContainer = styled.TouchableOpacity`
 
 const PlaceText = styled.Text`
   margin-left: 15px;
-  color: ${props => props.selected ? 'black' : 'gray'};
+  padding-horizontal: 5px;
+  color: ${props => props.selected ? 'black' : '#C4C4C4'};
 `;
