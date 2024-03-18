@@ -6,15 +6,16 @@ import styled from 'styled-components/native';
 interface DateSelectionBarProps {
   displayedDates: string;
   onPress: () => void;
+  isChosen: boolean;
 }
 
 interface DisplayDatesTextProps {
   displayed: boolean;
 }
 
-const DateSelectionBar: React.FC<DateSelectionBarProps> = ({ displayedDates, onPress }) => {
+const DateSelectionBar: React.FC<DateSelectionBarProps> = ({ displayedDates, onPress, isChosen }) => {
   return (
-    <SearchBarContainer>
+    <SearchBarContainer ischosen={isChosen}>
       <Feather name="calendar" size={24} color="black" />
       <TouchableOpacity onPress={onPress}>
         {displayedDates 
@@ -30,11 +31,12 @@ const SearchBarContainer = styled.View`
   flex-direction: row;
   align-items: center;
   border: 1px solid gray;
-  border-radius: 30px;
+  border-radius: ${(props) => (props.ischosen ? '10px' : '30px')};
   padding-horizontal: 20px;
   padding-vertical: 5px;
-  margin: 10px;
-  width: 80%;
+  margin-horizontal: ${(props) => (props.ischosen ? '25px' : '0px')};
+  margin-vertical: ${(props) => (props.ischosen ? '0px' : '10px')};
+  ${props => props.ischosen ? '' : 'width: 80%;'};
 `;
 
 const DisplayDatesText = styled.Text<DisplayDatesTextProps>`

@@ -127,7 +127,7 @@ const Plan: React.FC = () => {
             {
                 scheduleId: 2,
                 startDate: '2024-03-14',
-                endDate: '2024-03-17',
+                endDate: '2024-03-19',
                 country: '대한민국',
                 city: '부산',
                 image: ImageSource,

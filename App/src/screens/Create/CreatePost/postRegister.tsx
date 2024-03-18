@@ -107,6 +107,15 @@ const PostRegister:React.FC = () => {
     }
   };
 
+  const handleListCalendarConfirm = () => {
+    setIsCalendarVisible(false);
+    if (formStartDate && formEndDate) {
+      const startDateString = formatDate(formStartDate);
+      const endDateString = formatDate(formEndDate);
+      setListDisplayedDates(`${startDateString} - ${endDateString}`);
+    }
+  };
+
   // '고르기' 버튼 클릭
   const handleChoosePress = () => {
     setSelectedView('scheduleList');
@@ -182,21 +191,21 @@ const PostRegister:React.FC = () => {
 
   return(
     <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-      <Header>
+      <CreateHeader>
         <TouchableOpacity onPress={() => {}}>
           <Feather name="x" size={24} color="black" />
         </TouchableOpacity>
-        <HeaderTitle>게시글 작성</HeaderTitle>
+        <CreateHeaderTitle>게시글 작성</CreateHeaderTitle>
         <View style={{ width: 24 }}></View>
-      </Header>
+      </CreateHeader>
 
       <ScrollView style={{ flex: 1 }}>
-        <Title>제목을 입력해주세요</Title>
+        <CreateTitle>제목을 입력해주세요</CreateTitle>
         <PostTitleInput
           placeholder="게시글 제목을 입력해주세요"
           value={title}
           onChangeText={setTitle}/>
-        <Title>내용을 입력해주세요</Title>
+        <CreateTitle>내용을 입력해주세요</CreateTitle>
         <PlanMemoInput
           multiline={true} // 여러 줄 입력 활성화
           numberOfLines={4} // Android에서 여러 줄 입력을 위해 설정
@@ -205,7 +214,7 @@ const PostRegister:React.FC = () => {
           value={content}
           onChangeText={setContent}/>
         
-        <Title>일정</Title>
+        <CreateTitle>일정</CreateTitle>
         <ButtonContainer>
           <Button onPress={handleChoosePress} isSelected={selectedView === 'scheduleList'}>
             <ButtonText isSelected={selectedView === 'scheduleList'}>고르기</ButtonText>
@@ -219,7 +228,7 @@ const PostRegister:React.FC = () => {
           <>
             <PickContainer>
               <Feather name="calendar" size={24} color="black" style={{ marginRight: 5 }}/>
-              <HeaderTitle>나의 일정 캘린더</HeaderTitle>
+              <CreateHeaderTitle>나의 일정 캘린더</CreateHeaderTitle>
               <CircleButton onPress={toggleDropdown}>
                 <Feather name={isCalanderOpen ? "chevron-up" : "chevron-down"} size={24} color="black"/>
               </CircleButton>
@@ -231,11 +240,12 @@ const PostRegister:React.FC = () => {
             )}
             {selectedSchedule && (
               <>
-              <Title>동행을 구할 날짜를 선택해주세요</Title>
-              <View style={{ flex: 1, alignItems: 'center' }}>
+              <CreateTitle>동행을 구할 날짜를 선택해주세요</CreateTitle>
+              <View style={{ flex: 1 }}>
               <DateSelectionBar
                 displayedDates={listDisplayedDates}
                 onPress={toggleCalendar}
+                isChosen={true}
               />
               </View>
               <SingleCalendar scheduleData={selectedSchedule} 
@@ -243,7 +253,9 @@ const PostRegister:React.FC = () => {
                               isVisible={isCalendarVisible} 
                               onClose={() => setIsCalendarVisible(false)}
                               selectedStartDate={listStartDate}
-                              selectedEndDate={listEndDate}/>
+                              selectedEndDate={listEndDate}
+                              displayedDates={listDisplayedDates}
+                              onConfirm={handleListCalendarConfirm}/>
               </>)}
           </>
         )}
@@ -256,11 +268,12 @@ const PostRegister:React.FC = () => {
           <>
             <CreateCountryCityPicker />
             
-            <Title>날짜를 선택해주세요</Title>
-            <View style={{ flex: 1, alignItems: 'center' }}>
+            <CreateTitle>날짜를 선택해주세요</CreateTitle>
+            <View style={{ flex: 1 }}>
             <DateSelectionBar
               displayedDates={formDisplayedDates}
               onPress={toggleCalendarList}
+              isChosen={true}
             />
             </View>
             <CalendarListModal
@@ -275,7 +288,7 @@ const PostRegister:React.FC = () => {
           </>
         )}
 
-      <Title>특정 장소를 추가해주세요 (선택)</Title>
+      <CreateTitle>특정 장소를 추가해주세요 (선택)</CreateTitle>
       <SearchBarContainer onPress={() => 
         navigation.navigate('SearchPlace', {
           onReturn: (place) => {
@@ -292,50 +305,50 @@ const PostRegister:React.FC = () => {
         </PlaceText>
       </SearchBarContainer>
 
-      <Title>인원을 선택해주세요</Title>
+      <CreateTitle>인원을 선택해주세요</CreateTitle>
       <HeadCounter count={Headcount} setCount={setHeadCount} />
 
-      <Title>선호하는 나이대를 선택해주세요</Title>
+      <CreateTitle>선호하는 나이대를 선택해주세요</CreateTitle>
       <PreferredAgeRange
         selectedAgeRange={selectedAgeRange}
         onSelectAgeRange={handleAgeRangePress}/>
 
-      <Title>선호하는 성별을 선택해주세요</Title>
+      <CreateTitle>선호하는 성별을 선택해주세요</CreateTitle>
       <PreferredSex
         selectedSex={selectedSex}
         onSelectSex={handleSexPress}/>
 
       </ScrollView>
       <View>
-        <SubmitButton onPress={handleSubmit}>
-          <SubmitButtonText>등록하기</SubmitButtonText>
-        </SubmitButton>
+        <CreateSubmitButton onPress={handleSubmit}>
+          <CreateSubmitButtonText>등록하기</CreateSubmitButtonText>
+        </CreateSubmitButton>
       </View>
     </SafeAreaView>
   );
 }
 export default PostRegister;
 
-const Header = styled.View`
+export const CreateHeader = styled.View`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
   padding: 16px;
 `;
 
-const HeaderTitle = styled.Text`
+export const CreateHeaderTitle = styled.Text`
   text-align: center;
   font-weight: bold;
   margin-right: 5px;
 `;
 
-const Title = styled.Text`
+export const CreateTitle = styled.Text`
     font-size: 16px;
     font-weight: bold;
     margin: 25px 30px 10px;
 `;
 
-const PostTitleInput = styled.TextInput`
+export const PostTitleInput = styled.TextInput`
     border: 1px solid #000;
     padding: 12px;
     borderColor: gray;
@@ -344,7 +357,7 @@ const PostTitleInput = styled.TextInput`
     margin: 0px 25px;
 `;
 
-const PlanMemoInput = styled.TextInput`
+export const PlanMemoInput = styled.TextInput`
     height: 200px;
     border: 1px solid #000;
     padding: 12px;
@@ -393,7 +406,7 @@ const AdditionalText = styled.Text`
     color: #ACACAC;
 `;
 
-const SubmitButton = styled.TouchableOpacity`
+export const CreateSubmitButton = styled.TouchableOpacity`
     background-color: #91C8E4;
     padding: 18px;
     border-radius: 10px;
@@ -403,7 +416,7 @@ const SubmitButton = styled.TouchableOpacity`
     margin: 15px 20px;
 `;
 
-const SubmitButtonText = styled.Text`
+export const CreateSubmitButtonText = styled.Text`
     color: white;
     font-size: 16px;
     font-weight: bold;
@@ -415,7 +428,7 @@ const SearchBarContainer = styled.TouchableOpacity`
   border: 1px solid gray;
   border-radius: 10px;
   padding-horizontal: 20px;
-  padding-vertical: 10px;
+  padding-vertical: 12px;
   margin: 0px 25px;
 `;
 

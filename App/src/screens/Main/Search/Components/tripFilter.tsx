@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, View, TouchableOpacity, Text } from 'react-native';
-import styled from 'styled-components/native';
-import { Feather } from '@expo/vector-icons';
+import { View } from 'react-native';
 import CalendarListModal from '../../../../components/Schedule/calendarListModal';
 import DateSelectionBar from '../../../../components/Schedule/dateSelectionBar';
 import CountryCityPicker from '../../../../components/Picker/countryCityPicker';
@@ -64,6 +62,7 @@ const TripFilter: React.FC = () => {
       <DateSelectionBar
         displayedDates={displayedDates}
         onPress={toggleCalendar}
+        isChosen={false}
       />
 
       <CalendarListModal
