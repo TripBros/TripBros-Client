@@ -1,10 +1,10 @@
 import React , { useState, useEffect } from 'react';
-import { ScrollView, RefreshControl, Text, Modal, View, TouchableOpacity } from 'react-native';
+import { ScrollView, RefreshControl, Text, Linking } from 'react-native';
 import styled from 'styled-components/native';
 import ImageSource from '../../../assets/Bangkok.jpg';
 import CalendarComponent from './Components/calanderComponent';
 import { useRecoilState, useRecoilValue } from 'recoil';
-import { scheduleListState } from '../../../libs/Recoil/scheduleList';
+import { scheduleListState, promiseListState } from '../../../libs/Recoil/scheduleList';
 import ScheduleList from './Components/scheduleList';
 import ScheduleInfo from './Components/scheduleInfo';
 import DeleteModal from '../../../components/EditAndDelete/deleteModal';
@@ -45,10 +45,11 @@ const Plan: React.FC = () => {
     const { handleScroll, showButton } = useHandleScroll();
     
     const [selectedDate, setSelectedDate] = useState(''); //#2024년 2월 3일
-    const [scheduleInfo, setScheduleInfo] = useState<React.ReactNode>(''); //일정 세부 내용들 or 일정이 없습니다.
+    const [scheduleInfo, setScheduleInfo] = useState<React.ReactNode>(null); //일정 세부 내용들 or 일정이 없습니다.
     const [refreshing, setRefreshing] = useState(false); //for 새로고침
     
     const [scheduleData, setScheduleData] = useRecoilState(scheduleListState);
+    const [promiseData, setPromiseData] = useRecoilState(promiseListState);
     const token = useRecoilValue(userTokenState);
     console.log(token);
 
@@ -143,6 +144,26 @@ const Plan: React.FC = () => {
                 memo: '베이글',
             },
         ]);
+        setPromiseData([
+            {
+                promiseId: 1,
+                startDate: '2024-03-04',
+                endDate: '2024-03-04',
+                country: '태국',
+                city: '방콕',
+                postTitle: '태국 방콕 같이 가실 분',
+            },
+            {
+                promiseId: 2,
+                startDate: '2024-03-20',
+                endDate: '2024-03-23',
+                country: '미국',
+                city: '뉴욕',
+                postTitle: '미국 뉴욕 같이 가실 분',
+                placeName: 'Liberty Bagels Midtown, West 35th Street, New York, NY, USA',
+                placeId: 'ChIJEWqQDLJZwokR8K5wVBL9n6g',
+            },
+        ]);
     }, [refreshing]);
 
     const NoScheduleInfo = () => (
@@ -166,17 +187,74 @@ const Plan: React.FC = () => {
             return selectedDateObject >= scheduleStartObject && selectedDateObject <= scheduleEndObject;
         });
 
+        // 약속 데이터에서 날짜 검색
+        const promiseInfoForSelectedDate = promiseData.find(promise => {
+            const promiseStartObject = new Date(Date.UTC(new Date(promise.startDate).getFullYear(), new Date(promise.startDate).getMonth(), new Date(promise.startDate).getDate()));
+
+            const promiseEndObject = new Date(Date.UTC(new Date(promise.endDate).getFullYear(), new Date(promise.endDate).getMonth(), new Date(promise.endDate).getDate()));
+            
+            return selectedDateObject >= promiseStartObject && selectedDateObject <= promiseEndObject;
+        });
+
+        let infoToDisplay = null;
+
+        const handlePlacePress = () => {
+            // promiseInfoForSelectedDate가 유효한지 확인하고 placeId가 있는지 확인합니다.
+            if (promiseInfoForSelectedDate && promiseInfoForSelectedDate.placeId) {
+                const placeUrl = `https://www.google.com/maps/place/?q=place_id:${promiseInfoForSelectedDate.placeId}`;
+                // placeUrl을 사용하여 링크를 엽니다.
+                Linking.openURL(placeUrl).catch(err => {
+                    console.error("Couldn't load page", err);
+                });
+            }
+        };
+
         if (scheduleInfoForSelectedDate) {
-            setScheduleInfo(
+            // 스케줄 정보를 표시합니다.
+            infoToDisplay = (
                 <ScheduleInfo
                     image={scheduleInfoForSelectedDate.image}
                     city={scheduleInfoForSelectedDate.city}
                     memo={scheduleInfoForSelectedDate.memo}
                 />
             );
-        } else {
-            setScheduleInfo(<NoScheduleInfo />);
+        } 
+    
+        if (promiseInfoForSelectedDate) {
+            const placeUrl = promiseInfoForSelectedDate.placeId
+        ? `https://www.google.com/maps/place/?q=place_id:${promiseInfoForSelectedDate.placeId}`
+        : '';
+        
+            infoToDisplay = (
+                <>
+                {infoToDisplay}
+                <PromiseContainer>
+                    <Text style={{ fontWeight: 'bold', marginBottom: 2 }}>해당 게시글을 통해 확정된 약속이 있습니다.</Text>
+                    <Text style={{ marginBottom: 5 }}>{`${promiseInfoForSelectedDate.postTitle}`}</Text>
+                    {
+                        promiseInfoForSelectedDate.placeName && 
+                        <Text>{`장소: ${promiseInfoForSelectedDate.placeName}`}</Text>
+                    }
+                    <PromiseButton onPress={()=>{}}>
+                        <Text style={{ fontSize: 13, fontWeight: 'bold' }}>게시글 보러가기</Text>
+                    </PromiseButton>
+                    {
+                        promiseInfoForSelectedDate.placeName && 
+                        <PromiseButton onPress={handlePlacePress}>
+                            <Text style={{ fontSize: 13, fontWeight: 'bold' }}>장소 보러가기</Text>
+                        </PromiseButton>
+                    }
+                </PromiseContainer>
+                </>
+            );
         }
+    
+        if (!infoToDisplay) {
+            // 일치하는 스케줄이나 약속이 없을 경우, NoScheduleInfo 컴포넌트를 표시합니다.
+            infoToDisplay = <NoScheduleInfo />;
+        }
+    
+        setScheduleInfo(infoToDisplay);
     };
 
     return (
@@ -185,7 +263,7 @@ const Plan: React.FC = () => {
                     style={{ backgroundColor: 'white' }}
                     onScroll={handleScroll} scrollEventThrottle={10}>
             <PlanContainer>
-                <CalendarComponent scheduleData={scheduleData} onDayPress={handleDayPress} />
+                <CalendarComponent scheduleData={scheduleData} promiseData={promiseData} onDayPress={handleDayPress} />
                 <DivisionLine/>
                 <TravlePlanContainer>
                     <TravelPlanTitle>나의 일정</TravelPlanTitle>
@@ -289,4 +367,21 @@ const NoScheduleContainer = styled.View`
 const NoScheduleText = styled.Text`
     text-align: center;
     color: #333;
+`;
+
+const PromiseContainer= styled.View`
+    margin: 20px;
+    border-radius: 10px;
+    border-color: #DADADA;
+    padding: 15px;
+    border-width: 1;
+`;
+
+const PromiseButton = styled.TouchableOpacity`
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    padding: 15px;
+    background-color: #DADADA;
+    border-radius: 5px;
 `;

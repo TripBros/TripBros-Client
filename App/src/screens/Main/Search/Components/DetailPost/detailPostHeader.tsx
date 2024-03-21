@@ -14,7 +14,7 @@ const DetailPostHeader: React.FC<DetailPostHeaderProps> = ({ postData }) => {
   const navigation = useNavigation();
 
   const [modalVisible, setModalVisible] = useState(false);
-  const [isAuthor, setIsAuthor] = useState(false);
+  const [isAuthor, setIsAuthor] = useState(true);
 
   return(
     <HeaderContainer>

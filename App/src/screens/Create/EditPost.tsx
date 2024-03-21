@@ -2,24 +2,24 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components/native';
 import { SafeAreaView, ScrollView, View, TouchableOpacity } from 'react-native';
 import { Feather } from '@expo/vector-icons';
-import { useRecoilValue } from 'recoil';
-import { scheduleListState } from '../../libs/Recoil/scheduleList';
-import ScheduleList from '../Main/Plan/Components/scheduleList';
 import { ScheduleData } from '../../libs/Recoil/scheduleList';
 import HeadCounter from './CreatePost/Components/headCounter';
 import PreferredAgeRange from '../../components/Filter/preferredAgeRange';
 import PreferredSex from '../../components/Filter/preferredSex';
 import CalendarListModal from '../../components/Schedule/calendarListModal';
 import DateSelectionBar from '../../components/Schedule/dateSelectionBar';
+import CreateCountryCityPicker from '../../components/Picker/createCountryCityPicker';
 import { PostData } from '../Main/Search';
 import ImageSource from '../../assets/Bangkok.jpg';
 
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../../navigators/RootNavigator';
+
+type NavigationProp = StackNavigationProp<RootStackParamList>;
+
 const EditPost = ({ route }) => {
   const { postData } = route.params;
-
-  const [isCalanderOpen, setIsCalanderOpen] = useState(false);
-  const scheduleData = useRecoilValue(scheduleListState); //read only
-  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData | null>(null);
 
   //postData 데이터로 초기화
   const [title, setTitle] = useState(postData.title);
@@ -32,8 +32,13 @@ const EditPost = ({ route }) => {
   const [selectedAgeRange, setSelectedAgeRange] = useState<string>(postData.preferAgeRange);
   const [selectedSex, setSelectedSex] = useState<string>(postData.preferSex);
   
-  const [selectedView, setSelectedView] = useState('scheduleList'); //'scheduleList' 또는 'scheduleForm'
   const [isCalendarVisible, setIsCalendarVisible] = useState(false); //캘린더 리스트 모달
+
+  const [selectedPlace, setSelectedPlace] = useState<string>(postData.placeName);
+  const [placeId, setPlaceId] = useState<string>(postData.placeId);
+  const [placeLatitude, setPlaceLatitude] = useState<number>(postData.placeLatitude);
+  const [placeLongitude, setPlaceLongitude] = useState<number>(postData.placeLongitude);
+  const navigation = useNavigation<NavigationProp>();
 
   useEffect(() => {
     // 날짜 범위 문자열 업데이트
@@ -46,18 +51,22 @@ const EditPost = ({ route }) => {
     setIsCalendarVisible(!isCalendarVisible);
   };
 
-  const handleDayPress = (day: { dateString: string }) => {
+  const handleDayPress = (day) => {
     const selectedDate = new Date(day.dateString);
-
+    // 선택된 시작 날짜가 없거나, 시작 및 종료 날짜가 모두 선택되었다면
     if (!selectedStartDate || (selectedStartDate && selectedEndDate)) {
       setSelectedStartDate(selectedDate);
-      setSelectedEndDate(null);
-      setDisplayedDates(formatDate(selectedDate));
-    } else {
-      setSelectedEndDate(selectedDate);
-      const startDateString = formatDate(selectedStartDate);
-      const endDateString = formatDate(selectedDate);
-      setDisplayedDates(`${startDateString} ~ ${endDateString}`);
+      setSelectedEndDate(null); // 종료 날짜 초기화
+    } else if (selectedStartDate && !selectedEndDate) {
+      // 시작 날짜는 있지만 종료 날짜가 없는 경우
+      // 종료 날짜가 시작 날짜보다 뒤에 오는지 확인
+      if (selectedDate >= selectedStartDate) {
+        setSelectedEndDate(selectedDate);
+      } else {
+        // 사용자가 종료 날짜보다 이른 시작 날짜를 선택한 경우
+        setSelectedEndDate(selectedStartDate);
+        setSelectedStartDate(selectedDate);
+      }
     }
   };
 
@@ -70,27 +79,12 @@ const EditPost = ({ route }) => {
     }
   };
 
-  const formatDate = (date: Date) => {
+  const formatDate = (date) => {
+    if (!date) {
+      return '';
+    }
     const options = { month: 'numeric', day: 'numeric', weekday: 'short' };
     return date.toLocaleDateString('ko-KR', options);
-  };
-
-  // '고르기' 버튼 클릭
-  const handleChoosePress = () => {
-    setSelectedView('scheduleList');
-  };
-
-  // '작성하기' 버튼 클릭
-  const handleWritePress = () => {
-    setSelectedView('scheduleForm');
-  };
-
-  const toggleDropdown = () => {
-    setIsCalanderOpen(!isCalanderOpen);
-  };
-
-  const handleSelectSchedule = (schedule: ScheduleData) => {
-    setSelectedSchedule(schedule);
   };
 
   const handleAgeRangePress = (ageRange: string) => {
@@ -159,65 +153,40 @@ const EditPost = ({ route }) => {
           value={content}
           onChangeText={setContent}/>
         
-        <Title>일정</Title>
-        <ButtonContainer>
-          <Button onPress={handleChoosePress} isSelected={selectedView === 'scheduleList'}>
-            <ButtonText isSelected={selectedView === 'scheduleList'}>고르기</ButtonText>
-          </Button>
-          <Button onPress={handleWritePress} isSelected={selectedView === 'scheduleForm'}>
-            <ButtonText isSelected={selectedView === 'scheduleForm'}>작성하기</ButtonText>
-          </Button>
-      </ButtonContainer>
-        
-        {selectedView === 'scheduleList' && (
-          <>
-            <PickContainer>
-              <Feather name="calendar" size={24} color="black" />
-              <HeaderTitle>나의 일정 캘린더</HeaderTitle>
-              <CircleButton onPress={toggleDropdown}>
-                <Feather name={isCalanderOpen ? "chevron-up" : "chevron-down"} size={24} color="black"/>
-              </CircleButton>
-            </PickContainer>
-            {isCalanderOpen && (
-              <ScheduleList 
-                scheduleData={selectedSchedule ? [selectedSchedule] : scheduleData} 
-                isDetailed={false} 
-                onSelectSchedule={handleSelectSchedule}/>
-            )}
-          </>
-        )}
-        {selectedView === 'scheduleList' && !isCalanderOpen && (
-          <PickContainer style={{ justifyContent: 'center', alignItems: 'center' }}>
-            <AdditionalText>동행 목적, 선호하는 나이대와 성별 선택이 가능해요!</AdditionalText>
-          </PickContainer>
-        )}
-        {selectedView === 'scheduleForm' && (
-          <>
-            <Title>나라를 선택해주세요</Title>
-            <PostTitleInput placeholder="나라를 선택해주세요"/>
-            <Title>도시를 선택해주세요</Title>
-            <PostTitleInput placeholder="도시를 선택해주세요"/>
+        <CreateCountryCityPicker />
 
+        <Title>날짜를 선택해주세요</Title>
+        <View style={{ flex: 1 }}>
+        <DateSelectionBar
+          displayedDates={displayedDates}
+          onPress={toggleCalendar}
+          isChosen={true}/>
+        </View>
+        <CalendarListModal
+            isCalendarListVisible={isCalendarVisible}
+            onClose={() => setIsCalendarVisible(false)}
+            onDayPress={handleDayPress}
+            selectedStartDate={selectedStartDate}
+            selectedEndDate={selectedEndDate}
+            displayedDates={displayedDates}
+            onConfirm={handleConfirm}/>
 
-
-            <Title>날짜를 선택해주세요</Title>
-            <View style={{ flex: 1, alignItems: 'center' }}>
-            <DateSelectionBar
-              displayedDates={displayedDates}
-              onPress={toggleCalendar}
-            />
-            </View>
-            <CalendarListModal
-              isCalendarVisible={isCalendarVisible}
-              onClose={() => setIsCalendarVisible(false)}
-              onDayPress={handleDayPress}
-              selectedStartDate={selectedStartDate}
-              selectedEndDate={selectedEndDate}
-              displayedDates={displayedDates}
-              onConfirm={handleConfirm}
-            />
-          </>
-        )}
+        <Title>특정 장소를 추가해주세요 (선택)</Title>
+        <SearchBarContainer onPress={() => 
+          navigation.navigate('SearchPlace', {
+            onReturn: (place) => {
+              setSelectedPlace(place.description);
+              setPlaceLatitude(place.latitude);
+              setPlaceLongitude(place.longitude);
+              setPlaceId(place.placeId);
+            }
+          })
+        }>
+          <Feather name="search" size={24} color="black" />
+          <PlaceText selected={selectedPlace}>
+            {selectedPlace || "장소 검색"}
+          </PlaceText>
+        </SearchBarContainer>
 
       <Title>인원을 선택해주세요</Title>
       <HeadCounter count={Headcount} setCount={setHeadCount} />
@@ -279,45 +248,6 @@ const PlanMemoInput = styled.TextInput`
     margin: 0px 25px;
     `;
 
-const ButtonContainer = styled.View`
-  flex-direction: row;
-  margin: 0px 20px;
-`
-
-const Button = styled.TouchableOpacity`
-  background-color: ${(props) => (props.isSelected ? '#91C8E4' : 'white')};
-  border: 1.5px solid #91C8E4;
-  border-radius: 30px;
-  margin: 0 5px;
-`;
-
-const ButtonText = styled.Text`
-  color: ${(props) => (props.isSelected ? 'white' : '#91C8E4')};
-  padding: 10px 20px;
-  font-weight: bold;
-`;
-
-  const PickContainer = styled.View`
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    margin: 10px 20px 0px;
-`;
-
-const CircleButton = styled.TouchableOpacity`
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  background-color: #F6F4EB;
-  justify-content: center;
-  align-items: center;
-`;
-
-const AdditionalText = styled.Text`
-    font-size: 13px;
-    color: #ACACAC;
-`;
-
 const SubmitButton = styled.TouchableOpacity`
     background-color: #91C8E4;
     padding: 18px;
@@ -332,4 +262,20 @@ const SubmitButtonText = styled.Text`
     color: white;
     font-size: 16px;
     font-weight: bold;
+`;
+
+const SearchBarContainer = styled.TouchableOpacity`
+  flex-direction: row;
+  align-items: center;
+  border: 1px solid gray;
+  border-radius: 10px;
+  padding-horizontal: 20px;
+  padding-vertical: 12px;
+  margin: 0px 25px;
+`;
+
+const PlaceText = styled.Text`
+  margin-left: 15px;
+  padding-horizontal: 5px;
+  color: ${props => props.selected ? 'black' : '#C4C4C4'};
 `;

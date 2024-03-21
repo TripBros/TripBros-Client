@@ -1,15 +1,16 @@
 import React from 'react';
 import { Calendar } from 'react-native-calendars';
 import styled from 'styled-components/native';
-import { ScheduleData } from '../../../../libs/Recoil/scheduleList';
+import { ScheduleData, PromiseData } from '../../../../libs/Recoil/scheduleList';
 
 interface CalendarComponentProps {
   scheduleData: ScheduleData[];
+  promiseData: PromiseData[];
   onDayPress: (day: any) => void;
 }
 
 //캘린더에 들어가는 markedDates 동적으로 생성
-const generateMarkedDates = (scheduleData: ScheduleData[]) => {
+const generateMarkedDates = (scheduleData, promiseData) => {
   const markedDates: { [date: string]: any } = {};
   
   //배열 순회하면서 startDate랑 endDate만 가져다 씀
@@ -35,13 +36,28 @@ const generateMarkedDates = (scheduleData: ScheduleData[]) => {
           }
         }
       });
+
+  promiseData.forEach(promise => {
+    const promiseStartDate = new Date(promise.startDate);
+    const promiseEndDate = new Date(promise.endDate);
+
+    for(let date = new Date(promiseStartDate); date <= promiseEndDate; date.setDate(date.getDate() + 1)) {
+      const dateStr = date.toISOString().split('T')[0];
+
+      if (markedDates[dateStr]) {
+        markedDates[dateStr] = { ...markedDates[dateStr], marked: true, dotColor: 'black' }; // 기존 markedDates 유지하며 dot 추가
+      } else {
+        markedDates[dateStr] = { marked: true, dotColor: 'black' }; //새로운 날짜에 대한 설정
+      }
+    }
+  });
   
   return markedDates;
 };
 
-const CalendarComponent: React.FC<CalendarComponentProps> = ({ scheduleData, onDayPress }) => {
+const CalendarComponent: React.FC<CalendarComponentProps> = ({ scheduleData, promiseData, onDayPress }) => {
 
-  const markedDates = generateMarkedDates(scheduleData);
+  const markedDates = generateMarkedDates(scheduleData,promiseData);
   
   return (
     <CalendarContainer>

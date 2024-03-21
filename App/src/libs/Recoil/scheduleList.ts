@@ -10,7 +10,24 @@ export interface ScheduleData {
   memo: string;
 }
 
+export interface PromiseData {
+  promiseId: number;
+  startDate: string;
+  endDate: string;
+  country: string;
+  city: string;
+  postTitle: string;
+  placeName?: string;
+  placeId?: string;
+  //isAuthor: Boolean;
+}
+
 export const scheduleListState = atom<ScheduleData[]>({
   key: 'scheduleListState',
-  default: [], // 타입이 ScheduleData[]임을 명시
+  default: [],
+});
+
+export const promiseListState = atom<PromiseData[]>({
+  key: 'promiseListState',
+  default: [],
 });
