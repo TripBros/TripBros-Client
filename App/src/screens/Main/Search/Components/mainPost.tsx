@@ -36,7 +36,7 @@ const MainPost: React.FC<{postData: PostData}> = ({ postData }) => {
           {postData.content.length > 40 ? `${postData.content.substring(0, 40)}...` : postData.content}
         </Content>
         <Profile>
-          <ProfileImage source={postData.profileImage} />
+          <ProfileImage source={{ uri: postData.profileImage }} />
           <ProfileContent>{`${postData.nickname} / ${postData.age} ${postData.sex}`}</ProfileContent>
         </Profile>
         <PostFooter>
@@ -52,7 +52,7 @@ const MainPost: React.FC<{postData: PostData}> = ({ postData }) => {
             <Ionicons name="chatbox-outline" size={20} color="#749BC2" />
             <ChatText>{`${postData.chatCount}`}</ChatText>
             <AntDesign name="hearto" size={18} color="#FF6060" style={{ marginLeft: 8 }}/>
-            <LikeText>{`${postData.bookmarkCount}`}</LikeText>
+            <LikeText>{`${postData.bookmarkedCount}`}</LikeText>
           </Profile>
         </PostFooter>
       </PostContainer>

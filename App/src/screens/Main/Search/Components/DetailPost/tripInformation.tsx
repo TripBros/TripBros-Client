@@ -11,13 +11,18 @@ interface TripInformationProps {
     city: string;
     nowHeadCount: number;
     requiredHeadCount: number;
-    preferAgeRange: string;
+    preferAgeRange: string | string[]; // 단일 문자열 또는 문자열 배열
     preferSex: string;
   };
   formattedDateRange: string;
 }
 
 const TripInformation: React.FC<TripInformationProps> = ({ postData, formattedDateRange }) => {
+    
+    const formattedPreferAgeRange = Array.isArray(postData.preferAgeRange)
+    ? postData.preferAgeRange.join(", ")
+    : postData.preferAgeRange;
+
   return(
     <>
         <RoundedBackground>
@@ -35,7 +40,7 @@ const TripInformation: React.FC<TripInformationProps> = ({ postData, formattedDa
           </RowContainer>
           <RowContainer>
             <Fontisto name="person" size={22} color="black" />
-            <DetailText>{`${postData.preferAgeRange} 선호`}</DetailText>
+            <DetailText>{`${formattedPreferAgeRange.trim()} 선호`}</DetailText>
           </RowContainer>
           <RowContainer>
             <Fontisto name="person" size={22} color="black" />

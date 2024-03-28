@@ -19,7 +19,8 @@ export interface PromiseData {
   postTitle: string;
   placeName?: string;
   placeId?: string;
-  //isAuthor: Boolean;
+  isAuthor: Boolean;
+  memo?: string;
 }
 
 export const scheduleListState = atom<ScheduleData[]>({

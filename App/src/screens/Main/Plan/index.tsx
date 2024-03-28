@@ -1,5 +1,5 @@
 import React , { useState, useEffect } from 'react';
-import { ScrollView, RefreshControl, Text, Linking } from 'react-native';
+import { ScrollView, RefreshControl, Text, Linking, View } from 'react-native';
 import styled from 'styled-components/native';
 import ImageSource from '../../../assets/Bangkok.jpg';
 import CalendarComponent from './Components/calanderComponent';
@@ -10,6 +10,7 @@ import ScheduleInfo from './Components/scheduleInfo';
 import DeleteModal from '../../../components/EditAndDelete/deleteModal';
 import axios from 'axios';
 import { userTokenState } from '../../../libs/Recoil/authState';
+import { AntDesign } from '@expo/vector-icons';
 
 import useHandleScroll from '../../../hooks/useHandleScroll';
 import PlusButton from '../../../components/ActionButton/PlusButton';
@@ -152,6 +153,7 @@ const Plan: React.FC = () => {
                 country: '태국',
                 city: '방콕',
                 postTitle: '태국 방콕 같이 가실 분',
+                isAuthor: true,
             },
             {
                 promiseId: 2,
@@ -162,6 +164,8 @@ const Plan: React.FC = () => {
                 postTitle: '미국 뉴욕 같이 가실 분',
                 placeName: 'Liberty Bagels Midtown, West 35th Street, New York, NY, USA',
                 placeId: 'ChIJEWqQDLJZwokR8K5wVBL9n6g',
+                isAuthor: false,
+                memo: "메모메모",
             },
         ]);
     }, [refreshing]);
@@ -230,11 +234,20 @@ const Plan: React.FC = () => {
                 {infoToDisplay}
                 <PromiseContainer>
                     <Text style={{ fontWeight: 'bold', marginBottom: 2 }}>해당 게시글을 통해 확정된 약속이 있습니다.</Text>
-                    <Text style={{ marginBottom: 5 }}>{`${promiseInfoForSelectedDate.postTitle}`}</Text>
+                    <Text style={{ marginBottom: 10 }}>{`${promiseInfoForSelectedDate.postTitle}`}</Text>
                     {
                         promiseInfoForSelectedDate.placeName && 
-                        <Text>{`장소: ${promiseInfoForSelectedDate.placeName}`}</Text>
+                        <Text style={{ marginBottom: 10 }}>{`장소: ${promiseInfoForSelectedDate.placeName}`}</Text>
                     }
+                    <>
+                        <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 5 }}>
+                            <AntDesign style={{ marginRight: 5}} name="plussquareo" size={18} color="black" />
+                            <Text style={{fontWeight: 'bold'}}>메모</Text>
+                        </View>
+                        {
+                            promiseInfoForSelectedDate.memo && <Text>{`${promiseInfoForSelectedDate.memo}`}</Text>
+                        }
+                    </>
                     <PromiseButton onPress={()=>{}}>
                         <Text style={{ fontSize: 13, fontWeight: 'bold' }}>게시글 보러가기</Text>
                     </PromiseButton>
@@ -243,6 +256,18 @@ const Plan: React.FC = () => {
                         <PromiseButton onPress={handlePlacePress}>
                             <Text style={{ fontSize: 13, fontWeight: 'bold' }}>장소 보러가기</Text>
                         </PromiseButton>
+                    }
+                    {
+                        promiseInfoForSelectedDate.isAuthor===true && 
+                        <AuthorButton>
+                            <Text style={{ fontSize: 13, fontWeight: 'bold' }}>일정 삭제</Text>
+                        </AuthorButton>
+                    }
+                    {
+                        promiseInfoForSelectedDate.isAuthor===false && 
+                        <AuthorButton>
+                            <Text style={{ fontSize: 13, fontWeight: 'bold' }}>일정 수정</Text>
+                        </AuthorButton>
                     }
                 </PromiseContainer>
                 </>
@@ -300,7 +325,7 @@ const Plan: React.FC = () => {
             <DeleteModal
                 isVisible={isModalVisible}
                 onRequestClose={() => setIsModalVisible(false)}
-                onCancel=  {cancelDelete}
+                onCancel= {cancelDelete}
                 onConfirm={() => scheduleIdToDelete && onDeleteSchedule(scheduleIdToDelete)}
                 message="해당 일정을 삭제하시겠습니까?"
             />
@@ -383,5 +408,13 @@ const PromiseButton = styled.TouchableOpacity`
     margin-top: 15px;
     padding: 15px;
     background-color: #DADADA;
+    border-radius: 5px;
+`;
+
+const AuthorButton = styled.TouchableOpacity`
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    padding: 10px;
     border-radius: 5px;
 `;

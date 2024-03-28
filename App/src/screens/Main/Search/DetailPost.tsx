@@ -56,7 +56,7 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
   const TimeWrittenAgo = calculateTimeWrittenAgo(postData.createdAt);
   const formattedDateRange = formatDateRange(postData.startDate, postData.endDate);
 
-  const [likes, setLikes] = useState(postData.bookmarkCount);
+  const [likes, setLikes] = useState(postData.bookmarkedCount);
   const [isLiked, setIsLiked] = useState(postData.isBookmarked); //사용자의 좋아요 여부
 
   const placeUrl = `https://www.google.com/maps/place/?q=place_id:${postData.placeId}`;
@@ -90,7 +90,7 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
       <View>
         <ProfileContainer>
           <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-            <ProfileImage source={postData.profileImage}/>
+            <ProfileImage source={{ uri: postData.profileImage }}/>
             <View>
               <NameText>{postData.nickname}</NameText>
               <Text style={{ fontSize: 12 }}>{`${postData.age} ${postData.sex}`}</Text>
@@ -133,7 +133,7 @@ const DetailPost: React.FC<DetailPostProps> = ({ route }) => {
               <Content>{postData.content}</Content>
             </ContentContainer>
 
-            {postData.placeLatitude !== undefined && postData.placeLongitude !== undefined && (
+            {typeof postData.placeLatitude === 'number' && typeof postData.placeLongitude === 'number' && (
               <>
               <Text style={{ fontSize: 14, fontWeight: 'bold', marginBottom: 3 }}>장소</Text>
                 <TouchableOpacity onPress={handlePlacePress}>
